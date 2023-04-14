@@ -34,4 +34,14 @@ public class JpaMemberRepository implements MemberRepository {
                 .setParameter("nickname", nickname)
                 .getResultStream().findAny();
     }
+
+    @Override
+    public Optional<Member> save(Member member) {
+        em.persist(member);
+        em.flush();
+        if (member.getId() != null)
+            return Optional.of(member);
+        else
+            return Optional.empty();
+    }
 }
