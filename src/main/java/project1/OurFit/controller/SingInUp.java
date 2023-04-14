@@ -3,9 +3,7 @@ package project1.OurFit.controller;
 import constant.JsonCode;
 import constant.JsonMessage;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import project1.OurFit.domain.JsonResponse;
 import project1.OurFit.domain.LoginRequest;
 import project1.OurFit.service.MemberService;
@@ -24,5 +22,13 @@ public class SingInUp {
         return memberService.findEmailAndPassword(value.getEmail(), value.getPassword())
                 .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()))
                 .orElse(new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()));
+    }
+
+    @GetMapping("/checkemail/{email}")
+    @ResponseBody
+    public JsonResponse checkEmail(@PathVariable String email) {
+        return memberService.findEmail(email)
+                .map(m -> new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()))
+                .orElse(new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()));
     }
 }
