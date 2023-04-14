@@ -1,9 +1,6 @@
 package project1.OurFit.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +12,8 @@ public class Member {
     private Long Id;
 
     private String Email;
-    private String Pwd;
+    @Column(name = "Pwd")
+    private String Password;
     private String Nickname;
     private boolean Gender;
     private Double Height;
