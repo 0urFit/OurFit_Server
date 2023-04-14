@@ -27,4 +27,11 @@ public class JpaMemberRepository implements MemberRepository {
                 .setParameter("email", email)
                 .getResultStream().findAny();
     }
+
+    @Override
+    public Optional<Member> findByNickname(String nickname) {
+        return em.createQuery("select m from Member m where m.Nickname = :nickname", Member.class)
+                .setParameter("nickname", nickname)
+                .getResultStream().findAny();
+    }
 }
