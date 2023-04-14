@@ -40,4 +40,12 @@ public class SignInUp {
                 .map(m -> new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()))
                 .orElse(new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()));
     }
+
+    @PostMapping("/signup")
+    @ResponseBody
+    public JsonResponse signup(@RequestBody Member member) {
+        return memberService.join(member)
+                .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()))
+                .orElse(new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()));
+    }
 }
