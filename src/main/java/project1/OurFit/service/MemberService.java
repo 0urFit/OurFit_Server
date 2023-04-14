@@ -18,4 +18,8 @@ public class MemberService {
     public Optional<Member> findEmailAndPassword(String email, String password) {
         return memberRepository.findByEmailAndPassword(email, password);
     }
+
+    public Optional<Member> findEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
 }
