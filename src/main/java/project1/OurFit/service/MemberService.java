@@ -26,4 +26,8 @@ public class MemberService {
     public Optional<Member> findNickname(String nickname) {
         return memberRepository.findByNickname(nickname);
     }
+
+    public Optional<Member> join(Member member) {
+        return memberRepository.save(member);
+    }
 }
