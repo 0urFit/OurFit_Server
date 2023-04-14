@@ -31,4 +31,12 @@ public class SingInUp {
                 .map(m -> new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()))
                 .orElse(new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()));
     }
+
+    @GetMapping("/checknick/{nickname}")
+    @ResponseBody
+    public JsonResponse checkNickname(@PathVariable String nickname) {
+        return memberService.findNickname(nickname)
+                .map(m -> new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()))
+                .orElse(new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()));
+    }
 }
