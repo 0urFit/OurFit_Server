@@ -22,4 +22,8 @@ public class MemberService {
     public Optional<Member> findEmail(String email) {
         return memberRepository.findByEmail(email);
     }
+
+    public Optional<Member> findNickname(String nickname) {
+        return memberRepository.findByNickname(nickname);
+    }
 }
