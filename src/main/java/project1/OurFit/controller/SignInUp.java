@@ -6,13 +6,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project1.OurFit.domain.JsonResponse;
 import project1.OurFit.domain.LoginRequest;
+import project1.OurFit.domain.Member;
 import project1.OurFit.service.MemberService;
 
 @Controller
-public class SingInUp {
+public class SignInUp {
     private final MemberService memberService;
 
-    public SingInUp(MemberService memberService) {
+    public SignInUp(MemberService memberService) {
         this.memberService = memberService;
     }
 
