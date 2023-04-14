@@ -20,4 +20,11 @@ public class JpaMemberRepository implements MemberRepository {
                 .setParameter("password", password)
                 .getResultStream().findAny();
     }
+
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        return em.createQuery("select m from Member m where m.Email = :email", Member.class)
+                .setParameter("email", email)
+                .getResultStream().findAny();
+    }
 }
