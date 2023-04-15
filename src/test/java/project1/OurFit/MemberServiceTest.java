@@ -1,5 +1,6 @@
 package project1.OurFit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
+import project1.OurFit.domain.Member;
 import project1.OurFit.repository.MemberRepository;
 import project1.OurFit.service.MemberService;
 
@@ -25,16 +27,20 @@ public class MemberServiceTest {
 
     @Test
     void 회원가입() throws Exception {
-        String Json = "{\"email\": \"aossuper1@naver.com\"," +
-                "\"password\": \"aossuper1\"," +
-                "\"nickname\": \"aossuper1\"," +
-                "\"gender\": false," +
-                "\"height\": 170.1," +
-                "\"weight\": 80.0}";
+        Member member = new Member();
+        member.setEmail("aossuper11@naver.com");
+        member.setPassword("aossuper1");
+        member.setNickname("aossuper1");
+        member.setGender(false);
+        member.setHeight(170.0);
+        member.setWeight(78.0);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(member);
+
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(Json))
+                        .content(json))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
