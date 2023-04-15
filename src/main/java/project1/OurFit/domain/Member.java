@@ -12,7 +12,6 @@ public class Member {
     private Long Id;
 
     private String Email;
-    @Column(name = "Pwd")
     private String Password;
     private String Nickname;
     private boolean Gender;
