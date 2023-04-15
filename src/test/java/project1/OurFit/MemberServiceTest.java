@@ -44,4 +44,36 @@ public class MemberServiceTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
+
+    @Test
+    void 이메일_확인() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/checkemail/aossuper7@naver.com"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    void 없는_이메일_확인() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/checkemail/aossup@naver.com"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    void 닉네임_확인() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/checknick/aossuper7"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    void 없는_닉네임_확인() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/checknick/aoss"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
 }
