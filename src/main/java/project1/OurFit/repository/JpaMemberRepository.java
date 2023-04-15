@@ -15,7 +15,7 @@ public class JpaMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findByEmailAndPassword(String email, String password) {
-        return em.createQuery("select m from Member m where m.Email = :email And m.Pwd = :password", Member.class)
+        return em.createQuery("select m from Member m where m.Email = :email And m.Password = :password", Member.class)
                 .setParameter("email", email)
                 .setParameter("password", password)
                 .getResultStream().findAny();
