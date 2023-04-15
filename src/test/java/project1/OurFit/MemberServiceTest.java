@@ -37,42 +37,61 @@ public class MemberServiceTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(member);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+        mockMvcTest("/signup", json);
+    }
+
+    @Test
+    void 로그인() throws Exception{
+        Member member = new Member();
+        member.setEmail("aossuper7@naver.com");
+        member.setPassword("aossuper7");
+        ObjectMapper object = new ObjectMapper();
+        String json = object.writeValueAsString(member);
+
+        mockMvcTest("/login", json);
+    }
+
+    @Test
+    void 로그인_실패() throws Exception {
+        Member member = new Member();
+        member.setEmail("aossuper7@naver.com");
+        member.setPassword("aossuper7");
+        ObjectMapper object = new ObjectMapper();
+        String json = object.writeValueAsString(member);
+
+        mockMvcTest("/login", json);
     }
 
     @Test
     void 이메일_확인() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/checkemail/aossuper7@naver.com"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+        mockMvcTest("/checkemail/aossuper7@naver.com");
     }
 
     @Test
     void 없는_이메일_확인() throws Exception {
-        mockMvc.perform(
-                        MockMvcRequestBuilders.get("/checkemail/aossup@naver.com"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+        mockMvcTest("/checkemail/aossup@naver.com");
     }
 
     @Test
     void 닉네임_확인() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/checknick/aossuper7"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+        mockMvcTest("/checknick/aossuper7");
     }
 
     @Test
     void 없는_닉네임_확인() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/checknick/aoss"))
+        mockMvcTest("/checknick/aoss");
+    }
+
+    private void mockMvcTest(String url) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(url))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    private void mockMvcTest(String url, String json) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
