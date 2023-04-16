@@ -65,10 +65,9 @@ public class SignInUp {
                 .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage(),
                         new LoginRequest(info.getKakao_account().getEmail())))
                 .orElseGet(() -> {
-                    boolean gender = info.getKakao_account().getGender().equals("male");
                     return new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage(),
                             new Member(info.getKakao_account().getEmail(), info.getProperties().getNickname(),
-                                    gender));
+                                    info.getKakao_account().getGender()));
                 });
     }
 }

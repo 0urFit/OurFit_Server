@@ -9,7 +9,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 public class Member {
-    public Member(String email, String nickname, boolean gender) {
+    public Member(String email, String nickname, String gender) {
         Email = email;
         Nickname = nickname;
         Gender = gender;
@@ -21,7 +21,7 @@ public class Member {
     private String Email;
     private String Password;
     private String Nickname;
-    private boolean Gender;
+    private String Gender;
     private Double Height;
     private Double Weight;
     private Double Squat;
