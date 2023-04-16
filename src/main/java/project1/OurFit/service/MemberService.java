@@ -1,7 +1,10 @@
 package project1.OurFit.service;
 
 import org.springframework.transaction.annotation.Transactional;
+import project1.OurFit.domain.KakaoProfile;
+import project1.OurFit.domain.OAuthToken;
 import project1.OurFit.domain.Member;
+import project1.OurFit.repository.KakaoRepository;
 import project1.OurFit.repository.MemberRepository;
 
 import java.util.Optional;
@@ -10,9 +13,11 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final KakaoRepository kakaoRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, KakaoRepository kakaoRepository) {
         this.memberRepository = memberRepository;
+        this.kakaoRepository = kakaoRepository;
     }
 
     public Optional<Member> findEmailAndPassword(String email, String password) {
@@ -29,5 +34,10 @@ public class MemberService {
 
     public Optional<Member> join(Member member) {
         return memberRepository.save(member);
+    }
+
+    public void loginKakao(String code) {
+        OAuthToken OAuthToken = kakaoRepository.getToken(code);
+
     }
 }
