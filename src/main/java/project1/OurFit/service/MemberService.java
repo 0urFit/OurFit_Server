@@ -36,8 +36,8 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public void loginKakao(String code) {
+    public KakaoProfile loginKakao(String code) {
         OAuthToken OAuthToken = kakaoRepository.getToken(code);
-
+        return kakaoRepository.getUserInfo(OAuthToken);
     }
 }

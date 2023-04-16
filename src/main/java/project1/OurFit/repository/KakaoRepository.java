@@ -46,4 +46,28 @@ public class KakaoRepository {
         }
         return oauthToken;
     }
+
+    private KakaoProfile convertKakaoprofileToJson(String token) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        KakaoProfile kakaoProfile = null;
+        try {
+            kakaoProfile = objectMapper.readValue(token, KakaoProfile.class);
+        }catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return kakaoProfile;
+    }
+
+    public KakaoProfile getUserInfo(OAuthToken kakao) {
+        RestTemplate rt = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(Oauth.HEADER_REQUEST_NAME.getValue(),
+                Oauth.HEADER_REQUEST_VALUE.getValue() + kakao.getAccess_token());
+        httpHeaders.add(Oauth.HEADER_CONTENT_NAME.getValue(), Oauth.HEADER_CONTENT_VALUE.getValue());
+
+        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = new HttpEntity<>(httpHeaders);
+        String token = requestHttp(Oauth.TOKEN_PROFILE.getValue(), rt, kakaoProfileRequest);
+        return convertKakaoprofileToJson(token);
+    }
+
 }
