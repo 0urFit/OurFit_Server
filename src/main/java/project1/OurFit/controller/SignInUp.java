@@ -5,19 +5,18 @@ import constant.JsonMessage;
 import constant.Oauth;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import project1.OurFit.domain.JsonResponse;
-import project1.OurFit.domain.KakaoProfile;
-import project1.OurFit.domain.LoginRequest;
-import project1.OurFit.domain.Member;
+import project1.OurFit.domain.*;
+import project1.OurFit.service.KakaoService;
 import project1.OurFit.service.MemberService;
 
 @Controller
 public class SignInUp {
     private final MemberService memberService;
+    private final KakaoService kakaoService;
 
-    public SignInUp(MemberService memberService) {
+    public SignInUp(MemberService memberService, KakaoService kakaoService) {
         this.memberService = memberService;
+        this.kakaoService = kakaoService;
     }
 
     @PostMapping("/login")
@@ -60,14 +59,13 @@ public class SignInUp {
     @GetMapping("/auth/kakao/callback")
     @ResponseBody
     public JsonResponse oauthKakaoLogin(String code) {
-        KakaoProfile info = memberService.loginKakao(code);
+        OAuthToken oAuthToken = kakaoService.getToken(code);
+        KakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
         return memberService.findEmail(info.getKakao_account().getEmail())
                 .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage(),
                         new LoginRequest(info.getKakao_account().getEmail())))
-                .orElseGet(() -> {
-                    return new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage(),
-                            new Member(info.getKakao_account().getEmail(), info.getProperties().getNickname(),
-                                    info.getKakao_account().getGender()));
-                });
+                .orElseGet(() -> new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage(),
+                        new Member(info.getKakao_account().getEmail(), info.getProperties().getNickname(),
+                                info.getKakao_account().getGender())));
     }
 }
