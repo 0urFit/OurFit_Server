@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-public class JsonResponse {
+public class JsonResponse<T> {
     public JsonResponse(boolean isSuccess, int code, String message) {
         this.isSuccess = isSuccess;
         this.code = code;
@@ -17,5 +17,5 @@ public class JsonResponse {
     private int code;
     private String message;
 
-    private Object result;
+    private T result;
 }
