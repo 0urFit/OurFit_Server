@@ -10,12 +10,12 @@ public enum Oauth {
     CLIENT_NAME("client_id"),
     CLIENT_VALUE("2be5601c4dcce1fe89db958b51887271"),
     REDIRECT_NAME("redirect_uri"),
-    REDIRECT_VALUE("http://127.0.0.1:8080/auth/kakao/callback"),
+    REDIRECT_VALUE("https://www.ourfit.shop/auth/kakao/callback"),
     CODE("code"),
     TOKEN_URL("https://kauth.kakao.com/oauth/token"),
     TOKEN_PROFILE("https://kapi.kakao.com/v2/user/me"),
     KAKAOLOGIN("https://kauth.kakao.com/oauth/authorize?client_id=2be5601c4dcce1fe89db958b51887271"
-            + "&redirect_uri=http://127.0.0.1:8080/auth/kakao/callback&response_type=code");
+            + "&redirect_uri=https://www.ourfit.shop/auth/kakao/callback&response_type=code");
 
     private final String value;
 
