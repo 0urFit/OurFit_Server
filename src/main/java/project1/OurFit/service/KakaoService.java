@@ -19,18 +19,18 @@ public class KakaoService {
 
     private final RestTemplate rt;
     private final ObjectMapper objectMapper;
-    private final OAuthToken oAuthToken;
+//    private final OAuthToken oAuthToken;
 
     public KakaoService() {
         this.rt = new RestTemplate();
         this.objectMapper = new ObjectMapper();
-        this.oAuthToken = new OAuthToken();
+//        this.oAuthToken = new OAuthToken();
     }
 
     public OAuthToken getToken(String code) {
-        if (oAuthToken.getAccess_token() != null) {
-            return oAuthToken;
-        }
+//        if (oAuthToken.getAccess_token() != null) {
+//            return oAuthToken;
+//        }
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(Oauth.GRANT_NAME.getValue(), Oauth.GRANT_VALUE.getValue());
@@ -40,7 +40,7 @@ public class KakaoService {
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, null);
         String token = requestHttp(Oauth.TOKEN_URL.getValue(), rt, kakaoTokenRequest);
-        return convertJson(token, OAuthToken.class, oAuthToken);
+        return convertJson(token, OAuthToken.class);
     }
 
     private String requestHttp(String url , RestTemplate rt, HttpEntity<MultiValueMap<String, String>> token) {
@@ -48,10 +48,9 @@ public class KakaoService {
         return response.getBody();
     }
 
-    private <T> T convertJson(String token, Class<T> type, Object dto) {
+    private <T> T convertJson(String token, Class<T> type) {
         try {
-            dto = objectMapper.readValue(token, type);
-            return (T) dto;
+            return objectMapper.readValue(token, type);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -60,7 +59,7 @@ public class KakaoService {
     public KakaoProfile getUserInfo(OAuthToken kakao) {
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = createHttpEntity(null, kakao.getAccess_token());
         String token = requestHttp(Oauth.TOKEN_PROFILE.getValue(), rt, kakaoProfileRequest);
-        return convertJson(token, KakaoProfile.class, new KakaoProfile());
+        return convertJson(token, KakaoProfile.class);
     }
 
     private HttpHeaders createHeaders(String token) {

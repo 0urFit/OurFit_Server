@@ -58,7 +58,7 @@ public class SignInUp {
 
     @GetMapping("/auth/kakao/callback")
     @ResponseBody
-    public JsonResponse oauthKakaoLogin(String code) {
+    public synchronized JsonResponse oauthKakaoLogin(String code) {
         OAuthToken oAuthToken = kakaoService.getToken(code);
         KakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
         return memberService.findEmail(info.getKakao_account().getEmail())
