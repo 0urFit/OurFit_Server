@@ -1,19 +1,16 @@
 package project1.OurFit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.domain.Member;
 import project1.OurFit.repository.MemberRepository;
 import project1.OurFit.service.MemberService;
+
+import java.util.Optional;
 
 
 @SpringBootTest
@@ -23,76 +20,75 @@ public class MemberServiceTest {
 
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
-    @Autowired MockMvc mockMvc;
 
     @Test
-    void 회원가입() throws Exception {
+    void 회원가입() {
         Member member = new Member();
-        member.setEmail("aossuper11@naver.com");
-        member.setPassword("aossuper1");
-        member.setNickname("aossuper1");
-        member.setGender(false);
+        member.setEmail("test@test.com");
+        member.setPassword("test");
+        member.setNickname("test");
+        member.setGender("male");
         member.setHeight(170.0);
-        member.setWeight(78.0);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(member);
+        member.setWeight(79.0);
 
-        mockMvcTest("/signup", json);
+        Optional<Member> savedMember = memberService.join(member);
+
+        Assertions.assertThat(savedMember).isNotNull();
     }
 
     @Test
-    void 로그인() throws Exception{
-        Member member = new Member();
-        member.setEmail("aossuper7@naver.com");
-        member.setPassword("aossuper7");
-        ObjectMapper object = new ObjectMapper();
-        String json = object.writeValueAsString(member);
+    void 로그인() {
+        String email = "test@test.com";
+        String password = "testpassword";
 
-        mockMvcTest("/login", json);
+        Optional<Member> login = memberService.findEmailAndPassword(email, password);
+
+        Assertions.assertThat(login.isPresent()).isTrue();
     }
 
     @Test
-    void 로그인_실패() throws Exception {
-        Member member = new Member();
-        member.setEmail("aossuper7@naver.com");
-        member.setPassword("aossuper7");
-        ObjectMapper object = new ObjectMapper();
-        String json = object.writeValueAsString(member);
+    void 로그인_실패() {
+        String email = "testtest@testtest.com";
+        String password = "testpassword";
 
-        mockMvcTest("/login", json);
+        Optional<Member> login = memberService.findEmailAndPassword(email, password);
+
+        Assertions.assertThat(login.isPresent()).isFalse();
     }
 
     @Test
-    void 이메일_확인() throws Exception {
-        mockMvcTest("/checkemail/aossuper7@naver.com");
+    void 이메일_확인() {
+        String email = "test@test.com";
+
+        Optional<Member> findEmail = memberService.findEmail(email);
+
+        Assertions.assertThat(findEmail.isPresent()).isTrue();
     }
 
     @Test
-    void 없는_이메일_확인() throws Exception {
-        mockMvcTest("/checkemail/aossup@naver.com");
+    void 없는_이메일_확인() {
+        String email = "testtest@testtest.com";
+
+        Optional<Member> findEmail = memberService.findEmail(email);
+
+        Assertions.assertThat(findEmail.isPresent()).isFalse();
     }
 
     @Test
-    void 닉네임_확인() throws Exception {
-        mockMvcTest("/checknick/aossuper7");
+    void 닉네임_확인() {
+        String nickname = "testnickname";
+
+        Optional<Member> findNickname = memberService.findNickname(nickname);
+
+        Assertions.assertThat(findNickname.isPresent()).isTrue();
     }
 
     @Test
-    void 없는_닉네임_확인() throws Exception {
-        mockMvcTest("/checknick/aoss");
-    }
+    void 없는_닉네임_확인() {
+        String nickname = "testtestnickname";
 
-    private void mockMvcTest(String url) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(url))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
-    }
+        Optional<Member> findNickname = memberService.findNickname(nickname);
 
-    private void mockMvcTest(String url, String json) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+        Assertions.assertThat(findNickname.isPresent()).isFalse();
     }
 }
