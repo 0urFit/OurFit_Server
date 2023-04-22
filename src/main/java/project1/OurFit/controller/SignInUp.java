@@ -9,6 +9,8 @@ import project1.OurFit.domain.*;
 import project1.OurFit.service.KakaoService;
 import project1.OurFit.service.MemberService;
 
+import java.util.Optional;
+
 @Controller
 public class SignInUp {
     private final MemberService memberService;
@@ -58,14 +60,16 @@ public class SignInUp {
 
     @GetMapping("/auth/kakao/callback")
     @ResponseBody
-    public JsonResponse oauthKakaoLogin(String code) {
+    public synchronized JsonResponse oauthKakaoLogin(String code) {
         OAuthToken oAuthToken = kakaoService.getToken(code);
         KakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
-        return memberService.findEmail(info.getKakao_account().getEmail())
-                .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage(),
-                        new LoginRequest(info.getKakao_account().getEmail())))
-                .orElseGet(() -> new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage(),
-                        new Member(info.getKakao_account().getEmail(), info.getProperties().getNickname(),
-                                info.getKakao_account().getGender())));
+        Optional<Member> member = memberService.findEmail(info.getKakao_account().getEmail());
+        JsonResponse jsonResponse = new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage());
+        if (member.isPresent())
+            jsonResponse.setResult(new SignUpRequest(info.getKakao_account().getEmail()));
+        else
+            jsonResponse.setResult(new SignUpRequest(info.getKakao_account().getEmail(), info.getKakao_account().getGender(),
+                    info.getProperties().getNickname()));
+        return jsonResponse;
     }
 }

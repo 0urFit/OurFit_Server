@@ -14,27 +14,23 @@ import org.springframework.web.client.RestTemplate;
 import project1.OurFit.domain.KakaoProfile;
 import project1.OurFit.domain.OAuthToken;
 
-import java.util.Optional;
-
 @Transactional
 public class KakaoService {
 
     private final RestTemplate rt;
     private final ObjectMapper objectMapper;
-    private final OAuthToken oAuthToken;
+//    private final OAuthToken oAuthToken;
 
     public KakaoService() {
         this.rt = new RestTemplate();
         this.objectMapper = new ObjectMapper();
-        this.oAuthToken = new OAuthToken();
+//        this.oAuthToken = new OAuthToken();
     }
 
     public OAuthToken getToken(String code) {
-        if (oAuthToken.getAccess_token() != null) {
-            return oAuthToken;
-        }
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(Oauth.HEADER_CONTENT_NAME.getValue(), Oauth.HEADER_CONTENT_VALUE.getValue());
+//        if (oAuthToken.getAccess_token() != null) {
+//            return oAuthToken;
+//        }
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(Oauth.GRANT_NAME.getValue(), Oauth.GRANT_VALUE.getValue());
@@ -42,9 +38,9 @@ public class KakaoService {
         params.add(Oauth.REDIRECT_NAME.getValue(), Oauth.REDIRECT_VALUE.getValue());
         params.add(Oauth.CODE.getValue(), code);
 
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, httpHeaders);
+        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, null);
         String token = requestHttp(Oauth.TOKEN_URL.getValue(), rt, kakaoTokenRequest);
-        return convertJson(token, OAuthToken.class, oAuthToken);
+        return convertJson(token, OAuthToken.class);
     }
 
     private String requestHttp(String url , RestTemplate rt, HttpEntity<MultiValueMap<String, String>> token) {
@@ -52,23 +48,30 @@ public class KakaoService {
         return response.getBody();
     }
 
-    private <T> T convertJson(String token, Class<T> type, Object dto) {
+    private <T> T convertJson(String token, Class<T> type) {
         try {
-            dto = objectMapper.readValue(token, type);
-            return (T) dto;
+            return objectMapper.readValue(token, type);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
     public KakaoProfile getUserInfo(OAuthToken kakao) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(Oauth.HEADER_REQUEST_NAME.getValue(),
-                Oauth.HEADER_REQUEST_VALUE.getValue() + kakao.getAccess_token());
-        httpHeaders.add(Oauth.HEADER_CONTENT_NAME.getValue(), Oauth.HEADER_CONTENT_VALUE.getValue());
-
-        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = new HttpEntity<>(httpHeaders);
+        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = createHttpEntity(null, kakao.getAccess_token());
         String token = requestHttp(Oauth.TOKEN_PROFILE.getValue(), rt, kakaoProfileRequest);
-        return convertJson(token, KakaoProfile.class, new KakaoProfile());
+        return convertJson(token, KakaoProfile.class);
+    }
+
+    private HttpHeaders createHeaders(String token) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(Oauth.HEADER_CONTENT_NAME.getValue(), Oauth.HEADER_CONTENT_VALUE.getValue());
+        if (token != null)
+            httpHeaders.add(Oauth.HEADER_REQUEST_NAME.getValue(), Oauth.HEADER_REQUEST_VALUE.getValue() + token);
+        return httpHeaders;
+    }
+
+    private HttpEntity<MultiValueMap<String, String>> createHttpEntity(MultiValueMap<String, String> params, String token) {
+        HttpHeaders httpHeaders = createHeaders(token);
+        return new HttpEntity<>(params, httpHeaders);
     }
 }
