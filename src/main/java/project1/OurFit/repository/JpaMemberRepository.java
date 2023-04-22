@@ -23,14 +23,14 @@ public class JpaMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findByEmail(String email) {
-        return em.createQuery("select m from Member m where m.Email = :email", Member.class)
+        return em.createQuery("select m.Email from Member m where m.Email = :email", Member.class)
                 .setParameter("email", email)
                 .getResultStream().findAny();
     }
 
     @Override
     public Optional<Member> findByNickname(String nickname) {
-        return em.createQuery("select m from Member m where m.Nickname = :nickname", Member.class)
+        return em.createQuery("select m.Nickname from Member m where m.Nickname = :nickname", Member.class)
                 .setParameter("nickname", nickname)
                 .getResultStream().findAny();
     }
