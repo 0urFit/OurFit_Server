@@ -1,5 +1,6 @@
 package project1.OurFit.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,5 +18,6 @@ public class JsonResponse<T> {
     private int code;
     private String message;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL) // null일때는 json 변환 안함
     private T result;
 }
