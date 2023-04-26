@@ -1,5 +1,7 @@
 HELP.md
 src/main/resources/*.properties
+src/main/resources/.well-known/**
+src/main/resources/*.p12
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
