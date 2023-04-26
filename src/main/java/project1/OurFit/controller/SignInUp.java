@@ -3,6 +3,7 @@ package project1.OurFit.controller;
 import constant.JsonCode;
 import constant.JsonMessage;
 import constant.Oauth;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project1.OurFit.domain.*;
@@ -21,7 +22,7 @@ public class SignInUp {
         this.kakaoService = kakaoService;
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public JsonResponse login(@RequestBody LoginRequest value) {
         return memberService.findEmailAndPassword(value.getEmail(), value.getPassword())
@@ -45,7 +46,7 @@ public class SignInUp {
                 .orElse(new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()));
     }
 
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public JsonResponse signup(@RequestBody Member member) {
         return memberService.join(member)
