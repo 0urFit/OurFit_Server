@@ -1,6 +1,6 @@
 package project1.OurFit.repository;
 
-import project1.OurFit.domain.Member;
+import project1.OurFit.Entity.Member;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package project1.OurFit.domain;
+package project1.OurFit.Response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -7,9 +7,9 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-public class SignUpRequest {
+public class PostSignUp {
 
-    public SignUpRequest(String email) {
+    public PostSignUp(String email) {
         this.email = email;
     }
 
@@ -17,7 +17,4 @@ public class SignUpRequest {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String gender;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String nickname;
 }

@@ -1,7 +1,7 @@
 package project1.OurFit.service;
 
 import org.springframework.transaction.annotation.Transactional;
-import project1.OurFit.domain.Member;
+import project1.OurFit.Entity.Member;
 import project1.OurFit.repository.MemberRepository;
 
 import java.util.Optional;

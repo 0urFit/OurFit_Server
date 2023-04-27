@@ -1,10 +1,10 @@
-package project1.OurFit.domain;
+package project1.OurFit.Request;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class OAuthToken {
+public class OAuthTokenDTO {
     private String id_token;
     private String access_token;
     private String token_type;

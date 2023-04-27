@@ -11,27 +11,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import project1.OurFit.domain.KakaoProfile;
-import project1.OurFit.domain.OAuthToken;
+import project1.OurFit.Response.PostKakaoProfile;
+import project1.OurFit.Request.OAuthTokenDTO;
 
 @Transactional
 public class KakaoService {
 
     private final RestTemplate rt;
     private final ObjectMapper objectMapper;
-//    private final OAuthToken oAuthToken;
 
     public KakaoService() {
         this.rt = new RestTemplate();
         this.objectMapper = new ObjectMapper();
-//        this.oAuthToken = new OAuthToken();
     }
 
-    public OAuthToken getToken(String code) {
-//        if (oAuthToken.getAccess_token() != null) {
-//            return oAuthToken;
-//        }
-
+    public OAuthTokenDTO getToken(String code) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(Oauth.GRANT_NAME.getValue(), Oauth.GRANT_VALUE.getValue());
         params.add(Oauth.CLIENT_NAME.getValue(), Oauth.CLIENT_VALUE.getValue());
@@ -40,7 +34,7 @@ public class KakaoService {
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, null);
         String token = requestHttp(Oauth.TOKEN_URL.getValue(), rt, kakaoTokenRequest);
-        return convertJson(token, OAuthToken.class);
+        return convertJson(token, OAuthTokenDTO.class);
     }
 
     private String requestHttp(String url , RestTemplate rt, HttpEntity<MultiValueMap<String, String>> token) {
@@ -56,10 +50,10 @@ public class KakaoService {
         }
     }
 
-    public KakaoProfile getUserInfo(OAuthToken kakao) {
+    public PostKakaoProfile getUserInfo(OAuthTokenDTO kakao) {
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = createHttpEntity(null, kakao.getAccess_token());
         String token = requestHttp(Oauth.TOKEN_PROFILE.getValue(), rt, kakaoProfileRequest);
-        return convertJson(token, KakaoProfile.class);
+        return convertJson(token, PostKakaoProfile.class);
     }
 
     private HttpHeaders createHeaders(String token) {

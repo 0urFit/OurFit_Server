@@ -1,7 +1,7 @@
 package project1.OurFit.repository;
 
 import jakarta.persistence.EntityManager;
-import project1.OurFit.domain.Member;
+import project1.OurFit.Entity.Member;
 
 import java.util.Optional;
 
@@ -15,7 +15,7 @@ public class JpaMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findByEmailAndPassword(String email, String password) {
-        return em.createQuery("select m from Member m where m.Email = :email And m.Password = :password", Member.class)
+        return em.createQuery("select m from Member m where m.email = :email And m.password = :password", Member.class)
                 .setParameter("email", email)
                 .setParameter("password", password)
                 .getResultStream().findAny();
@@ -23,14 +23,14 @@ public class JpaMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findByEmail(String email) {
-        return em.createQuery("select m from Member m where m.Email = :email", Member.class)
+        return em.createQuery("select m from Member m where m.email = :email", Member.class)
                 .setParameter("email", email)
                 .getResultStream().findAny();
     }
 
     @Override
     public Optional<Member> findByNickname(String nickname) {
-        return em.createQuery("select m from Member m where m.Nickname = :nickname", Member.class)
+        return em.createQuery("select m from Member m where m.nickname = :nickname", Member.class)
                 .setParameter("nickname", nickname)
                 .getResultStream().findAny();
     }
