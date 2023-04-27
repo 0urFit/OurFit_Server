@@ -22,7 +22,7 @@ public class MemberService {
     }
 
     public Optional<Member> findEmailAndPassword(String email, String password) {
-        Optional<Member> member = memberRepository.findByEmail(email);
+        Optional<Member> member = findEmail(email);
         if (member.isPresent())
             if (passwordEncoder.matches(password, member.get().getPassword()))
                 return member;
