@@ -1,13 +1,16 @@
 package project1.OurFit.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter @Setter
+@Getter
 @Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Member {
     public Member(String email, String nickname, String gender) {
         this.email = email;
