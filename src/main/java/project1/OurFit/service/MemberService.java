@@ -2,7 +2,6 @@ package project1.OurFit.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.Entity.Member;
@@ -14,17 +13,20 @@ import java.util.Optional;
 @Transactional
 public class MemberService {
 
-    @Autowired
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public Optional<Member> findEmailAndPassword(String email, String password) {
-        return memberRepository.findByEmailAndPassword(email, password);
+        Optional<Member> member = memberRepository.findByEmail(email);
+        if (member.isPresent())
+            if (passwordEncoder.matches(password, member.get().getPassword()))
+                return member;
+        return Optional.empty();
     }
 
     public Optional<Member> findEmail(String email) {
