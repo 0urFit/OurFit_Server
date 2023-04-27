@@ -5,7 +5,6 @@ import project1.OurFit.Entity.Member;
 import java.util.Optional;
 
 public interface MemberRepository {
-    Optional<Member> findByEmailAndPassword(String email, String password);
 
     Optional<Member> findByEmail(String email);
 
