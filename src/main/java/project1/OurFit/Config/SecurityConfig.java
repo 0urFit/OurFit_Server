@@ -1,4 +1,4 @@
-package project1.OurFit.service;
+package project1.OurFit.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

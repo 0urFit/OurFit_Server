@@ -1,4 +1,4 @@
-package project1.OurFit.service;
+package project1.OurFit.Config;
 
 import jakarta.persistence.EntityManager;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +7,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import project1.OurFit.repository.JpaMemberRepository;
 import project1.OurFit.repository.MemberRepository;
+import project1.OurFit.service.KakaoService;
+import project1.OurFit.service.MemberService;
 
 @Configuration
 public class SpringConfig implements WebMvcConfigurer {
@@ -35,6 +37,6 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:3000");
+        registry.addMapping("/**").allowedOrigins("https://localhost:3000");
     }
 }

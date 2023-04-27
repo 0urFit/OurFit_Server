@@ -1,12 +1,18 @@
-package project1.OurFit.controller;
+package project1.OurFit.Controller;
 
 import constant.JsonCode;
 import constant.JsonMessage;
+import constant.JsonResponse;
 import constant.Oauth;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import project1.OurFit.domain.*;
+import project1.OurFit.Entity.Member;
+import project1.OurFit.Request.LoginDTO;
+import project1.OurFit.Request.MemberDTO;
+import project1.OurFit.Request.OAuthTokenDTO;
+import project1.OurFit.Response.PostKakaoProfile;
+import project1.OurFit.Response.PostSignUp;
 import project1.OurFit.service.KakaoService;
 import project1.OurFit.service.MemberService;
 
@@ -24,7 +30,7 @@ public class SignInUp {
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse login(@RequestBody LoginRequest value) {
+    public JsonResponse login(@RequestBody LoginDTO value) {
         return memberService.findEmailAndPassword(value.getEmail(), value.getPassword())
                 .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()))
                 .orElse(new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()));
@@ -48,7 +54,7 @@ public class SignInUp {
 
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse signup(@RequestBody Member member) {
+    public JsonResponse signup(@RequestBody MemberDTO member) {
         return memberService.join(member)
                 .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()))
                 .orElse(new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()));
@@ -62,15 +68,14 @@ public class SignInUp {
     @GetMapping("/auth/kakao/callback")
     @ResponseBody
     public synchronized JsonResponse oauthKakaoLogin(String code) {
-        OAuthToken oAuthToken = kakaoService.getToken(code);
-        KakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
+        OAuthTokenDTO oAuthToken = kakaoService.getToken(code);
+        PostKakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
         Optional<Member> member = memberService.findEmail(info.getKakao_account().getEmail());
         JsonResponse jsonResponse = new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage());
         if (member.isPresent())
-            jsonResponse.setResult(new SignUpRequest(info.getKakao_account().getEmail()));
+            jsonResponse.setResult(new PostSignUp(info.getKakao_account().getEmail()));
         else
-            jsonResponse.setResult(new SignUpRequest(info.getKakao_account().getEmail(), info.getKakao_account().getGender(),
-                    info.getProperties().getNickname()));
+            jsonResponse.setResult(new PostSignUp(info.getKakao_account().getEmail(), info.getKakao_account().getGender()));
         return jsonResponse;
     }
 }

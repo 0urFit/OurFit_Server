@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import project1.OurFit.domain.Member;
+import project1.OurFit.Entity.Member;
+import project1.OurFit.Request.MemberDTO;
 import project1.OurFit.repository.MemberRepository;
 import project1.OurFit.service.MemberService;
 
@@ -23,7 +24,7 @@ public class MemberServiceTest {
 
     @Test
     void 회원가입() {
-        Member member = new Member();
+        MemberDTO member = new MemberDTO();
         member.setEmail("test@test.com");
         member.setPassword("test");
         member.setNickname("test");

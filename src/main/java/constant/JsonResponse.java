@@ -1,4 +1,4 @@
-package project1.OurFit.domain;
+package constant;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
