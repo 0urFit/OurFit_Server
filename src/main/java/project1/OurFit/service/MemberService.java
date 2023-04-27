@@ -1,7 +1,9 @@
 package project1.OurFit.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.Entity.Member;
+import project1.OurFit.Request.MemberDTO;
 import project1.OurFit.repository.MemberRepository;
 
 import java.util.Optional;
@@ -27,7 +29,9 @@ public class MemberService {
         return memberRepository.findByNickname(nickname);
     }
 
-    public Optional<Member> join(Member member) {
+    public Optional<Member> join(MemberDTO memberDTO) {
+        ModelMapper modelMapper = new ModelMapper();
+        Member member = modelMapper.map(memberDTO, Member.class);
         return memberRepository.save(member);
     }
 }

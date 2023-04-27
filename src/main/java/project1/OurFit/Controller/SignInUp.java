@@ -54,7 +54,7 @@ public class SignInUp {
 
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse signup(@RequestBody Member member) {
+    public JsonResponse signup(@RequestBody MemberDTO member) {
         return memberService.join(member)
                 .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()))
                 .orElse(new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()));
