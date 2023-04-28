@@ -1,18 +1,17 @@
-package project1.OurFit.Controller;
+package project1.OurFit.controller;
 
 import constant.JsonCode;
 import constant.JsonMessage;
 import constant.JsonResponse;
-import constant.Oauth;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import project1.OurFit.Entity.Member;
-import project1.OurFit.Request.LoginDTO;
-import project1.OurFit.Request.MemberDTO;
-import project1.OurFit.Request.OAuthTokenDTO;
-import project1.OurFit.Response.PostKakaoProfile;
-import project1.OurFit.Response.PostSignUp;
+import project1.OurFit.entity.Member;
+import project1.OurFit.request.LoginDTO;
+import project1.OurFit.request.MemberDTO;
+import project1.OurFit.request.OAuthTokenDTO;
+import project1.OurFit.response.PostKakaoProfile;
+import project1.OurFit.response.PostSignUp;
 import project1.OurFit.service.KakaoService;
 import project1.OurFit.service.MemberService;
 

@@ -1,4 +1,4 @@
-package project1.OurFit.Request;
+package project1.OurFit.request;
 
 import lombok.Getter;
 import lombok.Setter;

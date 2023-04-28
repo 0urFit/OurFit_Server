@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import project1.OurFit.Response.PostKakaoProfile;
-import project1.OurFit.Request.OAuthTokenDTO;
+import project1.OurFit.response.PostKakaoProfile;
+import project1.OurFit.request.OAuthTokenDTO;
 
 @Transactional
 public class KakaoService {

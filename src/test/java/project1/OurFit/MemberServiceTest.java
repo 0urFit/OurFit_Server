@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import project1.OurFit.Entity.Member;
-import project1.OurFit.Request.MemberDTO;
+import project1.OurFit.entity.Member;
+import project1.OurFit.request.MemberDTO;
 import project1.OurFit.repository.MemberRepository;
 import project1.OurFit.service.MemberService;
 

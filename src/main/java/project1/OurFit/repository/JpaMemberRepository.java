@@ -1,7 +1,7 @@
 package project1.OurFit.repository;
 
 import jakarta.persistence.EntityManager;
-import project1.OurFit.Entity.Member;
+import project1.OurFit.entity.Member;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package project1.OurFit.Entity;
+package project1.OurFit.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
