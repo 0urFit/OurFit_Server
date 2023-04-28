@@ -30,8 +30,8 @@ public class SignInUp {
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse login(@RequestBody LoginDTO value) {
-        return memberService.findEmailAndPassword(value.getEmail(), value.getPassword())
+    public JsonResponse login(@RequestBody LoginDTO login) {
+        return memberService.findEmailAndPassword(login.getEmail(), login.getPassword())
                 .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()))
                 .orElse(new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()));
     }
@@ -60,11 +60,6 @@ public class SignInUp {
                 .orElse(new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()));
     }
 
-    @GetMapping("/oauth/kakao")
-    public String kakao() {
-        return "redirect:" + Oauth.KAKAOLOGIN.getValue();
-    }
-
     @GetMapping("/auth/kakao/callback")
     @ResponseBody
     public synchronized JsonResponse oauthKakaoLogin(String code) {
@@ -72,10 +67,12 @@ public class SignInUp {
         PostKakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
         Optional<Member> member = memberService.findEmail(info.getKakao_account().getEmail());
         JsonResponse jsonResponse = new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage());
-        if (member.isPresent())
-            jsonResponse.setResult(new PostSignUp(info.getKakao_account().getEmail()));
-        else
-            jsonResponse.setResult(new PostSignUp(info.getKakao_account().getEmail(), info.getKakao_account().getGender()));
+        jsonResponse.setResult(member.map(m -> new PostSignUp(info.getKakao_account().getEmail()))
+                .orElseGet(() -> new PostSignUp(info.getKakao_account().getEmail(), info.getKakao_account().getGender())));
+//        if (member.isPresent())
+//            jsonResponse.setResult(new PostSignUp(info.getKakao_account().getEmail()));
+//        else
+//            jsonResponse.setResult(new PostSignUp(info.getKakao_account().getEmail(), info.getKakao_account().getGender()));
         return jsonResponse;
     }
 }
