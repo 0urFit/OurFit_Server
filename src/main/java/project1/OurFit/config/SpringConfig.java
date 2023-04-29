@@ -1,6 +1,7 @@
 package project1.OurFit.config;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -13,11 +14,8 @@ import project1.OurFit.service.MemberService;
 @Configuration
 public class SpringConfig implements WebMvcConfigurer {
 
+    @PersistenceContext // -> 엔티티매니저 주입해줌 (생성자 주입 안 써도 됨)
     private EntityManager em;
-
-    public SpringConfig(EntityManager em) {
-        this.em = em;
-    }
 
     @Bean
     public MemberService memberService() {
