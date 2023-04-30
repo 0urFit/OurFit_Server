@@ -1,9 +1,10 @@
 package project1.OurFit.controller;
 
-import constant.JsonCode;
 import constant.JsonMessage;
 import constant.JsonResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project1.OurFit.entity.Member;
@@ -29,49 +30,64 @@ public class SignInUp {
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse login(@RequestBody LoginDTO login) {
+    public ResponseEntity<JsonResponse> login(@RequestBody LoginDTO login) {
         return memberService.findEmailAndPassword(login.getEmail(), login.getPassword())
-                .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()))
-                .orElse(new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()));
+                .map(m -> ResponseEntity.ok().body(
+                        new JsonResponse(true, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())))
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(
+                        new JsonResponse(false, HttpStatus.UNAUTHORIZED.value(), JsonMessage.FAIL.getMessage())));
     }
 
     @GetMapping("/checkemail/{email}")
     @ResponseBody
-    public JsonResponse checkEmail(@PathVariable String email) {
+    public ResponseEntity<JsonResponse> checkEmail(@PathVariable String email) {
         return memberService.findEmail(email)
-                .map(m -> new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()))
-                .orElse(new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()));
+                .map(m -> ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(
+                        new JsonResponse(false, HttpStatus.UNAUTHORIZED.value(), JsonMessage.FAIL.getMessage())))
+                .orElse(ResponseEntity.ok().body(
+                        new JsonResponse(true, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())));
     }
 
     @GetMapping("/checknick/{nickname}")
     @ResponseBody
-    public JsonResponse checkNickname(@PathVariable String nickname) {
+    public ResponseEntity<JsonResponse> checkNickname(@PathVariable String nickname) {
         return memberService.findNickname(nickname)
-                .map(m -> new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()))
-                .orElse(new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()));
+                .map(m -> ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(
+                        new JsonResponse(false, HttpStatus.UNAUTHORIZED.value(), JsonMessage.FAIL.getMessage())))
+                .orElse(ResponseEntity.ok().body(
+                        new JsonResponse(true, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())));
     }
 
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse signup(@RequestBody MemberDTO member) {
+    public ResponseEntity<JsonResponse> signup(@RequestBody MemberDTO member) {
         return memberService.join(member)
-                .map(m -> new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage()))
-                .orElse(new JsonResponse(false, JsonCode.FAIL.getNum(), JsonMessage.FAIL.getMessage()));
+                .map(m -> ResponseEntity.ok().body(
+                        new JsonResponse(true, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())))
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(
+                        new JsonResponse(false, HttpStatus.UNAUTHORIZED.value(), JsonMessage.FAIL.getMessage())));
     }
 
     @GetMapping("/auth/kakao/callback")
     @ResponseBody
-    public synchronized JsonResponse oauthKakaoLogin(String code) {
+    public synchronized ResponseEntity<JsonResponse> oauthKakaoLogin(String code) {
         OAuthTokenDTO oAuthToken = kakaoService.getToken(code);
         PostKakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
         Optional<Member> member = memberService.findEmail(info.getKakao_account().getEmail());
-        JsonResponse jsonResponse = new JsonResponse(true, JsonCode.SUCCESS.getNum(), JsonMessage.SUCCESS.getMessage());
-        jsonResponse.setResult(member.map(m -> new PostSignUp(info.getKakao_account().getEmail()))
-                .orElseGet(() -> new PostSignUp(info.getKakao_account().getEmail(), info.getKakao_account().getGender())));
-//        if (member.isPresent())
-//            jsonResponse.setResult(new PostSignUp(info.getKakao_account().getEmail()));
-//        else
-//            jsonResponse.setResult(new PostSignUp(info.getKakao_account().getEmail(), info.getKakao_account().getGender()));
-        return jsonResponse;
+
+        PostSignUp postSignUp;
+        HttpStatus httpStatus;
+
+        if (member.isPresent()) {
+            postSignUp = new PostSignUp(info.getKakao_account().getEmail());
+            httpStatus = HttpStatus.OK;
+        } else {
+            postSignUp = new PostSignUp(info.getKakao_account().getEmail(), info.getKakao_account().getGender());
+            httpStatus = HttpStatus.UNAUTHORIZED;
+        }
+
+        JsonResponse jsonResponse = new JsonResponse(true, httpStatus.value(),
+                                                    JsonMessage.SUCCESS.getMessage(), postSignUp);
+        return ResponseEntity.status(httpStatus).body(jsonResponse);
     }
 }
