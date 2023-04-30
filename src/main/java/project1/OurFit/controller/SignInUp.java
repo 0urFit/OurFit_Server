@@ -32,7 +32,7 @@ public class SignInUp {
     @ResponseBody
     public ResponseEntity<JsonResponse> login(@RequestBody LoginDTO login) {
         return memberService.findEmailAndPassword(login.getEmail(), login.getPassword())
-                .map(m -> ResponseEntity.ok().body(
+                .map(m -> ResponseEntity.ok(
                         new JsonResponse(true, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())))
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(
                         new JsonResponse(false, HttpStatus.UNAUTHORIZED.value(), JsonMessage.FAIL.getMessage())));
@@ -42,20 +42,20 @@ public class SignInUp {
     @ResponseBody
     public ResponseEntity<JsonResponse> checkEmail(@PathVariable String email) {
         return memberService.findEmail(email)
-                .map(m -> ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(
-                        new JsonResponse(false, HttpStatus.UNAUTHORIZED.value(), JsonMessage.FAIL.getMessage())))
-                .orElse(ResponseEntity.ok().body(
-                        new JsonResponse(true, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())));
+                .map(m -> ResponseEntity.ok(
+                        new JsonResponse(false, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND.value()) .body(
+                        new JsonResponse(true, HttpStatus.NOT_FOUND.value(), JsonMessage.NOTFOUND.getMessage())));
     }
 
     @GetMapping("/checknick/{nickname}")
     @ResponseBody
     public ResponseEntity<JsonResponse> checkNickname(@PathVariable String nickname) {
         return memberService.findNickname(nickname)
-                .map(m -> ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(
-                        new JsonResponse(false, HttpStatus.UNAUTHORIZED.value(), JsonMessage.FAIL.getMessage())))
-                .orElse(ResponseEntity.ok().body(
-                        new JsonResponse(true, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())));
+                .map(m -> ResponseEntity.ok(
+                        new JsonResponse(false, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(
+                        new JsonResponse(true, HttpStatus.NOT_FOUND.value(), JsonMessage.NOTFOUND.getMessage())));
     }
 
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -77,17 +77,19 @@ public class SignInUp {
 
         PostSignUp postSignUp;
         HttpStatus httpStatus;
+        String message;
 
         if (member.isPresent()) {
             postSignUp = new PostSignUp(info.getKakao_account().getEmail());
             httpStatus = HttpStatus.OK;
+            message = JsonMessage.SUCCESS.getMessage();
         } else {
             postSignUp = new PostSignUp(info.getKakao_account().getEmail(), info.getKakao_account().getGender());
-            httpStatus = HttpStatus.UNAUTHORIZED;
+            httpStatus = HttpStatus.NOT_FOUND;
+            message = JsonMessage.NOTFOUND.getMessage();
         }
 
-        JsonResponse jsonResponse = new JsonResponse(true, httpStatus.value(),
-                                                    JsonMessage.SUCCESS.getMessage(), postSignUp);
+        JsonResponse jsonResponse = new JsonResponse(true, httpStatus.value(), message, postSignUp);
         return ResponseEntity.status(httpStatus).body(jsonResponse);
     }
 }
