@@ -5,9 +5,9 @@ alter database OurFit default character set utf8;
 
 Create table Member (
 Id int auto_increment primary key,
-Email varchar(255) not null,
+Email varchar(255) not null unique,
 Password varchar(255),
-Nickname varchar(255) not null,
+Nickname varchar(255) not null unique,
 Gender varchar(6) not null,
 Height float,
 Weight float,

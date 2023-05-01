@@ -13,9 +13,9 @@ public enum Oauth {
     REDIRECT_VALUE("https://www.ourfit.shop/auth/kakao/callback"),
     CODE("code"),
     TOKEN_URL("https://kauth.kakao.com/oauth/token"),
-    TOKEN_PROFILE("https://kapi.kakao.com/v2/user/me"),
-    KAKAOLOGIN("https://kauth.kakao.com/oauth/authorize?client_id=2be5601c4dcce1fe89db958b51887271"
-            + "&redirect_uri=https://www.ourfit.shop/auth/kakao/callback&response_type=code");
+    TOKEN_PROFILE("https://kapi.kakao.com/v2/user/me");
+//    KAKAOLOGIN("https://kauth.kakao.com/oauth/authorize?client_id=2be5601c4dcce1fe89db958b51887271"
+//            + "&redirect_uri=https://www.ourfit.shop/auth/kakao/callback&response_type=code");
 
     private final String value;
 

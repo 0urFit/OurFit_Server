@@ -1,4 +1,4 @@
-package project1.OurFit.Response;
+package project1.OurFit.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

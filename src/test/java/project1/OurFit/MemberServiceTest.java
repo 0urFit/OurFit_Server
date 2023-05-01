@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import project1.OurFit.Entity.Member;
-import project1.OurFit.Request.MemberDTO;
+import project1.OurFit.entity.Member;
+import project1.OurFit.request.MemberDTO;
 import project1.OurFit.repository.MemberRepository;
 import project1.OurFit.service.MemberService;
+import project1.OurFit.vo.DuplicateCheckResult;
 
 import java.util.Optional;
 
@@ -23,18 +24,55 @@ public class MemberServiceTest {
     @Autowired MemberRepository memberRepository;
 
     @Test
-    void 회원가입() {
+    void 정상_회원가입() {
         MemberDTO member = new MemberDTO();
         member.setEmail("test@test.com");
         member.setPassword("test");
         member.setNickname("test");
         member.setGender("male");
-        member.setHeight(170.0);
-        member.setWeight(79.0);
 
-        Optional<Member> savedMember = memberService.join(member);
+        DuplicateCheckResult checkResult = memberService.join(member);
 
-        Assertions.assertThat(savedMember).isNotNull();
+        Assertions.assertThat(checkResult.isDuplicate()).isFalse();
+    }
+
+    @Test
+    void 이메일_닉네임_중복_회원가입() {
+        MemberDTO member = new MemberDTO();
+        member.setEmail("aossuper7@naver.com");
+        member.setPassword("test");
+        member.setNickname("aossuper7");
+        member.setGender("male");
+
+        DuplicateCheckResult checkResult = memberService.join(member);
+
+        Assertions.assertThat(checkResult.getField()).isEqualTo("모두 ");
+    }
+
+    @Test
+    void 이메일_중복_회원가입() {
+        MemberDTO member = new MemberDTO();
+        member.setEmail("aossuper7@naver.com");
+        member.setPassword("test");
+        member.setNickname("aossuper77");
+        member.setGender("male");
+
+        DuplicateCheckResult checkResult = memberService.join(member);
+
+        Assertions.assertThat(checkResult.getField()).isEqualTo("이메일 ");
+    }
+
+    @Test
+    void 닉네임_중복_회원가입() {
+        MemberDTO member = new MemberDTO();
+        member.setEmail("aossuper77@naver.com");
+        member.setPassword("test");
+        member.setNickname("aossuper7");
+        member.setGender("male");
+
+        DuplicateCheckResult checkResult = memberService.join(member);
+
+        Assertions.assertThat(checkResult.getField()).isEqualTo("닉네임 ");
     }
 
     @Test
