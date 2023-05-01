@@ -15,6 +15,7 @@ import project1.OurFit.response.PostKakaoProfile;
 import project1.OurFit.response.PostSignUp;
 import project1.OurFit.service.KakaoService;
 import project1.OurFit.service.MemberService;
+import project1.OurFit.vo.DuplicateCheckResult;
 
 import java.util.Optional;
 
@@ -61,11 +62,24 @@ public class SignInUp {
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<JsonResponse> signup(@RequestBody MemberDTO member) {
-        return memberService.join(member)
-                .map(m -> ResponseEntity.ok().body(
-                        new JsonResponse(true, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())))
-                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(
-                        new JsonResponse(false, HttpStatus.UNAUTHORIZED.value(), JsonMessage.FAIL.getMessage())));
+        DuplicateCheckResult checkResult;
+        try {
+            checkResult = memberService.join(member);
+        } catch (Exception e) { // 동시성 문제
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(
+                    new JsonResponse(false, HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                            JsonMessage.FAIL.getMessage())
+            );
+        }
+
+        if (checkResult.isDuplicate()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT.value()).body(
+                    new JsonResponse(false, HttpStatus.CONFLICT.value(),
+                            checkResult.getField() + JsonMessage.EXISTS.getMessage()));
+        } else {
+            return ResponseEntity.ok(
+                    new JsonResponse(true, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage()));
+        }
     }
 
     @GetMapping("/auth/kakao/callback")
