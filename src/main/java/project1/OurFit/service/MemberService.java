@@ -27,10 +27,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder ,JwtService jwtService) {
         this.memberRepository = memberRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     //로그인 메서드 -> 이메일 존재하면 패스워드 꺼내기
@@ -38,7 +40,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(NOTFOUND));
         if (passwordEncoder.matches(password, member.getPassword()))
-            return "로그인에 성공하였습니다.";
+            return jwtService.authorize(email, password); //jwt 토큰 생성 (db조회 한번 더 함)
         return "로그인에 실패하였습니다.";
     }
 
@@ -59,8 +61,6 @@ public class MemberService {
     public DuplicateCheckResult join(MemberDTO memberDTO) {
         Boolean checkEmail = memberRepository.existsByEmail(memberDTO.getEmail());
         Boolean checkNickname = memberRepository.existsByNickname(memberDTO.getNickname());
-//        Optional<Member> checkEmail = findEmail(memberDTO.getEmail()); -> Repository 에 check하는 코드 만들기
-//        Optional<Member> checkNickname = findNickname(memberDTO.getNickname());
 
         if (checkEmail && checkNickname)
             return new DuplicateCheckResult(true, ALL);

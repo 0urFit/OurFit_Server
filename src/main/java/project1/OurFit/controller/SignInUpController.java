@@ -1,5 +1,6 @@
 package project1.OurFit.controller;
 
+import project1.OurFit.service.JwtService;
 import project1.constant.response.JsonMessage;
 import project1.constant.response.JsonResponse;
 import org.springframework.http.HttpStatus;
@@ -21,19 +22,23 @@ import project1.OurFit.vo.DuplicateCheckResult;
 public class SignInUpController {
     private final MemberService memberService;
     private final KakaoService kakaoService;
+    private final JwtService jwtService;
 
     //-> @RequiredArgsConstructor 사용하면 생략 가능하지만 학습용으로 냅둠
-    public SignInUpController(MemberService memberService, KakaoService kakaoService) {
+    public SignInUpController(MemberService memberService, KakaoService kakaoService, JwtService jwtService) {
         this.memberService = memberService;
         this.kakaoService = kakaoService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public JsonResponse<String> login(@RequestBody LoginDTO login) {
 
-        return new JsonResponse<>(memberService.findEmailAndPassword(login.getEmail(), login.getPassword()));
-
+//        return new JsonResponse<>(memberService.findEmailAndPassword(login.getEmail(), login.getPassword()));
+        return new JsonResponse<>(jwtService.authorize(login.getEmail(), login.getPassword()));
+        // 주석달린거로 하면 db 2번 조회함
+        // jwt 토큰 만들기전에 회원이 db에 있는지 조회 후 만들기때문에 db 한번만 조회 하려면 이렇게 해야됨.
     }
 
     @GetMapping("/checkemail/{email}")
