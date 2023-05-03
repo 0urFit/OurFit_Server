@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/exercise/**", "/post/**", "/mypage/**").authenticated()
+                .requestMatchers("/exercise/**", "/post/**", "/mypage/**","**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .requiresChannel()

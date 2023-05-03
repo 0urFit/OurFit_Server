@@ -59,6 +59,7 @@ public class SignInUpController {
                         new JsonResponse(true, HttpStatus.NOT_FOUND.value(), JsonMessage.NOTFOUND.getMessage())));
     }
 
+    //회원가입
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<JsonResponse> signup(@RequestBody MemberDTO member) {
@@ -94,7 +95,8 @@ public class SignInUpController {
         HttpStatus httpStatus;
         String message;
 
-        if (memberService.checkMember(info.getKakao_account().getEmail())) {
+        if (memberService.checkMember(info.getKakao_account().getEmail())) { //true인 경우
+
             postSignUp = new PostSignUp(info.getKakao_account().getEmail());
             httpStatus = HttpStatus.OK;
             message = JsonMessage.SUCCESS.getMessage();

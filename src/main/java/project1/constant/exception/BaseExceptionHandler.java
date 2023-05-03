@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class BaseExceptionHandler {
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BaseException.class)
     public JsonResponse<JsonResponseStatus> BaseExceptionHandle(BaseException exception) {
         System.out.println("여기는 BaseExceptionHandler 입니다. BaseException 이 발생하면 여기서 예외처리");
@@ -20,7 +19,6 @@ public class BaseExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public JsonResponse<JsonResponseStatus> ExceptionHandle(Exception exception) {
         System.out.println("Exception");
         return new JsonResponse<>(JsonResponseStatus.NOTFOUND);
