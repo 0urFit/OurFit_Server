@@ -1,4 +1,4 @@
-package constant;
+package project1.constant;
 
 public enum Oauth {
     HEADER_CONTENT_NAME("Content-type"),

@@ -36,4 +36,21 @@ public class JpaMemberRepository implements MemberRepository {
         else
             return Optional.empty();
     }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        Long count = em.createQuery("select count(m) from Member m where m.email = :email", Long.class)
+                .setParameter("email",email)
+                .getSingleResult();
+        return count>0;
+    }
+
+    @Override
+    public boolean existsByNickname(String nickname) {
+        Long count = em.createQuery("select count(m) from Member m where m.nickname = :nickname", Long.class)
+                .setParameter("nickname",nickname)
+                .getSingleResult();
+        return count>0;
+
+    }
 }

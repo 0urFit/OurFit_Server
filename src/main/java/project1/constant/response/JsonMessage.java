@@ -1,4 +1,4 @@
-package constant;
+package project1.constant.response;
 
 public enum JsonMessage {
     SUCCESS("요청에 성공하였습니다."),

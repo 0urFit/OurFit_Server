@@ -17,10 +17,10 @@ public class SpringConfig implements WebMvcConfigurer {
     @PersistenceContext // -> 엔티티매니저 주입해줌 (생성자 주입 안 써도 됨)
     private EntityManager em;
 
-    @Bean
-    public MemberService memberService() {
-        return new MemberService(memberRepository());
-    }
+//    @Bean
+//    public MemberService memberService() {
+//        return new MemberService(memberRepository());
+//    }
 
     @Bean
     public MemberRepository memberRepository() {
