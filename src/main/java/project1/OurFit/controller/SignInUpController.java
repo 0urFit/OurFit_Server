@@ -1,22 +1,19 @@
 package project1.OurFit.controller;
 
+import project1.OurFit.response.PostLoginDto;
 import project1.OurFit.service.JwtService;
-import project1.constant.response.JsonMessage;
+import project1.constant.Oauth;
 import project1.constant.response.JsonResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project1.OurFit.request.LoginDTO;
 import project1.OurFit.request.MemberDTO;
 import project1.OurFit.request.OAuthTokenDTO;
 import project1.OurFit.response.PostKakaoProfile;
-import project1.OurFit.response.PostSignUp;
-import project1.OurFit.response.TestDto;
 import project1.OurFit.service.KakaoService;
 import project1.OurFit.service.MemberService;
-import project1.OurFit.vo.DuplicateCheckResult;
+import project1.constant.response.JsonResponseStatus;
 
 @Controller
 public class SignInUpController {
@@ -33,80 +30,50 @@ public class SignInUpController {
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse<String> login(@RequestBody LoginDTO login) {
-
-//        return new JsonResponse<>(memberService.findEmailAndPassword(login.getEmail(), login.getPassword()));
-        return new JsonResponse<>(jwtService.authorize(login.getEmail(), login.getPassword()));
-        // 주석달린거로 하면 db 2번 조회함
-        // jwt 토큰 만들기전에 회원이 db에 있는지 조회 후 만들기때문에 db 한번만 조회 하려면 이렇게 해야됨.
+    public JsonResponse<PostLoginDto> login(@RequestBody LoginDTO login) {
+        return new JsonResponse<>(memberService.findEmailAndPassword(login.getEmail(), login.getPassword()));
     }
 
     @GetMapping("/checkemail/{email}")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public JsonResponse<TestDto> checkEmail(@PathVariable String email) {
-        TestDto testDto = memberService.findEmail(email);
-        return new JsonResponse<>(testDto);
+    public JsonResponse<JsonResponseStatus> checkEmail(@PathVariable String email) {
+        if (memberService.findEmail(email))
+            return new JsonResponse<>(JsonResponseStatus.EMAIL_CONFLICT);
+        return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
     @GetMapping("/checknick/{nickname}")
     @ResponseBody
-    public ResponseEntity<JsonResponse> checkNickname(@PathVariable String nickname) {
-        return memberService.findNickname(nickname)
-                .map(m -> ResponseEntity.ok(
-                        new JsonResponse(false, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage())))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(
-                        new JsonResponse(true, HttpStatus.NOT_FOUND.value(), JsonMessage.NOTFOUND.getMessage())));
+    public JsonResponse<JsonResponseStatus> checkNickname(@PathVariable String nickname) {
+        if (memberService.findNickname(nickname))
+            return new JsonResponse<>(JsonResponseStatus.NICKNAME_CONFLICT);
+        return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
     //회원가입
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<JsonResponse> signup(@RequestBody MemberDTO member) {
-        DuplicateCheckResult checkResult;
-        try {
-            checkResult = memberService.join(member);
-        } catch (Exception e) { // 동시성 문제
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(
-                    new JsonResponse(false, HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                            JsonMessage.FAIL.getMessage())
-            );
-        }
+    public JsonResponse<JsonResponseStatus> signup(@RequestBody MemberDTO member) {
+        memberService.join(member);
+        return new JsonResponse<>(JsonResponseStatus.SUCCESS);
+    }
 
-        if (checkResult.isDuplicate()) {
-            System.out.println("true");
-            return ResponseEntity.status(HttpStatus.CONFLICT.value()).body(
-                    new JsonResponse(false, HttpStatus.CONFLICT.value(),
-                            checkResult.getField() + JsonMessage.EXISTS.getMessage()));
-        } else {
-            System.out.println("false");
-            return ResponseEntity.ok(
-                    new JsonResponse(true, HttpStatus.OK.value(), JsonMessage.SUCCESS.getMessage()));
-        }
+    @GetMapping("/oauth/kakao")
+    public String kakao() {
+        return "redirect:" + Oauth.KAKAOLOGIN.getValue();
     }
 
     @GetMapping("/auth/kakao/callback")
     @ResponseBody
-    public synchronized ResponseEntity<JsonResponse> oauthKakaoLogin(String code) {
+    public synchronized JsonResponse<PostLoginDto> oauthKakaoLogin(String code) {
         OAuthTokenDTO oAuthToken = kakaoService.getToken(code);
         PostKakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
 
-        PostSignUp postSignUp;
-        HttpStatus httpStatus;
-        String message;
+        Boolean isSuccess = memberService.findEmail(info.getKakao_account().getEmail());
+        if (isSuccess)
+            return new JsonResponse<>(jwtService.authorize(info.getKakao_account().getEmail()));
 
-        if (memberService.checkMember(info.getKakao_account().getEmail())) { //true인 경우
-
-            postSignUp = new PostSignUp(info.getKakao_account().getEmail());
-            httpStatus = HttpStatus.OK;
-            message = JsonMessage.SUCCESS.getMessage();
-        } else {
-            postSignUp = new PostSignUp(info.getKakao_account().getEmail(), info.getKakao_account().getGender());
-            httpStatus = HttpStatus.NOT_FOUND;
-            message = JsonMessage.NOTFOUND.getMessage();
-        }
-
-        JsonResponse jsonResponse = new JsonResponse(true, httpStatus.value(), message, postSignUp);
-        return ResponseEntity.status(httpStatus).body(jsonResponse);
+        return new JsonResponse<>(new PostLoginDto(info.getKakao_account().getEmail(),
+                    info.getKakao_account().getGender()), JsonResponseStatus.UNAUTHORIZED);
     }
 }

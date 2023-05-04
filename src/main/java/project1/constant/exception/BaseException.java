@@ -12,6 +12,6 @@ public class BaseException extends RuntimeException {
     public BaseException(JsonResponseStatus status) {
         super(status.getMessage());
         this.status = status;
-        System.out.println("@Service 에서 넘어옴 -> BaseExceptionHandler 에서 예외처리할꺼임");
+        // @Service 에서 넘어옴 -> BaseExceptionHandler 에서 예외처리할꺼임
     }
 }

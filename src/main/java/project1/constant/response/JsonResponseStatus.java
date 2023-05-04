@@ -15,6 +15,10 @@ public enum JsonResponseStatus {
     RESPONSE_ERROR(false, HttpStatus.NOT_FOUND.value(), "값을 불러오는데 실패하였습니다."),
     USERS_EMPTY_EMAIL(false, HttpStatus.OK.value(), "이메일 사용가능합니다."),
     NOTFOUND(false,HttpStatus.NOT_FOUND.value(),"값을 찾을 수 없습니다"),
+    UNAUTHORIZED(false, HttpStatus.UNAUTHORIZED.value(), "인증에 실패하였습니다."),
+    EMAIL_CONFLICT(false, HttpStatus.CONFLICT.value(), "이메일 중복입니다."),
+    NICKNAME_CONFLICT(false, HttpStatus.CONFLICT.value(), "닉네임 중복입니다."),
+    ALL_CONFLICT(false, HttpStatus.CONFLICT.value(), "모두 중복입니다."),
     /**
      * 500 :  Database, Server 오류
      */
@@ -23,10 +27,9 @@ public enum JsonResponseStatus {
     private final boolean isSuccess;
     private final int code;
     private final String message;
-    private JsonResponseStatus(boolean isSuccess, int code, String message) {
+    JsonResponseStatus(boolean isSuccess, int code, String message) {
         this.isSuccess = isSuccess;
         this.code = code;
         this.message = message;
     }
-
 }
