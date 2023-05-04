@@ -19,6 +19,7 @@ public enum JsonResponseStatus {
     EMAIL_CONFLICT(false, HttpStatus.CONFLICT.value(), "이메일 중복입니다."),
     NICKNAME_CONFLICT(false, HttpStatus.CONFLICT.value(), "닉네임 중복입니다."),
     ALL_CONFLICT(false, HttpStatus.CONFLICT.value(), "모두 중복입니다."),
+    NOT_FOUND_ROUTINE(false,HttpStatus.NOT_FOUND.value(),"루틴을 찾을 수 없습니다."),
     /**
      * 500 :  Database, Server 오류
      */
