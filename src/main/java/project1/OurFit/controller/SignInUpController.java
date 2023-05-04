@@ -3,6 +3,7 @@ package project1.OurFit.controller;
 import project1.OurFit.response.PostLoginDto;
 import project1.OurFit.service.JwtService;
 import project1.constant.Oauth;
+import project1.constant.exception.DuplicateException;
 import project1.constant.response.JsonResponse;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -37,14 +38,16 @@ public class SignInUpController {
     @GetMapping("/checkemail/{email}")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> checkEmail(@PathVariable String email) {
-        memberService.findEmail(email);
+        if (memberService.findEmail(email))
+            throw new DuplicateException(JsonResponseStatus.EMAIL_CONFLICT);
         return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
     @GetMapping("/checknick/{nickname}")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> checkNickname(@PathVariable String nickname) {
-        memberService.findNickname(nickname);
+        if (memberService.findNickname(nickname))
+            throw new DuplicateException(JsonResponseStatus.NICKNAME_CONFLICT);
         return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
