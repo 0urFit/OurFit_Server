@@ -37,6 +37,11 @@ public class JsonResponse<T> {
         this.result=result;
     }
 
+    public JsonResponse(T result, JsonResponseStatus status) {
+        this(status);
+        this.result = result;
+    }
+
     //상태코드
     public JsonResponse(T result,int code) {
         this.isSuccess = SUCCESS.isSuccess();
@@ -44,7 +49,6 @@ public class JsonResponse<T> {
         this.message = SUCCESS.getMessage();
         this.result=result;
     }
-
 
 
 }

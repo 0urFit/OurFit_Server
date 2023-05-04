@@ -1,84 +1,80 @@
 package project1.OurFit.service;
 
-import project1.constant.exception.BaseException;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.entity.Member;
 import project1.OurFit.request.MemberDTO;
 import project1.OurFit.repository.MemberRepository;
-import project1.OurFit.response.TestDto;
-import project1.OurFit.vo.DuplicateCheckResult;
+import project1.OurFit.response.PostLoginDto;
+import project1.constant.exception.BaseException;
+import project1.constant.exception.DuplicateException;
+import project1.constant.response.JsonResponseStatus;
 
-import java.util.Optional;
-
-import static project1.constant.response.JsonResponseStatus.NOTFOUND;
-import static project1.constant.response.JsonResponseStatus.USERS_EMPTY_EMAIL;
+import java.util.function.Function;
 
 @Transactional
 @Service
 public class MemberService {
 
-    private final String ALL = "모두 ";
-    private final String EMAIL = "이메일 ";
-    private final String NICKNAME = "닉네임 ";
-
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.memberRepository = memberRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
-    //로그인 메서드 -> 이메일 존재하면 패스워드 꺼내기
-    public String findEmailAndPassword(String email, String password) {
+    public PostLoginDto findEmailAndPassword(String email, String password) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(NOTFOUND));
+                .orElseThrow(() -> new BaseException(JsonResponseStatus.UNAUTHORIZED));
         if (passwordEncoder.matches(password, member.getPassword()))
-            return "로그인에 성공하였습니다.";
-        return "로그인에 실패하였습니다.";
+            return jwtService.authorize(email, password);
+        throw new BaseException(JsonResponseStatus.UNAUTHORIZED);
     }
 
-    public TestDto findEmail(String email){
-        System.out.println("@Service");
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(USERS_EMPTY_EMAIL));
-        return new TestDto(member);
+    public Boolean findEmail(String email){
+        return checkExistence(email, memberRepository::existsByEmail, JsonResponseStatus.EMAIL_CONFLICT);
     }
 
-    public Optional<Member> findNickname(String nickname) {
-        return memberRepository.findByNickname(nickname);
+    public Boolean findNickname(String nickname) {
+        return checkExistence(nickname, memberRepository::existsByNickname, JsonResponseStatus.NICKNAME_CONFLICT);
     }
+
+    private Boolean checkExistence(String value, Function<String, Boolean> existsFunction, JsonResponseStatus status) {
+        Boolean isExist = existsFunction.apply(value);
+        if (isExist)
+            throw new DuplicateException(status);
+        return true;
+    }
+
     public Boolean checkMember(String email){
         return memberRepository.existsByEmail(email);
     }
 
-    public DuplicateCheckResult join(MemberDTO memberDTO) {
+    public Boolean join(MemberDTO memberDTO) {
         Boolean checkEmail = memberRepository.existsByEmail(memberDTO.getEmail());
         Boolean checkNickname = memberRepository.existsByNickname(memberDTO.getNickname());
-//        Optional<Member> checkEmail = findEmail(memberDTO.getEmail()); -> Repository 에 check하는 코드 만들기
-//        Optional<Member> checkNickname = findNickname(memberDTO.getNickname());
 
         if (checkEmail && checkNickname)
-            return new DuplicateCheckResult(true, ALL);
+            throw new DuplicateException(JsonResponseStatus.ALL_CONFLICT);
         else if (checkEmail)
-            return new DuplicateCheckResult(true, EMAIL);
+            throw new DuplicateException(JsonResponseStatus.EMAIL_CONFLICT);
         else if (checkNickname)
-            return new DuplicateCheckResult(true, NICKNAME);
+            throw new DuplicateException(JsonResponseStatus.NICKNAME_CONFLICT);
         else {
-            boolean isSuccess = saveMember(memberDTO);
-            return new DuplicateCheckResult(!isSuccess, null);
+            saveMember(memberDTO);
+            return true;
         }
     }
 
-    private boolean saveMember(MemberDTO memberDTO) {
+    private void saveMember(MemberDTO memberDTO) {
         ModelMapper modelMapper = new ModelMapper();
         memberDTO.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
         Member member = modelMapper.map(memberDTO, Member.class);
-        Optional<Member> savedMember = memberRepository.save(member);
-        return savedMember.isPresent();
+        memberRepository.save(member);
     }
 }

@@ -26,18 +26,21 @@ public class KakaoService {
     }
 
     public OAuthTokenDTO getToken(String code) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(Oauth.HEADER_CONTENT_NAME.getValue(), Oauth.HEADER_CONTENT_VALUE.getValue());
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(Oauth.GRANT_NAME.getValue(), Oauth.GRANT_VALUE.getValue());
         params.add(Oauth.CLIENT_NAME.getValue(), Oauth.CLIENT_VALUE.getValue());
         params.add(Oauth.REDIRECT_NAME.getValue(), Oauth.REDIRECT_VALUE.getValue());
         params.add(Oauth.CODE.getValue(), code);
+        params.add(Oauth.SECRET_NAME.getValue(), Oauth.SECRET_VALUE.getValue());
 
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, null);
-        String token = requestHttp(Oauth.TOKEN_URL.getValue(), rt, kakaoTokenRequest);
+        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
+        String token = requestHttp(Oauth.TOKEN_URL.getValue(), kakaoTokenRequest);
         return convertJson(token, OAuthTokenDTO.class);
     }
 
-    private String requestHttp(String url , RestTemplate rt, HttpEntity<MultiValueMap<String, String>> token) {
+    private String requestHttp(String url, HttpEntity<MultiValueMap<String, String>> token) {
         ResponseEntity<String> response = rt.exchange(url, HttpMethod.POST, token, String.class);
         return response.getBody();
     }
@@ -52,7 +55,7 @@ public class KakaoService {
 
     public PostKakaoProfile getUserInfo(OAuthTokenDTO kakao) {
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = createHttpEntity(null, kakao.getAccess_token());
-        String token = requestHttp(Oauth.TOKEN_PROFILE.getValue(), rt, kakaoProfileRequest);
+        String token = requestHttp(Oauth.TOKEN_PROFILE.getValue(), kakaoProfileRequest);
         return convertJson(token, PostKakaoProfile.class);
     }
 
