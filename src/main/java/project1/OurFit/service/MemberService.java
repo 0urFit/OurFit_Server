@@ -37,15 +37,18 @@ public class MemberService {
     }
 
     public Boolean findEmail(String email){
-        return checkExistence(email, memberRepository::existsByEmail);
+        return checkExistence(email, memberRepository::existsByEmail, JsonResponseStatus.EMAIL_CONFLICT);
     }
 
     public Boolean findNickname(String nickname) {
-        return checkExistence(nickname, memberRepository::existsByNickname);
+        return checkExistence(nickname, memberRepository::existsByNickname, JsonResponseStatus.NICKNAME_CONFLICT);
     }
 
-    private Boolean checkExistence(String value, Function<String, Boolean> existsFunction) {
-        return existsFunction.apply(value);
+    private Boolean checkExistence(String value, Function<String, Boolean> existsFunction, JsonResponseStatus status) {
+        Boolean isExist = existsFunction.apply(value);
+        if (isExist)
+            throw new DuplicateException(status);
+        return true;
     }
 
     public Boolean checkMember(String email){
