@@ -3,10 +3,13 @@ package project1.OurFit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import project1.OurFit.entity.ExerciseEnroll;
+import project1.OurFit.entity.ExerciseLike;
 import project1.OurFit.entity.ExerciseRoutine;
 import project1.OurFit.repository.ExerciseEnrollRepository;
+import project1.OurFit.repository.ExerciseLikeRepository;
 import project1.OurFit.repository.ExerciseRoutineRepository;
 import project1.OurFit.repository.MemberRepository;
+import project1.OurFit.response.MyLikeRes;
 import project1.OurFit.response.MyRoutineRes;
 import project1.constant.exception.BaseException;
 
@@ -22,6 +25,7 @@ public class MyPageService {
     private final MemberRepository memberRepository;
     private final ExerciseEnrollRepository exerciseEnrollRepository;
     private final ExerciseRoutineRepository routineRepository;
+    private final ExerciseLikeRepository exerciseLikeRepository;
 
     public List<MyRoutineRes> getMyRoutine(Long memberId) {
         List<ExerciseEnroll> enrollRepositoryList =
@@ -55,4 +59,13 @@ public class MyPageService {
                 .collect(Collectors.toList());
     }
 
+    public List<MyLikeRes> getMyLikeRoutine(Long memberId) {
+        List<ExerciseLike> allByMemberId = exerciseLikeRepository.findAllByMemberId(memberId);
+        List<MyLikeRes> myRoutineRes = new ArrayList<>();
+        for (ExerciseLike exerciseLike : allByMemberId) {
+            MyLikeRes a = new MyLikeRes(exerciseLike.getExerciseRoutine());
+            myRoutineRes.add(a);
+        }
+        return myRoutineRes;
+    }
 }

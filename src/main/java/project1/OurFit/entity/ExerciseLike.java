@@ -20,4 +20,9 @@ public class ExerciseLike {
     @JoinColumn(name = "exerciseRoutineId")
     private ExerciseRoutine exerciseRoutine;
 
+    public ExerciseLike(Member member, ExerciseRoutine exerciseRoutine){
+        this.member=member;
+        this.exerciseRoutine=exerciseRoutine;
+    }
+
 }
