@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,6 +65,8 @@ public class JwtTokenProvider implements InitializingBean {
 //    }
 
     public Authentication getAuthentication(String token) {
+        System.out.println(token);
+        System.out.println("-------------------------");
         Claims claims = Jwts
                 .parserBuilder()
                 .setSigningKey(key)
@@ -71,11 +74,11 @@ public class JwtTokenProvider implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody();
 
-        Collection <? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .filter(StringUtils::isNotBlank)
-                        .map(SimpleGrantedAuthority::new)
-                        .toList();
+//        Collection <? extends GrantedAuthority> authorities =
+//                Arrays.stream(claims.get("Authorization").toString().split(","))
+//                        .filter(StringUtils::isNotBlank)
+//                        .map(SimpleGrantedAuthority::new)
+//                        .toList();
 
         User principal = new User(claims.getSubject(), "", new ArrayList<>());
 
@@ -96,5 +99,24 @@ public class JwtTokenProvider implements InitializingBean {
             logger.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
+    }
+    //토큰에서 이메일 추출하는 메서드
+    public String extractSubFromJwt(String jwt) {
+        SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        jwt=jwt.replace("Bearer ", "");
+        // JWT 파싱 및 검증
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
+
+        // sub 클레임 추출
+        String sub = claims.getSubject();
+
+        // 추출된 sub 반환
+        return sub;
+
     }
 }

@@ -21,8 +21,8 @@ public class RoutineService {
     private final MemberRepository memberRepository;
     private final ExerciseRoutineRepository exerciseRoutineRepository;
 
-    public void postLike(Long memberId, Long routineId) {
-        Member member=memberRepository.findById(memberId)
+    public void postLike(String userEmail, Long routineId) {
+        Member member=memberRepository.findByEmail(userEmail)
                 .orElseThrow(()-> new BaseException(NOT_FOUND_MEMBER));
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
                 .orElseThrow(()-> new BaseException(NOT_FOUND_ROUTINE));
@@ -30,8 +30,9 @@ public class RoutineService {
         exerciseLikeRepository.save(like);
     }
 
-    public void deleteLike(Long memberId, Long routineId) { //걍 좋아요 테이블
-        ExerciseLike exerciseLike = exerciseLikeRepository.findByMemberIdAndExerciseRoutineId(memberId, routineId)
+    public void deleteLike(String userEmail, Long routineId) { //걍 좋아요 테이블
+        ExerciseLike exerciseLike = exerciseLikeRepository
+                .findByMemberEmailAndExerciseRoutineId(userEmail, routineId)
                 .orElseThrow(() -> new BaseException(NOTFOUND));
         exerciseLikeRepository.delete(exerciseLike);
     }

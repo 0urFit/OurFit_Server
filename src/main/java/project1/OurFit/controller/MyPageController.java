@@ -3,7 +3,9 @@ package project1.OurFit.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import project1.OurFit.jwt.JwtTokenProvider;
 import project1.OurFit.response.MyLikeRes;
 import project1.OurFit.response.MyRoutineRes;
 import project1.OurFit.service.MyPageService;
@@ -15,36 +17,48 @@ import java.util.List;
 @RestController
 public class MyPageController {
     private final MyPageService myPageService;
+    private final JwtTokenProvider jt;
 
     /**
      * MyPage 들어갔을 때 등록한 루틴 조회
-     * @param userId
+     * @param jwtToken
      * @return
      */
-    @GetMapping("/mypage/{userId}")
-    public JsonResponse<List<MyRoutineRes>> getMyRoutine(@PathVariable Long userId){
-        List<MyRoutineRes> myRoutineResList = myPageService.getMyRoutine(userId);
+    @GetMapping("/mypage")
+    public JsonResponse<List<MyRoutineRes>> getMyRoutine(
+            @RequestHeader("Authorization") String jwtToken){
+        String userEmail = jt.extractSubFromJwt(jwtToken);
+        List<MyRoutineRes> myRoutineResList = myPageService.getMyRoutine(userEmail);
         return new JsonResponse<>(myRoutineResList);
 
     }
 
     /**
      * MyPage 들어갔을 때 카테고리로 등록한 루틴 조회
-     * @param userId
+     * @param jwtToken
      * @param category
      * @return
      */
     @GetMapping("/mypage/{userId}/exercise/{category}")
-    public JsonResponse<List<MyRoutineRes>> getMyRoutineByCate(@PathVariable Long userId,
-                                             @PathVariable String category){
+    public JsonResponse<List<MyRoutineRes>> getMyRoutineByCate(
+            @RequestHeader("Authorization") String jwtToken,
+            @PathVariable String category){
 
-        List<MyRoutineRes> myRoutineRes = myPageService.getMyRoutineByCate(userId, category);
+        String userEmail = jt.extractSubFromJwt(jwtToken);
+        List<MyRoutineRes> myRoutineRes = myPageService.getMyRoutineByCate(userEmail, category);
         return new JsonResponse<>(myRoutineRes);
     }
 
-    @GetMapping("mypage/{memberId}/like")
-    public JsonResponse<List<MyLikeRes>> getMyLikeRoutine(@PathVariable Long memberId){
-        List<MyLikeRes> myLikeRes = myPageService.getMyLikeRoutine(memberId);
+    /**
+     * MyPage 들어갔을 때 좋아요 한 루틴 조회
+     * @param jwtToken
+     * @return
+     */
+    @GetMapping("mypage/like")
+    public JsonResponse<List<MyLikeRes>> getMyLikeRoutine(
+            @RequestHeader("Authorization") String jwtToken){
+        String userEmail = jt.extractSubFromJwt(jwtToken);
+        List<MyLikeRes> myLikeRes = myPageService.getMyLikeRoutine(userEmail);
         return new JsonResponse<>(myLikeRes);
     }
 
