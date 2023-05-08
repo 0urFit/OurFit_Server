@@ -14,31 +14,25 @@ public class RoutineController {
 
     /**
      * 운동루틴 좋아요 등록 API
-     * @param jwtToken
      * @param routineId
      * @return
      */
     @PostMapping("/exercise/{routineId}/likes")
-    public JsonResponse<String> postLike(
-            @RequestHeader("Authorization") String jwtToken,
-            @PathVariable Long routineId){
+    public JsonResponse<String> postLike(@PathVariable Long routineId){
 
-        String userEmail = jt.extractSubFromJwt(jwtToken);
+        String userEmail = jt.getEmail();
         routineService.postLike(userEmail,routineId);
         return new JsonResponse<>("좋아요 등록");
     }
 
     /**
      * 운동루틴 좋아요 취소 API
-     * @param jwtToken
      * @param routineId
      * @return
      */
     @DeleteMapping("/exercise/{memberId}/{routineId}/likes")
-    public JsonResponse<String> deleteLike(
-            @RequestHeader("Authorization") String jwtToken,
-            @PathVariable Long routineId){
-        String userEmail = jt.extractSubFromJwt(jwtToken);
+    public JsonResponse<String> deleteLike(@PathVariable Long routineId){
+        String userEmail = jt.getEmail();
         routineService.deleteLike(userEmail,routineId);
         return new JsonResponse<>("좋아요 취소");
     }
