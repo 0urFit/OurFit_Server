@@ -38,7 +38,7 @@ public class MyPageController {
      * @param category
      * @return
      */
-    @GetMapping("/mypage/{userId}/exercise/{category}")
+    @GetMapping("/mypage/exercise/{category}")
     public JsonResponse<List<MyRoutineRes>> getMyRoutineByCate(
             @PathVariable String category){
 

@@ -28,7 +28,7 @@ public class ExerciseDetailSet {
     private int fivReps;
 
     private double sixWeight;
-    private int sizReps;
+    private int sixReps;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exerciseDetailId")
