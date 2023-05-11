@@ -25,7 +25,6 @@ public class ExerciseRoutine {
     List<ExerciseLike> exerciseLikeList = new ArrayList<>();
 
     private String routineName;
-    private String imgPath;
     private int level;
     private int fewTime;
     private int period;

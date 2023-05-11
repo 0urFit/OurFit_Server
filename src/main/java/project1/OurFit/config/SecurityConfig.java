@@ -51,20 +51,25 @@ public class SecurityConfig {
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+
                 .and()
                 .headers()
                 .frameOptions()
                 .sameOrigin()
                 .and()
+
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+
                 .authorizeHttpRequests()
-                .requestMatchers("/exercise/{email}/**", "/post/**", "/mypage/**").authenticated()
+                .requestMatchers( "/exercise/{id}/**", "/post/**", "/mypage/**").authenticated()
                 .anyRequest().permitAll()
+
                 .and()
                 .requiresChannel()
                 .anyRequest().requiresSecure()
+
                 .and()
                 .apply(new JwtSecurityConfig(jwtTokenProvider));
         return http.build();

@@ -20,13 +20,6 @@ public class BaseExceptionHandler {
         return new JsonResponse<>(JsonResponseStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public JsonResponse<JsonResponseStatus> ExceptionHandle(Exception exception) {
-        // Exception
-        return new JsonResponse<>(JsonResponseStatus.NOTFOUND);
-    }
-
     @ExceptionHandler(DuplicateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public JsonResponse<JsonResponseStatus> DuplicateExceptionHandle(DuplicateException exception) {

@@ -12,6 +12,7 @@ import project1.constant.exception.BaseException;
 import project1.constant.exception.DuplicateException;
 import project1.constant.response.JsonResponseStatus;
 
+import java.util.UUID;
 import java.util.function.Function;
 
 @Transactional
@@ -37,18 +38,15 @@ public class MemberService {
     }
 
     public Boolean findEmail(String email){
-        return checkExistence(email, memberRepository::existsByEmail, JsonResponseStatus.EMAIL_CONFLICT);
+        return checkExistence(email, memberRepository::existsByEmail);
     }
 
     public Boolean findNickname(String nickname) {
-        return checkExistence(nickname, memberRepository::existsByNickname, JsonResponseStatus.NICKNAME_CONFLICT);
+        return checkExistence(nickname, memberRepository::existsByNickname);
     }
 
-    private Boolean checkExistence(String value, Function<String, Boolean> existsFunction, JsonResponseStatus status) {
-        Boolean isExist = existsFunction.apply(value);
-        if (isExist)
-            throw new DuplicateException(status);
-        return true;
+    private Boolean checkExistence(String value, Function<String, Boolean> existsFunction) {
+        return existsFunction.apply(value);
     }
 
     public Boolean checkMember(String email){
@@ -58,6 +56,9 @@ public class MemberService {
     public Boolean join(MemberDTO memberDTO) {
         Boolean checkEmail = memberRepository.existsByEmail(memberDTO.getEmail());
         Boolean checkNickname = memberRepository.existsByNickname(memberDTO.getNickname());
+
+        if (memberDTO.getPassword() == null) // 카카오로 회원가입한 사람은 임시 비밀번호 생성, 자체 로그인 방지
+            memberDTO.setPassword(UUID.randomUUID().toString());
 
         if (checkEmail && checkNickname)
             throw new DuplicateException(JsonResponseStatus.ALL_CONFLICT);

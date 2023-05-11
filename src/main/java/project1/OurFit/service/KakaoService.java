@@ -2,6 +2,9 @@ package project1.OurFit.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import project1.OurFit.jwt.JwtFilter;
 import project1.constant.Oauth;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +22,7 @@ public class KakaoService {
 
     private final RestTemplate rt;
     private final ObjectMapper objectMapper;
+    private static final Logger logger = LoggerFactory.getLogger(KakaoService.class);
 
     public KakaoService() {
         this.rt = new RestTemplate();
@@ -33,7 +37,6 @@ public class KakaoService {
         params.add(Oauth.CLIENT_NAME.getValue(), Oauth.CLIENT_VALUE.getValue());
         params.add(Oauth.REDIRECT_NAME.getValue(), Oauth.REDIRECT_VALUE.getValue());
         params.add(Oauth.CODE.getValue(), code);
-        params.add(Oauth.SECRET_NAME.getValue(), Oauth.SECRET_VALUE.getValue());
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
         String token = requestHttp(Oauth.TOKEN_URL.getValue(), kakaoTokenRequest);
