@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider implements InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
-    private static final String AUTHORITIES_KEY = "auth";
     private final String secret;
     private final long tokenValidityInMilliseconds;
     private Key key;
@@ -56,14 +55,6 @@ public class JwtTokenProvider implements InitializingBean {
                 .compact();
     }
 
-//    public String createToken(String kakaoEmail) {
-//        return Jwts.builder()
-//                .setSubject(kakaoEmail)
-//                .claim("email", kakaoEmail)
-//                .signWith(key, SignatureAlgorithm.HS512)
-//                .compact();
-//    }
-
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
                 .parserBuilder()
@@ -72,15 +63,7 @@ public class JwtTokenProvider implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody();
 
-        Object authoritiesObject = claims.get(AUTHORITIES_KEY);
-        Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
         setEmail(claims.getSubject());
-        if(authoritiesObject != null) {
-            authorities = Arrays.stream(authoritiesObject.toString().split(","))
-                    .filter(StringUtils::isNotBlank)
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
-        }
 
         User principal = new User(claims.getSubject(), "N/A", new ArrayList<>());
 

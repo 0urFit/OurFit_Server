@@ -21,13 +21,11 @@ public class MyPageController {
 
     /**
      * MyPage 들어갔을 때 등록한 루틴 조회
-     * @param
      * @return
      */
     @GetMapping("/mypage")
     public JsonResponse<List<MyRoutineRes>> getMyRoutine(){
         String userEmail = jt.getEmail();
-        System.out.println(userEmail);
         List<MyRoutineRes> myRoutineResList = myPageService.getMyRoutine(userEmail);
         return new JsonResponse<>(myRoutineResList);
 
@@ -38,9 +36,8 @@ public class MyPageController {
      * @param category
      * @return
      */
-    @GetMapping("/mypage/exercise/{category}")
-    public JsonResponse<List<MyRoutineRes>> getMyRoutineByCate(
-            @PathVariable String category){
+    @GetMapping("/mypage/{userId}/exercise/{category}")
+    public JsonResponse<List<MyRoutineRes>> getMyRoutineByCate(@PathVariable String category){
 
         String userEmail = jt.getEmail();
         List<MyRoutineRes> myRoutineRes = myPageService.getMyRoutineByCate(userEmail, category);
@@ -49,14 +46,18 @@ public class MyPageController {
 
     /**
      * MyPage 들어갔을 때 좋아요 한 루틴 조회
-     * @param
+     * @param jwtToken
      * @return
      */
     @GetMapping("mypage/like")
-    public JsonResponse<List<MyLikeRes>> getMyLikeRoutine(){
+    public JsonResponse<List<MyLikeRes>> getMyLikeRoutine(@RequestHeader("Authorization") String jwtToken){
         String userEmail = jt.getEmail();
         List<MyLikeRes> myLikeRes = myPageService.getMyLikeRoutine(userEmail);
         return new JsonResponse<>(myLikeRes);
     }
 
+    @GetMapping("/mypage/22")
+    public String test() {
+        return "test";
+    }
 }

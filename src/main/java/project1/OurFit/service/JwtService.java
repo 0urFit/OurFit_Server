@@ -33,6 +33,6 @@ public class JwtService {
     }
 
     public PostLoginDto authorize(String email) {
-        return authorize(email, "kakao");
+        return authorize(email, "");
     }
 }

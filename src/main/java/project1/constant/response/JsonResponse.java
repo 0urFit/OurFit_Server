@@ -37,7 +37,9 @@ public class JsonResponse<T> {
     }
 
     public JsonResponse(T result, JsonResponseStatus status) {
-        this(status);
+        this.isSuccess = status.isSuccess();
+        this.code = status.getCode();
+        this.message = status.getMessage();
         this.result = result;
     }
 

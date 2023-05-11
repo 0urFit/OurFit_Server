@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .and()
 
                 .authorizeHttpRequests()
-                .requestMatchers("/exercise/{email}/**", "/post/**", "/mypage/**").authenticated()
+                .requestMatchers( "/exercise/{id}/**", "/post/**", "/mypage/**").authenticated()
                 .anyRequest().permitAll()
 
                 .and()

@@ -1,5 +1,7 @@
 package project1.OurFit.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import project1.OurFit.response.PostLoginDto;
 import project1.OurFit.service.JwtService;
 import project1.constant.Oauth;
@@ -22,7 +24,6 @@ public class SignInUpController {
     private final KakaoService kakaoService;
     private final JwtService jwtService;
 
-    //-> @RequiredArgsConstructor 사용하면 생략 가능하지만 학습용으로 냅둠
     public SignInUpController(MemberService memberService, KakaoService kakaoService, JwtService jwtService) {
         this.memberService = memberService;
         this.kakaoService = kakaoService;
@@ -59,22 +60,20 @@ public class SignInUpController {
         return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
-    @GetMapping("/oauth/kakao")
-    public String kakao() {
-        return "redirect:" + Oauth.KAKAOLOGIN.getValue();
-    }
-
-    @GetMapping("/auth/kakao/callback")
+    @GetMapping("/kakao")
     @ResponseBody
-    public synchronized JsonResponse<PostLoginDto> oauthKakaoLogin(String code) {
+    public synchronized ResponseEntity<JsonResponse<PostLoginDto>> oauthKakaoLogin(@RequestParam("authorizationCode") String code) {
         OAuthTokenDTO oAuthToken = kakaoService.getToken(code);
         PostKakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
 
         Boolean isSuccess = memberService.findEmail(info.getKakao_account().getEmail());
         if (isSuccess)
-            return new JsonResponse<>(jwtService.authorize(info.getKakao_account().getEmail()));
+            return ResponseEntity.ok(new JsonResponse<>(jwtService.authorize(info.getKakao_account().getEmail())));
 
-        return new JsonResponse<>(new PostLoginDto(info.getKakao_account().getEmail(),
-                    info.getKakao_account().getGender()), JsonResponseStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(
+                new JsonResponse<>(
+                        new PostLoginDto(
+                            info.getKakao_account().getEmail(), info.getKakao_account().getGender()),
+                    JsonResponseStatus.UNAUTHORIZED));
     }
 }
