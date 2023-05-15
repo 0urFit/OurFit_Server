@@ -1,5 +1,6 @@
 package project1.OurFit.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,21 +20,12 @@ import project1.OurFit.jwt.JwtTokenProvider;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CorsFilter corsFilter;
-
-    public SecurityConfig(
-            JwtTokenProvider jwtTokenProvider,
-            JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-            CorsFilter corsFilter
-    ) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-        this.corsFilter = corsFilter;
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

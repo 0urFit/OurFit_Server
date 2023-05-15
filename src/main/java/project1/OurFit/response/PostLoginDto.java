@@ -11,18 +11,11 @@ public class PostLoginDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String token;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String refreshToken;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String email;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String gender;
-
-    public PostLoginDto(String token) {
-        this.token = token;
-    }
-
-    public PostLoginDto(String email, String gender) {
-        this.email = email;
-        this.gender = gender;
-    }
 }

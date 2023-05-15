@@ -1,10 +1,10 @@
 package project1.OurFit.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import project1.OurFit.response.PostLoginDto;
 import project1.OurFit.service.JwtService;
-import project1.constant.Oauth;
 import project1.constant.exception.DuplicateException;
 import project1.constant.response.JsonResponse;
 import org.springframework.http.MediaType;
@@ -19,16 +19,11 @@ import project1.OurFit.service.MemberService;
 import project1.constant.response.JsonResponseStatus;
 
 @Controller
+@RequiredArgsConstructor
 public class SignInUpController {
     private final MemberService memberService;
     private final KakaoService kakaoService;
     private final JwtService jwtService;
-
-    public SignInUpController(MemberService memberService, KakaoService kakaoService, JwtService jwtService) {
-        this.memberService = memberService;
-        this.kakaoService = kakaoService;
-        this.jwtService = jwtService;
-    }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -66,13 +61,13 @@ public class SignInUpController {
         OAuthTokenDTO oAuthToken = kakaoService.getToken(code);
         PostKakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
 
-        Boolean isSuccess = memberService.findEmail(info.getKakao_account().getEmail());
-        if (isSuccess)
+        Boolean isEmailExist = memberService.findEmail(info.getKakao_account().getEmail());
+        if (isEmailExist)
             return ResponseEntity.ok(new JsonResponse<>(jwtService.authorize(info.getKakao_account().getEmail())));
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 new JsonResponse<>(
-                        new PostLoginDto(
+                        new PostLoginDto(null, null,
                             info.getKakao_account().getEmail(), info.getKakao_account().getGender()),
                     JsonResponseStatus.UNAUTHORIZED));
     }

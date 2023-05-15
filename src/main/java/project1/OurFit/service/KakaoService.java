@@ -2,9 +2,7 @@ package project1.OurFit.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import project1.OurFit.jwt.JwtFilter;
+import lombok.RequiredArgsConstructor;
 import project1.constant.Oauth;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,16 +16,11 @@ import project1.OurFit.response.PostKakaoProfile;
 import project1.OurFit.request.OAuthTokenDTO;
 
 @Transactional
+@RequiredArgsConstructor
 public class KakaoService {
 
     private final RestTemplate rt;
     private final ObjectMapper objectMapper;
-    private static final Logger logger = LoggerFactory.getLogger(KakaoService.class);
-
-    public KakaoService() {
-        this.rt = new RestTemplate();
-        this.objectMapper = new ObjectMapper();
-    }
 
     public OAuthTokenDTO getToken(String code) {
         HttpHeaders headers = new HttpHeaders();
