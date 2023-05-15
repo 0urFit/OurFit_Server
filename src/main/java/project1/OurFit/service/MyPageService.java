@@ -22,7 +22,6 @@ import static project1.constant.response.JsonResponseStatus.NOT_FOUND_ROUTINE;
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
-    private final MemberRepository memberRepository;
     private final ExerciseEnrollRepository exerciseEnrollRepository;
     private final ExerciseRoutineRepository routineRepository;
     private final ExerciseLikeRepository exerciseLikeRepository;

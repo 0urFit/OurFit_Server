@@ -11,24 +11,9 @@ public class EnrollDetailSet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private double oneWeight;
-    private int oneReps;
-
-    private double twoWeight;
-    private int twoReps;
-
-    private double thrWeight;
-    private int thrReps;
-
-    private double fouWeight;
-    private int fouReps;
-
-    private double fivWeight;
-    private int fivReps;
-
-    private double sixWeight;
-    private int sixReps;
+    private double weight;
+    private int reps;
+    private int sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enrollDetailId")
