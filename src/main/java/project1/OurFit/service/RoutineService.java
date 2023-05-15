@@ -1,21 +1,24 @@
 package project1.OurFit.service;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import project1.OurFit.entity.ExerciseEnroll;
 import project1.OurFit.entity.ExerciseLike;
 import project1.OurFit.entity.ExerciseRoutine;
 import project1.OurFit.entity.Member;
+import project1.OurFit.repository.ExerciseEnrollRepository;
 import project1.OurFit.repository.ExerciseLikeRepository;
 import project1.OurFit.repository.ExerciseRoutineRepository;
 import project1.OurFit.repository.MemberRepository;
-import project1.OurFit.response.MyRoutineRes;
+import project1.OurFit.response.ExerciseRoutineWithEnrollmentStatusDto;
 import project1.constant.exception.BaseException;
-import project1.constant.response.JsonResponseStatus;
+
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static project1.constant.response.JsonResponseStatus.*;
 
@@ -26,6 +29,7 @@ public class RoutineService {
     private final ExerciseLikeRepository exerciseLikeRepository;
     private final MemberRepository memberRepository;
     private final ExerciseRoutineRepository exerciseRoutineRepository;
+    private final ExerciseEnrollRepository exerciseEnrollRepository;
 
     public void postLike(String userEmail, Long routineId) {
         Member member=memberRepository.findByEmail(userEmail)
@@ -43,12 +47,31 @@ public class RoutineService {
         exerciseLikeRepository.delete(exerciseLike);
     }
 
-//    public MyRoutineRes getExerciseRoutine(String category) {
-//        List<ExerciseRoutine> exerciseRoutines = exerciseRoutineRepository.findByCategory(category);
-//        List<MyRoutineRes> myRoutineResList = new ArrayList<>();
-//
-//        for (ExerciseRoutine exerciseRoutine : exerciseRoutines) {
-//
-//        }
-//    }
+    public List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutineByCategory(String category, String userEmail) {
+        List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findByCategory(category);
+        return getExerciseRoutineWithEnrollmentStatus(userEmail, exerciseRoutineList);
+    }
+
+    public List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutine(String userEmail) {
+        List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findAll();
+        return getExerciseRoutineWithEnrollmentStatus(userEmail, exerciseRoutineList);
+    }
+
+    private List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutineWithEnrollmentStatus(String userEmail, List<ExerciseRoutine> exerciseRoutineList) {
+        List<ExerciseRoutineWithEnrollmentStatusDto> result = new ArrayList<>();
+
+        List<ExerciseEnroll> exerciseEnrolls = exerciseEnrollRepository.findAllByMemberEmail(userEmail);
+
+        Set<ExerciseRoutine> enrolledRoutines = exerciseEnrolls.stream()
+                .map(ExerciseEnroll::getExerciseRoutine)
+                .collect(Collectors.toSet());
+
+        for (ExerciseRoutine exerciseRoutine : exerciseRoutineList) {
+            boolean isEnrolled = enrolledRoutines.contains(exerciseRoutine);
+            ExerciseRoutineWithEnrollmentStatusDto dto = new ExerciseRoutineWithEnrollmentStatusDto(exerciseRoutine, isEnrolled);
+            result.add(dto);
+        }
+
+        return result;
+    }
 }

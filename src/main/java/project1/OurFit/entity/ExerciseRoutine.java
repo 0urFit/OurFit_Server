@@ -24,9 +24,10 @@ public class ExerciseRoutine {
     @OneToMany(mappedBy = "exerciseRoutine")
     List<ExerciseLike> exerciseLikeList = new ArrayList<>();
 
-    private String routineName;
-    private int level;
-    private int fewTime;
-    private int period;
     private String category;
+    private String imgpath;
+    private int fewTime;
+    private int level;
+    private int period;
+    private String routineName;
 }

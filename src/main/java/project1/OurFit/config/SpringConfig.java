@@ -1,13 +1,13 @@
 package project1.OurFit.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import project1.OurFit.repository.JpaMemberRepository;
-import project1.OurFit.repository.MemberRepository;
 import project1.OurFit.service.KakaoService;
 
 @Configuration
@@ -17,12 +17,12 @@ public class SpringConfig implements WebMvcConfigurer {
     private EntityManager em;
 
     @Bean
-    public MemberRepository memberRepository() {
-        return new JpaMemberRepository(em);
+    public KakaoService kakaoService() {
+        return new KakaoService(new RestTemplate(), new ObjectMapper());
     }
 
-    @Bean
-    public KakaoService kakaoService() {
-        return new KakaoService();
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("http://localhost:3000");
     }
 }

@@ -1,11 +1,10 @@
 package project1.OurFit.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import project1.OurFit.jwt.JwtTokenProvider;
 import project1.OurFit.response.MyLikeRes;
 import project1.OurFit.response.MyRoutineRes;
 import project1.OurFit.service.MyPageService;
@@ -17,7 +16,6 @@ import java.util.List;
 @RestController
 public class MyPageController {
     private final MyPageService myPageService;
-    private final JwtTokenProvider jt;
 
     /**
      * MyPage 들어갔을 때 등록한 루틴 조회
@@ -25,7 +23,7 @@ public class MyPageController {
      */
     @GetMapping("/mypage")
     public JsonResponse<List<MyRoutineRes>> getMyRoutine(){
-        String userEmail = jt.getEmail();
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         List<MyRoutineRes> myRoutineResList = myPageService.getMyRoutine(userEmail);
         return new JsonResponse<>(myRoutineResList);
 
@@ -38,26 +36,19 @@ public class MyPageController {
      */
     @GetMapping("/mypage/{userId}/exercise/{category}")
     public JsonResponse<List<MyRoutineRes>> getMyRoutineByCate(@PathVariable String category){
-
-        String userEmail = jt.getEmail();
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         List<MyRoutineRes> myRoutineRes = myPageService.getMyRoutineByCate(userEmail, category);
         return new JsonResponse<>(myRoutineRes);
     }
 
     /**
      * MyPage 들어갔을 때 좋아요 한 루틴 조회
-     * @param jwtToken
      * @return
      */
     @GetMapping("mypage/like")
-    public JsonResponse<List<MyLikeRes>> getMyLikeRoutine(@RequestHeader("Authorization") String jwtToken){
-        String userEmail = jt.getEmail();
+    public JsonResponse<List<MyLikeRes>> getMyLikeRoutine(){
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         List<MyLikeRes> myLikeRes = myPageService.getMyLikeRoutine(userEmail);
         return new JsonResponse<>(myLikeRes);
-    }
-
-    @GetMapping("/mypage/22")
-    public String test() {
-        return "test";
     }
 }

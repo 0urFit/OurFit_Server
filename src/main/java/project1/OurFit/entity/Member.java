@@ -1,15 +1,17 @@
 package project1.OurFit.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 public class Member {
 
@@ -29,6 +31,7 @@ public class Member {
     private Double benchpress;
     private Double deadlift;
     private Double overheadpress;
+    private String refreshToken;
 
     @OneToMany(mappedBy = "member")
     List<PostReply> postReplyList = new ArrayList<>();
@@ -46,19 +49,5 @@ public class Member {
         this.email = email;
         this.nickname = nickname;
         this.gender = gender;
-    }
-
-    public Member(Long id, String email, String password, String nickname, String gender, Double height, Double weight, Double squat, Double benchpress, Double deadlift, Double overheadpress) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.gender = gender;
-        this.height = height;
-        this.weight = weight;
-        this.squat = squat;
-        this.benchpress = benchpress;
-        this.deadlift = deadlift;
-        this.overheadpress = overheadpress;
     }
 }

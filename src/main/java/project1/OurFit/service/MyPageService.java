@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import project1.OurFit.entity.ExerciseEnroll;
 import project1.OurFit.entity.ExerciseLike;
 import project1.OurFit.entity.ExerciseRoutine;
-import project1.OurFit.entity.Member;
 import project1.OurFit.repository.ExerciseEnrollRepository;
 import project1.OurFit.repository.ExerciseLikeRepository;
 import project1.OurFit.repository.ExerciseRoutineRepository;
@@ -18,13 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static project1.constant.response.JsonResponseStatus.NOT_FOUND_MEMBER;
 import static project1.constant.response.JsonResponseStatus.NOT_FOUND_ROUTINE;
 
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
-    private final MemberRepository memberRepository;
     private final ExerciseEnrollRepository exerciseEnrollRepository;
     private final ExerciseRoutineRepository routineRepository;
     private final ExerciseLikeRepository exerciseLikeRepository;

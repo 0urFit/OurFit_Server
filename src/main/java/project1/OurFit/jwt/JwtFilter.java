@@ -1,18 +1,27 @@
 package project1.OurFit.jwt;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
+import project1.constant.response.JsonResponse;
+import project1.constant.response.JsonResponseStatus;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class JwtFilter extends GenericFilterBean {
 
@@ -29,12 +38,20 @@ public class JwtFilter extends GenericFilterBean {
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
-        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
-        } else {
-            logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+        if (StringUtils.hasText(jwt)) {
+            if (tokenProvider.validateToken(jwt)) {
+                Authentication authentication = tokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+                ResponseEntity<String> responseEntity = createErrorResponse();
+                HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+                httpServletResponse.setCharacterEncoding("UTF-8");
+                httpServletResponse.setStatus(responseEntity.getStatusCode().value());
+                httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                httpServletResponse.getWriter().write(Objects.requireNonNull(responseEntity.getBody()));
+                return;
+            }
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
@@ -48,5 +65,16 @@ public class JwtFilter extends GenericFilterBean {
         }
 
         return null;
+    }
+
+    private ResponseEntity<String> createErrorResponse() throws JsonProcessingException {
+        JsonResponse<JsonResponseStatus> jsonResponse = new JsonResponse<>(JsonResponseStatus.TOKEN_EXPIRED);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String jsonBody = objectMapper.writeValueAsString(jsonResponse);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonBody);
     }
 }

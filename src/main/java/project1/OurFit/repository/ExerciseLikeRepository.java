@@ -17,5 +17,4 @@ public interface ExerciseLikeRepository extends JpaRepository<ExerciseLike,Long>
 
     @Query("SELECT el From ExerciseLike el JOIN FETCH  el.member m WHERE m.email= :email and el.exerciseRoutine.id= :routineId")
     Optional<ExerciseLike> findByMemberEmailAndExerciseRoutineId(String email, Long routineId);
-
 }
