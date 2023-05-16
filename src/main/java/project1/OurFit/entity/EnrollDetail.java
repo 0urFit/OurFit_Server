@@ -17,7 +17,7 @@ public class EnrollDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Boolean complete;
+    private Boolean complete = false;
 
     @UpdateTimestamp
     @Column(name = "updatedAt", nullable = false)
@@ -33,5 +33,9 @@ public class EnrollDetail {
 
     @OneToMany(mappedBy = "enrollDetail")
     List<EnrollDetailSet> enrollDetailSetList = new ArrayList<>();
+
+    public void completeRoutine(){
+        this.complete=true;
+    }
 
 }

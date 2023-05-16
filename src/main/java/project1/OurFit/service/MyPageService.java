@@ -2,13 +2,11 @@ package project1.OurFit.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import project1.OurFit.entity.EnrollDetail;
 import project1.OurFit.entity.ExerciseEnroll;
 import project1.OurFit.entity.ExerciseLike;
 import project1.OurFit.entity.ExerciseRoutine;
-import project1.OurFit.repository.ExerciseEnrollRepository;
-import project1.OurFit.repository.ExerciseLikeRepository;
-import project1.OurFit.repository.ExerciseRoutineRepository;
-import project1.OurFit.repository.MemberRepository;
+import project1.OurFit.repository.*;
 import project1.OurFit.response.MyLikeRes;
 import project1.OurFit.response.MyRoutineRes;
 import project1.constant.exception.BaseException;
@@ -17,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static project1.constant.response.JsonResponseStatus.NOTFOUND;
 import static project1.constant.response.JsonResponseStatus.NOT_FOUND_ROUTINE;
 
 @Service
@@ -25,6 +24,8 @@ public class MyPageService {
     private final ExerciseEnrollRepository exerciseEnrollRepository;
     private final ExerciseRoutineRepository routineRepository;
     private final ExerciseLikeRepository exerciseLikeRepository;
+    private final EnrollDetailRepository enrollDetailRepository;
+
 
     public List<MyRoutineRes> getMyRoutine(String userEmail) {
 //        Long memberId = memberRepository.findByEmail(userEmail)
@@ -72,5 +73,12 @@ public class MyPageService {
             myRoutineRes.add(a);
         }
         return myRoutineRes;
+    }
+
+    //complete 하면 enroll_detail_set rate 를 바꿔야 하는데 값을 모르겠네
+    public void completeRoutine(Long rouId) {
+        EnrollDetail enrollDetail = enrollDetailRepository.findById(rouId)
+                .orElseThrow(()->new BaseException(NOTFOUND));
+        enrollDetail.completeRoutine();
     }
 }

@@ -31,7 +31,7 @@ public class RoutineController {
      * @param routineId
      * @return
      */
-    @DeleteMapping("/exercise/{memberId}/{routineId}/likes")
+    @DeleteMapping("/exercise/{routineId}/likes")
     public JsonResponse<String> deleteLike(@PathVariable Long routineId){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         routineService.deleteLike(userEmail,routineId);

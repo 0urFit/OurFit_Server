@@ -15,9 +15,11 @@ public class EnrollDetailSet {
     private int reps;
     private int sequence;
 
+    private String bigThree; //3대운동
+    private double rate; //오운완 성공시 비율
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enrollDetailId")
     private EnrollDetail enrollDetail;
-
 
 }
