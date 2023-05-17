@@ -3,6 +3,7 @@ package project1.OurFit.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import project1.OurFit.response.ExerciseDetailDto;
 import project1.OurFit.response.ExerciseRoutineWithEnrollmentStatusDto;
 import project1.OurFit.service.RoutineService;
 import project1.constant.response.JsonResponse;
@@ -43,10 +44,10 @@ public class RoutineController {
      * @param category
      * @return
      */
-    @GetMapping("/exercise")
+    @GetMapping("/exercise/{category}")
     @ResponseBody
     public JsonResponse<List<ExerciseRoutineWithEnrollmentStatusDto>> getExerciseRoutine(
-            @RequestParam(required = false) String category) {
+            @PathVariable(required = false) String category) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if (category == null) {
@@ -56,5 +57,13 @@ public class RoutineController {
         List<ExerciseRoutineWithEnrollmentStatusDto> exerciseRoutineWithEnrollmentStatusDtoList =
                 routineService.getExerciseRoutineByCategory(category,userEmail);
         return new JsonResponse<>(exerciseRoutineWithEnrollmentStatusDtoList);
+    }
+
+    @GetMapping("/exercise/{category}/{id}")
+    @ResponseBody
+    public JsonResponse<List<ExerciseDetailDto>> getExerciseDetails(
+            @PathVariable String category, @PathVariable Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return new JsonResponse<>(routineService.getExerciseDetails(category, id, email));
     }
 }

@@ -14,7 +14,7 @@ public class ExerciseDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private int weeks;
     private String name;
     private String day;
     private int sequence;
@@ -25,5 +25,4 @@ public class ExerciseDetail {
 
     @OneToMany(mappedBy = "exerciseDetail")
     List<ExerciseDetailSet> exerciseDetailSetList = new ArrayList<>();
-
 }

@@ -13,9 +13,9 @@ public class ExerciseDetailSet {
     private Long id;
     private double weight;
     private int reps;
+    private Double increase;
     private int sequence;
-
-    private String bigThree; //3대운동
+    private String exercise;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exerciseDetailId")
