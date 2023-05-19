@@ -59,11 +59,11 @@ public class RoutineController {
         return new JsonResponse<>(exerciseRoutineWithEnrollmentStatusDtoList);
     }
 
-    @GetMapping("/exercise/{category}/{id}")
+    @GetMapping("/exercise/{category}/{routineId}/{week}")
     @ResponseBody
     public JsonResponse<List<ExerciseDetailDto>> getExerciseDetails(
-            @PathVariable String category, @PathVariable Long id) {
+            @PathVariable String category, @PathVariable Long routineId, @PathVariable int week) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return new JsonResponse<>(routineService.getExerciseDetails(category, id, email));
+        return new JsonResponse<>(routineService.getExerciseDetails(category, routineId, email, week));
     }
 }
