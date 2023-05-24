@@ -47,10 +47,10 @@ public class RoutineController {
     @GetMapping("/exercise/{category}")
     @ResponseBody
     public JsonResponse<List<ExerciseRoutineWithEnrollmentStatusDto>> getExerciseRoutine(
-            @PathVariable(required = false) String category) {
+            @PathVariable String category) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (category == null) {
+        if (category.equals("all")) {
             List<ExerciseRoutineWithEnrollmentStatusDto> exercises = routineService.getExerciseRoutine(userEmail);
             return new JsonResponse<>(exercises);
         }
