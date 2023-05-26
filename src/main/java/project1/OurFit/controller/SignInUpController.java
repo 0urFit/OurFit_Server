@@ -71,9 +71,10 @@ public class SignInUpController {
 
     @GetMapping("/kakao")
     @ResponseBody
-    public synchronized ResponseEntity<JsonResponse<PostLoginDto>> oauthKakaoLogin(@RequestParam("authorizationCode") String code) {
-        OAuthTokenDTO oAuthToken = kakaoService.getToken(code);
-        PostKakaoProfile info =  kakaoService.getUserInfo(oAuthToken);
+    public synchronized ResponseEntity<JsonResponse<PostLoginDto>> oauthKakaoLogin(
+            @RequestParam("authorizationCode") String code) {
+        OAuthTokenDTO oAuthToken = kakaoService.requestOAuthToken(code);
+        PostKakaoProfile info =  kakaoService.getUserProfile(oAuthToken.getAccess_token());
 
         Boolean isEmailExist = memberService.findEmail(info.getKakao_account().getEmail());
         if (isEmailExist)

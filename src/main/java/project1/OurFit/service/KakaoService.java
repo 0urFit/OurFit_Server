@@ -19,52 +19,46 @@ import project1.OurFit.request.OAuthTokenDTO;
 @RequiredArgsConstructor
 public class KakaoService {
 
-    private final RestTemplate rt;
+    private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    public OAuthTokenDTO getToken(String code) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(Oauth.HEADER_CONTENT_NAME.getValue(), Oauth.HEADER_CONTENT_VALUE.getValue());
+    public OAuthTokenDTO requestOAuthToken(String code) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(Oauth.GRANT_NAME.getValue(), Oauth.GRANT_VALUE.getValue());
         params.add(Oauth.CLIENT_NAME.getValue(), Oauth.CLIENT_VALUE.getValue());
         params.add(Oauth.REDIRECT_NAME.getValue(), Oauth.REDIRECT_VALUE.getValue());
         params.add(Oauth.CODE.getValue(), code);
 
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
-        String token = requestHttp(Oauth.TOKEN_URL.getValue(), kakaoTokenRequest);
-        return convertJson(token, OAuthTokenDTO.class);
+        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = createHttpEntity(params, null);
+        String tokenResponse = performHttpRequest(Oauth.TOKEN_URL.getValue(), kakaoTokenRequest);
+        return convertJsonToDto(tokenResponse, OAuthTokenDTO.class);
     }
 
-    private String requestHttp(String url, HttpEntity<MultiValueMap<String, String>> token) {
-        ResponseEntity<String> response = rt.exchange(url, HttpMethod.POST, token, String.class);
+    private String performHttpRequest(String url, HttpEntity<?> requestEntity) {
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         return response.getBody();
     }
 
-    private <T> T convertJson(String token, Class<T> type) {
+    private <T> T convertJsonToDto(String json, Class<T> type) {
         try {
-            return objectMapper.readValue(token, type);
+            return objectMapper.readValue(json, type);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to convert JSON to DTO: " + e.getMessage(), e);
         }
     }
 
-    public PostKakaoProfile getUserInfo(OAuthTokenDTO kakao) {
-        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = createHttpEntity(null, kakao.getAccess_token());
-        String token = requestHttp(Oauth.TOKEN_PROFILE.getValue(), kakaoProfileRequest);
-        return convertJson(token, PostKakaoProfile.class);
+    public PostKakaoProfile getUserProfile(String accessToken) {
+        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = createHttpEntity(null, accessToken);
+        String userInfoResponse = performHttpRequest(Oauth.TOKEN_PROFILE.getValue(), kakaoProfileRequest);
+        return convertJsonToDto(userInfoResponse, PostKakaoProfile.class);
     }
 
-    private HttpHeaders createHeaders(String token) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(Oauth.HEADER_CONTENT_NAME.getValue(), Oauth.HEADER_CONTENT_VALUE.getValue());
-        if (token != null)
-            httpHeaders.add(Oauth.HEADER_REQUEST_NAME.getValue(), Oauth.HEADER_REQUEST_VALUE.getValue() + token);
-        return httpHeaders;
-    }
-
-    private HttpEntity<MultiValueMap<String, String>> createHttpEntity(MultiValueMap<String, String> params, String token) {
-        HttpHeaders httpHeaders = createHeaders(token);
-        return new HttpEntity<>(params, httpHeaders);
+    private HttpEntity<MultiValueMap<String, String>> createHttpEntity(MultiValueMap<String, String> params, String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(Oauth.HEADER_CONTENT_NAME.getValue(), Oauth.HEADER_CONTENT_VALUE.getValue());
+        if (accessToken != null) {
+            headers.add(Oauth.HEADER_REQUEST_NAME.getValue(), Oauth.HEADER_REQUEST_VALUE.getValue() + accessToken);
+        }
+        return new HttpEntity<>(params, headers);
     }
 }
