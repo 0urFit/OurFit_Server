@@ -10,6 +10,8 @@ import project1.OurFit.jwt.JwtTokenProvider;
 import project1.OurFit.repository.JwtTokenRepository;
 import project1.OurFit.request.RefreshTokenRequest;
 import project1.OurFit.response.PostLoginDto;
+import project1.constant.exception.BaseException;
+import project1.constant.exception.RefreshTokenException;
 import project1.constant.response.JsonResponse;
 import project1.constant.response.JsonResponseStatus;
 
@@ -26,12 +28,11 @@ public class JwtTokenController {
 
         String refreshToken = refreshTokenRequest.getRefreshToken();
         if (!jwtTokenRepository.existsByRefreshToken(refreshToken)) {
-            return new JsonResponse<>(JsonResponseStatus.REFRESH_TOKEN_NOT_FOUND);
+            throw new RefreshTokenException(JsonResponseStatus.REFRESH_TOKEN_NOT_FOUND);
         }
 
         Claims claims = jwtTokenProvider.parseToken(refreshToken);
         String email = claims.getSubject();
-        System.out.println("email = " + email);
 
         String accessToken = jwtTokenProvider.createToken(email);
 

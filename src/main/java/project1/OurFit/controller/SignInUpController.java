@@ -1,11 +1,15 @@
 package project1.OurFit.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import project1.OurFit.response.PostLoginDto;
 import project1.OurFit.service.JwtService;
+import project1.OurFit.service.LoginAttemptService;
+import project1.constant.exception.BaseException;
 import project1.constant.exception.DuplicateException;
+import project1.constant.exception.TooManyRequestException;
 import project1.constant.response.JsonResponse;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -24,11 +28,20 @@ public class SignInUpController {
     private final MemberService memberService;
     private final KakaoService kakaoService;
     private final JwtService jwtService;
+    private final LoginAttemptService loginAttemptService;
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse<PostLoginDto> login(@RequestBody LoginDTO login) {
-        return new JsonResponse<>(memberService.findEmailAndPassword(login.getEmail(), login.getPassword()));
+    public JsonResponse<PostLoginDto> login(@RequestBody LoginDTO login, HttpServletRequest httpRequest) {
+        if (loginAttemptService.isBlocked(httpRequest.getRemoteAddr()))
+            throw new TooManyRequestException(JsonResponseStatus.TOO_MANY_REQUESTS);
+
+        if (memberService.findEmailAndPassword(login.getEmail(), login.getPassword())) {
+            loginAttemptService.resetAttempts(httpRequest.getRemoteAddr());
+            return new JsonResponse<>(jwtService.authorize(login.getEmail()));
+        }
+        loginAttemptService.incrementAttempts(httpRequest.getRemoteAddr());
+        throw new BaseException(JsonResponseStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/checkemail/{email}")

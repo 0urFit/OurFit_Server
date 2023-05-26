@@ -29,12 +29,12 @@ public class MemberService {
         this.jwtService = jwtService;
     }
 
-    public PostLoginDto findEmailAndPassword(String email, String password) {
+    public boolean findEmailAndPassword(String email, String password) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(JsonResponseStatus.UNAUTHORIZED));
         if (passwordEncoder.matches(password, member.getPassword()))
-            return jwtService.authorize(email, password);
-        throw new BaseException(JsonResponseStatus.UNAUTHORIZED);
+            return true;
+        return false;
     }
 
     public Boolean findEmail(String email){

@@ -38,23 +38,28 @@ public class JwtFilter extends GenericFilterBean {
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
-        if (StringUtils.hasText(jwt)) {
-            if (tokenProvider.validateToken(jwt)) {
-                Authentication authentication = tokenProvider.getAuthentication(jwt);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
-                ResponseEntity<String> responseEntity = createErrorResponse();
-                HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-                httpServletResponse.setCharacterEncoding("UTF-8");
-                httpServletResponse.setStatus(responseEntity.getStatusCode().value());
-                httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                httpServletResponse.getWriter().write(Objects.requireNonNull(responseEntity.getBody()));
-                return;
-            }
+        if (!StringUtils.hasText(jwt)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
         }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+        if (tokenProvider.validateToken(jwt)) {
+            Authentication authentication = tokenProvider.getAuthentication(jwt);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
+        logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+
+        if (!httpServletResponse.isCommitted()) {
+            ResponseEntity<String> responseEntity = createErrorResponse();
+            httpServletResponse.setCharacterEncoding("UTF-8");
+            httpServletResponse.setStatus(responseEntity.getStatusCode().value());
+            httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            httpServletResponse.getWriter().write(Objects.requireNonNull(responseEntity.getBody()));
+        }
     }
 
     private String resolveToken(HttpServletRequest request) {
@@ -68,7 +73,7 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     private ResponseEntity<String> createErrorResponse() throws JsonProcessingException {
-        JsonResponse<JsonResponseStatus> jsonResponse = new JsonResponse<>(JsonResponseStatus.TOKEN_EXPIRED);
+        JsonResponse<JsonResponseStatus> jsonResponse = new JsonResponse<>(JsonResponseStatus.ACCESS_TOKEN_EXPIRED);
         ObjectMapper objectMapper = new ObjectMapper();
 
         String jsonBody = objectMapper.writeValueAsString(jsonResponse);

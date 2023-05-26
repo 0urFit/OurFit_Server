@@ -43,8 +43,8 @@ public class SecurityConfig {
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-
                 .and()
+
                 .headers()
                 .frameOptions()
                 .sameOrigin()
