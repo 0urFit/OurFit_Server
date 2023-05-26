@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import project1.OurFit.response.PostLoginDto;
 import project1.OurFit.service.JwtService;
 import project1.OurFit.service.LoginAttemptService;
+import project1.constant.Oauth;
 import project1.constant.exception.BaseException;
 import project1.constant.exception.DuplicateException;
 import project1.constant.exception.TooManyRequestException;
@@ -32,15 +33,15 @@ public class SignInUpController {
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse<PostLoginDto> login(@RequestBody LoginDTO login, HttpServletRequest httpRequest) {
-        if (loginAttemptService.isBlocked(httpRequest.getRemoteAddr()))
+    public JsonResponse<PostLoginDto> login(@RequestBody LoginDTO login, HttpServletRequest request) {
+        if (loginAttemptService.isBlocked(login.getEmail(), request.getRemoteAddr()))
             throw new TooManyRequestException(JsonResponseStatus.TOO_MANY_REQUESTS);
 
         if (memberService.findEmailAndPassword(login.getEmail(), login.getPassword())) {
-            loginAttemptService.resetAttempts(httpRequest.getRemoteAddr());
+            loginAttemptService.resetAttempts(login.getEmail(), request.getRemoteAddr());
             return new JsonResponse<>(jwtService.authorize(login.getEmail()));
         }
-        loginAttemptService.incrementAttempts(httpRequest.getRemoteAddr());
+        loginAttemptService.incrementAttempts(login.getEmail(), request.getRemoteAddr());
         throw new BaseException(JsonResponseStatus.UNAUTHORIZED);
     }
 
@@ -83,5 +84,10 @@ public class SignInUpController {
                         new PostLoginDto(null, null,
                             info.getKakao_account().getEmail(), info.getKakao_account().getGender()),
                     JsonResponseStatus.UNAUTHORIZED));
+    }
+
+    @GetMapping("/oauth/kakao")
+    public String test() {
+        return "redirect:" + Oauth.KAKAOLOGIN.getValue();
     }
 }
