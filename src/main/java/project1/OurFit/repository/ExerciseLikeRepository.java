@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ExerciseLikeRepository extends JpaRepository<ExerciseLike,Long> {
     Optional<ExerciseLike> findByMemberIdAndExerciseRoutineId(Long memberId, Long exerciseRoutineId);
-    List<ExerciseLike> findAllByMemberId(Long id);
+    List<ExerciseLike> findAllByMemberEmail(String email);
 
     @Query("SELECT el FROM ExerciseLike el JOIN FETCH el.member m WHERE m.email = :email")
     List<ExerciseLike> findByMemberEmail(String email);
