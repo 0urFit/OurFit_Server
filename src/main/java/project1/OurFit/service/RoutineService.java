@@ -88,23 +88,9 @@ public class RoutineService {
 
         List<ExerciseDetail> details = exerciseDetailRepository.findAllByWeekAndExerciseRoutineCategory(routineId, category, week);
 
-        Map<Long, List<ExerciseDetailSet>> setsMap = getExerciseDetailSetsMap(details);
-
         Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay = groupExerciseDetails(details);
 
-        return buildExerciseDetailDtoList(detailsByWeekAndDay, member, setsMap);
-    }
-
-    private Map<Long, List<ExerciseDetailSet>> getExerciseDetailSetsMap(List<ExerciseDetail> details) {
-        List<Long> exerciseDetailIds = details.stream()
-                .map(ExerciseDetail::getId)
-                .collect(Collectors.toList());
-
-        List<ExerciseDetailSet> sets = exerciseDetailSetRepository
-                .findAllByExerciseDetailIdInOrderBySequence(exerciseDetailIds);
-
-        return sets.stream()
-                .collect(Collectors.groupingBy(set -> set.getExerciseDetail().getId()));
+        return buildExerciseDetailDtoList(detailsByWeekAndDay, member);
     }
 
     private Map<Integer, Map<String, List<ExerciseDetail>>> groupExerciseDetails(List<ExerciseDetail> details) {
@@ -120,24 +106,22 @@ public class RoutineService {
 
     private List<ExerciseDetailDto> buildExerciseDetailDtoList(
             Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay,
-            Member member,
-            Map<Long, List<ExerciseDetailSet>> setsMap) {
+            Member member) {
         return detailsByWeekAndDay.entrySet().stream()
-                .map(entry -> buildExerciseDetailDto(entry.getKey(), entry.getValue(), member, setsMap))
+                .map(entry -> buildExerciseDetailDto(entry.getKey(), entry.getValue(), member))
                 .collect(Collectors.toList());
     }
 
     private ExerciseDetailDto buildExerciseDetailDto(
             Integer weeks,
             Map<String, List<ExerciseDetail>> detailsByDay,
-            Member member,
-            Map<Long, List<ExerciseDetailSet>> setsMap) {
+            Member member) {
         ExerciseDetailDto dto = new ExerciseDetailDto();
         dto.setWeeks(weeks);
 
         List<ExerciseDetailDto.day> days = detailsByDay.entrySet().stream()
                 .sorted(Comparator.comparingInt(dayEntry -> getDayOrder(dayEntry.getKey())))
-                .map(dayEntry -> buildDayDto(dayEntry.getKey(), dayEntry.getValue(), member, setsMap))
+                .map(dayEntry -> buildDayDto(dayEntry.getKey(), dayEntry.getValue(), member))
                 .collect(Collectors.toList());
 
         dto.setDays(days);
@@ -147,14 +131,13 @@ public class RoutineService {
     private ExerciseDetailDto.day buildDayDto(
             String day,
             List<ExerciseDetail> details,
-            Member member,
-            Map<Long, List<ExerciseDetailSet>> setsMap) {
+            Member member) {
         ExerciseDetailDto.day dayDto = new ExerciseDetailDto.day();
         dayDto.setDay(day);
 
         List<ExerciseDetailDto.day.exercises> exercisesList = details.stream()
                 .sorted(Comparator.comparingInt(ExerciseDetail::getSequence))
-                .map(detail -> buildExerciseDto(detail, member, setsMap))
+                .map(detail -> buildExerciseDto(detail, member))
                 .collect(Collectors.toList());
 
         dayDto.setExercises(exercisesList);
@@ -163,12 +146,11 @@ public class RoutineService {
 
     private ExerciseDetailDto.day.exercises buildExerciseDto(
             ExerciseDetail detail,
-            Member member,
-            Map<Long, List<ExerciseDetailSet>> setsMap) {
+            Member member) {
         ExerciseDetailDto.day.exercises exercisesDto = new ExerciseDetailDto.day.exercises();
         exercisesDto.setName(detail.getName());
 
-        List<ExerciseDetailDto.day.exercises.SetDetail> setsList = buildSetDtoList(detail, member, setsMap);
+        List<ExerciseDetailDto.day.exercises.SetDetail> setsList = buildSetDtoList(detail, member);
 
         exercisesDto.setSets(setsList);
         return exercisesDto;
@@ -176,9 +158,8 @@ public class RoutineService {
 
     private List<ExerciseDetailDto.day.exercises.SetDetail> buildSetDtoList(
             ExerciseDetail detail,
-            Member member,
-            Map<Long, List<ExerciseDetailSet>> setsMap) {
-        List<ExerciseDetailSet> sets = setsMap.getOrDefault(detail.getId(), Collections.emptyList());
+            Member member) {
+        List<ExerciseDetailSet> sets = detail.getExerciseDetailSetList();
         return sets.stream()
                 .map(set -> buildSetDetailDto(set, member))
                 .collect(Collectors.toList());

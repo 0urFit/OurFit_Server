@@ -1,5 +1,6 @@
 package project1.OurFit.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public interface ExerciseDetailRepository extends JpaRepository<ExerciseDetail, Long> {
 
+    @EntityGraph(attributePaths= "exerciseDetailSetList")
     @Query("SELECT ed FROM ExerciseDetail ed " +
             "WHERE ed.exerciseRoutine.id = :routineId " +
             "AND ed.exerciseRoutine.category = :category " +
