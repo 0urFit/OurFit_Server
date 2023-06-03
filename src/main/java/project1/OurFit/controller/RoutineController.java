@@ -7,6 +7,7 @@ import project1.OurFit.response.ExerciseDetailDto;
 import project1.OurFit.response.ExerciseRoutineWithEnrollmentStatusDto;
 import project1.OurFit.service.RoutineService;
 import project1.constant.response.JsonResponse;
+import project1.constant.response.JsonResponseStatus;
 
 import java.util.List;
 
@@ -65,5 +66,21 @@ public class RoutineController {
             @PathVariable String category, @PathVariable Long routineId, @PathVariable int week) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return new JsonResponse<>(routineService.getExerciseDetails(category, routineId, email, week));
+    }
+
+    @PostMapping("/exercise/{id}")
+    @ResponseBody
+    public JsonResponse<JsonResponseStatus> enrollExercise(@PathVariable Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        routineService.enrollExercise(email, id);
+        return new JsonResponse<>(JsonResponseStatus.SUCCESS);
+    }
+
+    @DeleteMapping("/exercise/{id}")
+    @ResponseBody
+    public JsonResponse<JsonResponseStatus> deleteEnrollExercise(@PathVariable Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        routineService.deleteEnrollExercise(email, id);
+        return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 }

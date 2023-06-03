@@ -1,10 +1,14 @@
 package project1.OurFit.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import project1.OurFit.entity.ExerciseEnroll;
+import project1.OurFit.entity.ExerciseRoutine;
+import project1.OurFit.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ExerciseEnrollRepository extends JpaRepository<ExerciseEnroll, Long> {
 
@@ -12,4 +16,8 @@ public interface ExerciseEnrollRepository extends JpaRepository<ExerciseEnroll, 
     List<ExerciseEnroll> findByMemberEmail(String email);
 
     List<ExerciseEnroll> findAllByMemberEmail(String userEmail);
+
+    boolean existsByMemberIdAndExerciseRoutineId(Long memberId, Long routineId);
+
+    Optional<Object> findByMemberIdAndExerciseRoutineId(Long id, Long routineId);
 }

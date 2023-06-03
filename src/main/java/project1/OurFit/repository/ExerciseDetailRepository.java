@@ -12,6 +12,7 @@ public interface ExerciseDetailRepository extends JpaRepository<ExerciseDetail, 
 
     @EntityGraph(attributePaths= "exerciseDetailSetList")
     @Query("SELECT ed FROM ExerciseDetail ed " +
+            "LEFT JOIN FETCH ed.exerciseDetailSetList " +
             "WHERE ed.exerciseRoutine.id = :routineId " +
             "AND ed.exerciseRoutine.category = :category " +
             "AND ed.weeks = :week " +
@@ -21,4 +22,7 @@ public interface ExerciseDetailRepository extends JpaRepository<ExerciseDetail, 
             @Param("category") String category,
             @Param("week") int week
     );
+
+    @Query("select distinct ed from ExerciseDetail ed join fetch ed.exerciseDetailSetList eds where ed.exerciseRoutine.id = :routineId")
+    List<ExerciseDetail> findAllByExerciseRoutineIdWithSets(@Param("routineId") Long routineId);
 }

@@ -25,6 +25,7 @@ public enum JsonResponseStatus {
     REFRESH_TOKEN_NOT_FOUND(false, HttpStatus.NOT_FOUND.value(), "리프레시 토큰이 없습니다."),
     ACCESS_TOKEN_EXPIRED(false, HttpStatus.UNAUTHORIZED.value(), "액세스 토큰이 만료되었습니다."),
     TOO_MANY_REQUESTS(false, HttpStatus.TOO_MANY_REQUESTS.value(), "15분 후에 다시 시도하세요."),
+    NOT_FOUND_ENROLL(false, HttpStatus.NOT_FOUND.value(), "등록된 운동이 없습니다."),
     /**
      * 500 :  Database, Server 오류
      */

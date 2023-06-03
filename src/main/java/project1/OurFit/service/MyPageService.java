@@ -79,6 +79,6 @@ public class MyPageService {
     public void completeRoutine(Long rouId) {
         EnrollDetail enrollDetail = enrollDetailRepository.findById(rouId)
                 .orElseThrow(()->new BaseException(NOTFOUND));
-        enrollDetail.completeRoutine();
+//        enrollDetail.completeRoutine();
     }
 }

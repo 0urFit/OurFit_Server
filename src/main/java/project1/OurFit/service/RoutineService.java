@@ -8,6 +8,7 @@ import project1.OurFit.response.ExerciseDetailDto;
 import project1.OurFit.response.ExerciseRoutineWithEnrollmentStatusDto;
 import project1.constant.exception.BaseException;
 import project1.constant.response.JsonResponse;
+import project1.constant.response.JsonResponseStatus;
 
 
 import java.time.DayOfWeek;
@@ -26,7 +27,8 @@ public class RoutineService {
     private final ExerciseRoutineRepository exerciseRoutineRepository;
     private final ExerciseEnrollRepository exerciseEnrollRepository;
     private final ExerciseDetailRepository exerciseDetailRepository;
-    private final ExerciseDetailSetRepository exerciseDetailSetRepository;
+    private final EnrollDetailRepository enrollDetailRepository;
+    private final EnrollDetailSetRepository enrollDetailSetRepository;
 
 
 
@@ -208,5 +210,64 @@ public class RoutineService {
         } else {
             return memberWeight * increase;
         }
+    }
+
+    public void enrollExercise(String email, Long routineId) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
+
+        ExerciseRoutine routine = exerciseRoutineRepository.findById(routineId)
+                .orElseThrow(() -> new BaseException(NOT_FOUND_ROUTINE));
+
+        if (exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId)) {
+            return;
+        }
+
+        ExerciseEnroll exerciseEnroll = new ExerciseEnroll();
+        exerciseEnroll.setMember(member);
+        exerciseEnroll.setExerciseRoutine(routine);
+
+        List<ExerciseDetail> details = exerciseDetailRepository.findAllByExerciseRoutineIdWithSets(routine.getId());
+
+        List<EnrollDetail> enrollDetails = new ArrayList<>();
+        List<EnrollDetailSet> enrollDetailSets = new ArrayList<>();
+
+        for (ExerciseDetail detail : details) {
+            EnrollDetail enrollDetail = new EnrollDetail();
+            enrollDetail.setExerciseEnroll(exerciseEnroll);
+            enrollDetail.setExerciseDetail(detail);
+            enrollDetails.add(enrollDetail);
+
+            List<ExerciseDetailSet> sets = detail.getExerciseDetailSetList();
+
+            for (ExerciseDetailSet set : sets) {
+                EnrollDetailSet enrollDetailSet = new EnrollDetailSet();
+                enrollDetailSet.setEnrollDetail(enrollDetail);
+                enrollDetailSet.setWeight(set.getWeight());
+                enrollDetailSet.setReps(set.getReps());
+                enrollDetailSet.setSequence(set.getSequence());
+                enrollDetailSets.add(enrollDetailSet);
+            }
+        }
+
+        exerciseEnrollRepository.save(exerciseEnroll);
+        enrollDetailRepository.saveAll(enrollDetails);
+        enrollDetailSetRepository.saveAll(enrollDetailSets);
+    }
+
+    public void deleteEnrollExercise(String email, Long routineId) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
+
+        ExerciseEnroll exerciseEnroll = (ExerciseEnroll) exerciseEnrollRepository.findByMemberIdAndExerciseRoutineId(member.getId(), routineId)
+                .orElseThrow(() -> new BaseException(NOT_FOUND_ENROLL));
+
+        List<EnrollDetail> enrollDetails = enrollDetailRepository.findByExerciseEnrollId(exerciseEnroll.getId());
+        List<Long> enrollDetailIds = enrollDetails.stream().map(EnrollDetail::getId).collect(Collectors.toList());
+        List<EnrollDetailSet> enrollDetailSets = enrollDetailSetRepository.findByEnrollDetailIdIn(enrollDetailIds);
+
+        enrollDetailSetRepository.deleteAll(enrollDetailSets);
+        enrollDetailRepository.deleteAll(enrollDetails);
+        exerciseEnrollRepository.delete(exerciseEnroll);
     }
 }
