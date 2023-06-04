@@ -9,10 +9,11 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ExerciseDetailDto {
+public class EnrollDetailDto {
     private int weeks;
     private List<day> days;
-
+    private boolean complete;
+    private Long routineId; //운동상세루틴 id
 
     @Getter
     @Setter
