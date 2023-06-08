@@ -37,6 +37,10 @@ public class RoutineService {
                 .orElseThrow(()-> new BaseException(NOT_FOUND_MEMBER));
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
                 .orElseThrow(()-> new BaseException(NOT_FOUND_ROUTINE));
+
+        if (exerciseLikeRepository.existsByMemberEmailAndExerciseRoutineId(userEmail, routineId))
+            return;
+
         ExerciseLike like = new ExerciseLike(member,exerciseRoutine);
         exerciseLikeRepository.save(like);
     }
@@ -258,6 +262,10 @@ public class RoutineService {
     public void deleteEnrollExercise(String email, Long routineId) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
+
+        if (!exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId)) {
+            return; // 루틴이 등록되지 않았을 경우 함수 종료
+        }
 
         ExerciseEnroll exerciseEnroll = (ExerciseEnroll) exerciseEnrollRepository.findByMemberIdAndExerciseRoutineId(member.getId(), routineId)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_ENROLL));
