@@ -12,7 +12,7 @@ public class MyLikeRes {
     private int level;
     private int fewTime;
     private int period;
-    private Long routineId;
+    private Long Id;
 
     public MyLikeRes(ExerciseRoutine ex){
         this.routineName=ex.getRoutineName();
@@ -20,7 +20,7 @@ public class MyLikeRes {
         this.level=ex.getLevel();
         this.fewTime=ex.getFewTime();
         this.period=ex.getPeriod();
-        this.routineId=ex.getId();
+        this.Id=ex.getId();
     }
 }
 

@@ -16,6 +16,7 @@ import project1.constant.response.JsonResponseStatus;
 
 import java.time.DayOfWeek;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -218,7 +219,6 @@ public class RoutineService {
         }
     }
 
-    @Transactional
     public void enrollExercise(String email, Long routineId) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
@@ -258,8 +258,15 @@ public class RoutineService {
         }
 
         exerciseEnrollRepository.save(exerciseEnroll);
-        enrollDetailRepository.saveAll(enrollDetails);
-        enrollDetailSetRepository.saveAll(enrollDetailSets);
+        CompletableFuture<Void> enrollDetailsFuture = CompletableFuture.runAsync(() -> {
+            enrollDetailRepository.saveAll(enrollDetails);
+        });
+
+        CompletableFuture<Void> enrollDetailSetsFuture = CompletableFuture.runAsync(() -> {
+            enrollDetailSetRepository.saveAll(enrollDetailSets);
+        });
+//        enrollDetailRepository.saveAll(enrollDetails);
+//        enrollDetailSetRepository.saveAll(enrollDetailSets);
     }
 
     public void deleteEnrollExercise(String email, Long routineId) {
