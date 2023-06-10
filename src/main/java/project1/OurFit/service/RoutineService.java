@@ -1,7 +1,10 @@
 package project1.OurFit.service;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.entity.*;
 import project1.OurFit.repository.*;
 import project1.OurFit.response.ExerciseDetailDto;
@@ -29,8 +32,7 @@ public class RoutineService {
     private final ExerciseDetailRepository exerciseDetailRepository;
     private final EnrollDetailRepository enrollDetailRepository;
     private final EnrollDetailSetRepository enrollDetailSetRepository;
-
-
+    private final EntityManager entityManager;
 
     public void postLike(String userEmail, Long routineId) {
         Member member=memberRepository.findByEmail(userEmail)
@@ -88,11 +90,11 @@ public class RoutineService {
         return result;
     }
 
-    public List<ExerciseDetailDto> getExerciseDetails(String category, Long routineId, String email, int week) {
+    public List<ExerciseDetailDto> getExerciseDetails(Long routineId, String email, int week) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
 
-        List<ExerciseDetail> details = exerciseDetailRepository.findAllByWeekAndExerciseRoutineCategory(routineId, category, week);
+        List<ExerciseDetail> details = exerciseDetailRepository.findAllByWeekAndExerciseRoutine(routineId, week);
 
         Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay = groupExerciseDetails(details);
 
@@ -216,6 +218,7 @@ public class RoutineService {
         }
     }
 
+    @Transactional
     public void enrollExercise(String email, Long routineId) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
@@ -247,7 +250,7 @@ public class RoutineService {
             for (ExerciseDetailSet set : sets) {
                 EnrollDetailSet enrollDetailSet = new EnrollDetailSet();
                 enrollDetailSet.setEnrollDetail(enrollDetail);
-                enrollDetailSet.setWeight(set.getWeight());
+                enrollDetailSet.setWeight(calculateWeight(member, set));
                 enrollDetailSet.setReps(set.getReps());
                 enrollDetailSet.setSequence(set.getSequence());
                 enrollDetailSets.add(enrollDetailSet);

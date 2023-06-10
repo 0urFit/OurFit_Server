@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,4 +24,7 @@ public class EnrollDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exerciseEnrollId")
     private ExerciseEnroll exerciseEnroll;
+
+    @OneToMany(mappedBy = "enrollDetail", fetch = FetchType.LAZY)
+    private List<EnrollDetailSet> enrollDetailSets = new ArrayList<>();
 }

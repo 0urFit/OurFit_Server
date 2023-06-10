@@ -31,7 +31,7 @@ public class MyPageController {
     public JsonResponse<List<MyRoutineRes>> getMyRoutine(
             @RequestParam(required = false) String category){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(category==null){
+        if(category == null || category.equals("all")){
             List<MyRoutineRes> myRoutineResList = myPageService.getMyRoutine(userEmail);
             return new JsonResponse<>(myRoutineResList);
         }
@@ -43,15 +43,12 @@ public class MyPageController {
      * API 문서 5-2
      * 저장한 운동 루틴 Detail Page
      */
-    @GetMapping("/mypage/exercise/{category}/{routineId}/{week}")
+    @GetMapping("/mypage/exercise/{routineId}/{week}")
     @ResponseBody
     public JsonResponse<List<EnrollDetailDto>> getMyRoutineDetail(
-            @PathVariable String category, @PathVariable Long routineId, @PathVariable int week){
+            @PathVariable Long routineId, @PathVariable int week){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<EnrollDetailDto> exerciseDetailDtoList =myPageService
-                .getMyRoutineDetail(category,routineId,email,week);
-
-        return new JsonResponse<>(exerciseDetailDtoList);
+        return new JsonResponse<>(myPageService.getEnrollDetails(email, routineId, week));
     }
 
 

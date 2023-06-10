@@ -20,5 +20,4 @@ public class ExerciseDetailSet {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exerciseDetailId")
     private ExerciseDetail exerciseDetail;
-
 }

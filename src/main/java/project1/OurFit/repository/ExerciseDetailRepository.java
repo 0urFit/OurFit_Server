@@ -14,12 +14,10 @@ public interface ExerciseDetailRepository extends JpaRepository<ExerciseDetail, 
     @Query("SELECT ed FROM ExerciseDetail ed " +
             "LEFT JOIN FETCH ed.exerciseDetailSetList " +
             "WHERE ed.exerciseRoutine.id = :routineId " +
-            "AND ed.exerciseRoutine.category = :category " +
             "AND ed.weeks = :week " +
             "ORDER BY ed.weeks ASC, ed.day ASC, ed.sequence ASC")
-    List<ExerciseDetail> findAllByWeekAndExerciseRoutineCategory(
+    List<ExerciseDetail> findAllByWeekAndExerciseRoutine(
             @Param("routineId") Long routineId,
-            @Param("category") String category,
             @Param("week") int week
     );
 

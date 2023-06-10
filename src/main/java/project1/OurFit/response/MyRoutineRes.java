@@ -1,6 +1,5 @@
 package project1.OurFit.response;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import project1.OurFit.entity.ExerciseRoutine;
@@ -14,7 +13,7 @@ public class MyRoutineRes {
     private int period;
     private String imgpath;
     private String category;
-    private Long exerciseId;
+    private Long Id;
 
     public MyRoutineRes(ExerciseRoutine ex){
         this.routineName=ex.getRoutineName();
@@ -23,6 +22,6 @@ public class MyRoutineRes {
         this.period=ex.getPeriod();
         this.imgpath=ex.getImgpath();
         this.category=ex.getCategory();
-        this.exerciseId=ex.getId();
+        this.Id=ex.getId();
     }
 }

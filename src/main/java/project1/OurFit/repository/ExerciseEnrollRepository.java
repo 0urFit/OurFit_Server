@@ -1,11 +1,8 @@
 package project1.OurFit.repository;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import project1.OurFit.entity.ExerciseEnroll;
-import project1.OurFit.entity.ExerciseRoutine;
-import project1.OurFit.entity.Member;
 
 import java.util.List;
 import java.util.Optional;
