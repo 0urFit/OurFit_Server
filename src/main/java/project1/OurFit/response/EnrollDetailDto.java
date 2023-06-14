@@ -10,8 +10,15 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class EnrollDetailDto {
+    private String routineName;
+    private String category;
+    private int level;
+    private int fewTime;
+    private int period;
+    private int weekProgress;
     private int weeks;
     private List<day> days;
+
 
     @Getter
     @Setter

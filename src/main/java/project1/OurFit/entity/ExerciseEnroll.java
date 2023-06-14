@@ -22,4 +22,6 @@ public class ExerciseEnroll {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exerciseRoutineId")
     private ExerciseRoutine exerciseRoutine;
+
+    private int weekProgress;
 }

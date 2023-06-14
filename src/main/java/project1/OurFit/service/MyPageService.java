@@ -2,7 +2,6 @@ package project1.OurFit.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.entity.*;
 import project1.OurFit.repository.*;
 import project1.OurFit.response.EnrollDetailDto;
@@ -22,49 +21,20 @@ public class MyPageService {
     private final ExerciseRoutineRepository routineRepository;
     private final ExerciseLikeRepository exerciseLikeRepository;
     private final EnrollDetailRepository enrollDetailRepository;
-    private final EnrollDetailSetRepository enrollDetailSetRepository;
     private final MemberRepository memberRepository;
-    private final ExerciseDetailRepository exerciseDetailRepository;
 
+    public List<MyRoutineRes> getMyRoutine(String userEmail, String category) {
+        List<ExerciseEnroll> enrollRepositoryList;
 
-    public List<MyRoutineRes> getMyRoutine(String userEmail) {
-//        Long memberId = memberRepository.findByEmail(userEmail)
-//                .map(Member::getId)
-//                .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
-//
-//        List<ExerciseEnroll> enrollRepositoryList =
-//                exerciseEnrollRepository.findByMemberId(memberId);
+        if (category.equals("all"))
+            enrollRepositoryList = exerciseEnrollRepository.findByMemberEmail(userEmail);
+        else
+            enrollRepositoryList = exerciseEnrollRepository.findByMemberEmailAndExerciseRoutine_Category(userEmail, category);
 
-        List<ExerciseEnroll> enrollRepositoryList = exerciseEnrollRepository.findByMemberEmail(userEmail);
-        List<ExerciseRoutine> exerciseRoutineList = new ArrayList<>();
-
-        for (ExerciseEnroll exerciseEnroll : enrollRepositoryList) {
-            Long rouId = exerciseEnroll.getExerciseRoutine().getId();
-            ExerciseRoutine exerciseRoutine = routineRepository.findById(rouId).
-                    orElseThrow(()->new BaseException(NOT_FOUND_ROUTINE));
-            exerciseRoutineList.add(exerciseRoutine);
-        }
-        return exerciseRoutineList.stream()
-                .map(MyRoutineRes::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<MyRoutineRes> getMyRoutineByCate(String userEmail, String category) {
-        List<ExerciseEnroll> enrollRepositoryList = exerciseEnrollRepository.findByMemberEmail(userEmail);
-        List<ExerciseRoutine> exerciseRoutineList = new ArrayList<>();
-        for (ExerciseEnroll exerciseEnroll : enrollRepositoryList) {
-            Long rouId = exerciseEnroll.getExerciseRoutine().getId();
-            try {
-                ExerciseRoutine exerciseRoutine = routineRepository.findByIdAndCategory(rouId, category).
-                        orElseThrow(() -> new BaseException(NOT_FOUND_ROUTINE));
-
-                exerciseRoutineList.add(exerciseRoutine);
-            } catch (BaseException e){
-                continue;
-            }
-        }
-        return exerciseRoutineList.stream()
-                .map(MyRoutineRes::new)
+        return enrollRepositoryList.stream()
+                .map(exerciseEnroll -> new MyRoutineRes(
+                        exerciseEnroll.getExerciseRoutine(),
+                        exerciseEnroll.getWeekProgress()))
                 .collect(Collectors.toList());
     }
 
@@ -90,6 +60,9 @@ public class MyPageService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
 
+        ExerciseRoutine exerciseRoutine = routineRepository.findById(routineId)
+                .orElseThrow(() -> new BaseException(NOT_FOUND_ROUTINE));
+
         List<EnrollDetail> details = enrollDetailRepository.
                 findAllByExerciseDetail_ExerciseRoutine_IdAndExerciseDetail_Weeks(routineId, week)
                 .stream()
@@ -98,7 +71,7 @@ public class MyPageService {
 
         Map<Integer, Map<String, List<EnrollDetail>>> detailsByWeekAndDay = groupEnrollDetails(details);
 
-        return buildEnrollDetailDtoList(detailsByWeekAndDay);
+        return buildEnrollDetailDtoList(detailsByWeekAndDay, exerciseRoutine);
     }
 
     private Map<Integer, Map<String, List<EnrollDetail>>> groupEnrollDetails(List<EnrollDetail> details) {
@@ -113,16 +86,23 @@ public class MyPageService {
     }
 
     private List<EnrollDetailDto> buildEnrollDetailDtoList(
-            Map<Integer, Map<String, List<EnrollDetail>>> detailsByWeekAndDay) {
+            Map<Integer, Map<String, List<EnrollDetail>>> detailsByWeekAndDay,
+            ExerciseRoutine exerciseRoutine) {
         return detailsByWeekAndDay.entrySet().stream()
-                .map(entry -> buildEnrollDetailDto(entry.getKey(), entry.getValue()))
+                .map(entry -> buildEnrollDetailDto(entry.getKey(), entry.getValue(), exerciseRoutine))
                 .collect(Collectors.toList());
     }
 
     private EnrollDetailDto buildEnrollDetailDto(
             Integer weeks,
-            Map<String, List<EnrollDetail>> detailsByDay) {
+            Map<String, List<EnrollDetail>> detailsByDay,
+            ExerciseRoutine exerciseRoutine) {
         EnrollDetailDto dto = new EnrollDetailDto();
+        dto.setRoutineName(exerciseRoutine.getRoutineName());
+        dto.setCategory(exerciseRoutine.getCategory());
+        dto.setLevel(exerciseRoutine.getLevel());
+        dto.setFewTime(exerciseRoutine.getFewTime());
+        dto.setPeriod(exerciseRoutine.getPeriod());
         dto.setWeeks(weeks);
 
         List<EnrollDetailDto.day> days = detailsByDay.entrySet().stream()
@@ -182,49 +162,4 @@ public class MyPageService {
             default -> Integer.MAX_VALUE;
         };
     }
-
-//    @Transactional(readOnly = true)
-//    public List<EnrollDetailDto> getMyRoutineDetail(String email, Long routineId, int week) {
-//        Member member = memberRepository.findByEmail(email)
-//                .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
-//        List<ExerciseEnroll> exerciseEnrolls = exerciseEnrollRepository.findByMemberIdAndRoutineId(member.getId(), routineId);
-//
-//        List<EnrollDetailDto> response = new ArrayList<>();
-//
-//        for (ExerciseEnroll enroll : exerciseEnrolls) {
-//            List<EnrollDetail> enrollDetails = enrollDetailRepository.findAllByExerciseEnrollId(enroll.getId());
-//
-//            for (EnrollDetail detail : enrollDetails) {
-//                // Convert detail to EnrollDetailDto
-//                EnrollDetailDto detailDto = new EnrollDetailDto();
-//                detailDto.setWeeks(week);
-//
-//                // Add day details
-//                EnrollDetailDto.day dayDto = new EnrollDetailDto.day();
-//                dayDto.setDay(detail.getExerciseDetail().getDay());
-//                detailDto.getDays().add(dayDto);
-//
-//                // Add exercise details
-//                EnrollDetailDto.day.exercises exerciseDto = new EnrollDetailDto.day.exercises();
-//                exerciseDto.setName(detail.getExerciseDetail().getName());
-//
-//                for (EnrollDetailSet detailSet : detail.getEnrollDetailSets()) {
-//                    // Convert detailSet to SetDetail
-//                    EnrollDetailDto.day.exercises.SetDetail setDetail = new EnrollDetailDto.day.exercises.SetDetail();
-//                    setDetail.setId(detailSet.getId());
-//                    setDetail.setSequence(detailSet.getSequence());
-//                    setDetail.setWeight(detailSet.getWeight());
-//                    setDetail.setReps(detailSet.getReps());
-//                    setDetail.setComplete(detailSet.getComplete());
-//
-//                    exerciseDto.getSets().add(setDetail);
-//                }
-//
-//                dayDto.getExercises().add(exerciseDto);
-//                response.add(detailDto);
-//            }
-//        }
-//
-//        return response;
-//    }
 }

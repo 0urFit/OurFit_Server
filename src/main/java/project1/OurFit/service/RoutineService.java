@@ -33,7 +33,6 @@ public class RoutineService {
     private final ExerciseDetailRepository exerciseDetailRepository;
     private final EnrollDetailRepository enrollDetailRepository;
     private final EnrollDetailSetRepository enrollDetailSetRepository;
-    private final EntityManager entityManager;
 
     public void postLike(String userEmail, Long routineId) {
         Member member=memberRepository.findByEmail(userEmail)
@@ -95,11 +94,14 @@ public class RoutineService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
 
+        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
+                .orElseThrow(() -> new BaseException(NOT_FOUND_ROUTINE));
+
         List<ExerciseDetail> details = exerciseDetailRepository.findAllByWeekAndExerciseRoutine(routineId, week);
 
         Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay = groupExerciseDetails(details);
 
-        return buildExerciseDetailDtoList(detailsByWeekAndDay, member);
+        return buildExerciseDetailDtoList(detailsByWeekAndDay, member, exerciseRoutine.getPeriod());
     }
 
     private Map<Integer, Map<String, List<ExerciseDetail>>> groupExerciseDetails(List<ExerciseDetail> details) {
@@ -115,18 +117,21 @@ public class RoutineService {
 
     private List<ExerciseDetailDto> buildExerciseDetailDtoList(
             Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay,
-            Member member) {
+            Member member,
+            int period) {
         return detailsByWeekAndDay.entrySet().stream()
-                .map(entry -> buildExerciseDetailDto(entry.getKey(), entry.getValue(), member))
+                .map(entry -> buildExerciseDetailDto(entry.getKey(), entry.getValue(), member, period))
                 .collect(Collectors.toList());
     }
 
     private ExerciseDetailDto buildExerciseDetailDto(
             Integer weeks,
             Map<String, List<ExerciseDetail>> detailsByDay,
-            Member member) {
+            Member member,
+            int period) {
         ExerciseDetailDto dto = new ExerciseDetailDto();
         dto.setWeeks(weeks);
+        dto.setPeriod(period);
 
         List<ExerciseDetailDto.day> days = detailsByDay.entrySet().stream()
                 .sorted(Comparator.comparingInt(dayEntry -> getDayOrder(dayEntry.getKey())))
@@ -198,7 +203,7 @@ public class RoutineService {
 
     private double calculateWeight(Member member, ExerciseDetailSet set) {
         String exercise = set.getExercise();
-        double increase = set.getIncrease();
+        Double increase = set.getIncrease();
 
         if (exercise == null) {
             return set.getWeight();
@@ -215,7 +220,7 @@ public class RoutineService {
         if (memberWeight == null) {
             return set.getWeight();
         } else {
-            return memberWeight * increase;
+            return Math.round(memberWeight * increase * 10.0) / 10.0;
         }
     }
 
@@ -265,8 +270,6 @@ public class RoutineService {
         CompletableFuture<Void> enrollDetailSetsFuture = CompletableFuture.runAsync(() -> {
             enrollDetailSetRepository.saveAll(enrollDetailSets);
         });
-//        enrollDetailRepository.saveAll(enrollDetails);
-//        enrollDetailSetRepository.saveAll(enrollDetailSets);
     }
 
     public void deleteEnrollExercise(String email, Long routineId) {
@@ -284,8 +287,12 @@ public class RoutineService {
         List<Long> enrollDetailIds = enrollDetails.stream().map(EnrollDetail::getId).collect(Collectors.toList());
         List<EnrollDetailSet> enrollDetailSets = enrollDetailSetRepository.findByEnrollDetailIdIn(enrollDetailIds);
 
-        enrollDetailSetRepository.deleteAll(enrollDetailSets);
-        enrollDetailRepository.deleteAll(enrollDetails);
         exerciseEnrollRepository.delete(exerciseEnroll);
+        CompletableFuture<Void> enrollDetailSetDeleteFuture = CompletableFuture.runAsync(() -> {
+            enrollDetailSetRepository.deleteAll(enrollDetailSets);
+        });
+        CompletableFuture<Void> enrollDetailDeleteFuture = CompletableFuture.runAsync(() -> {
+            enrollDetailRepository.deleteAll(enrollDetails);
+        });
     }
 }

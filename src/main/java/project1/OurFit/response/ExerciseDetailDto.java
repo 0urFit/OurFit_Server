@@ -10,9 +10,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ExerciseDetailDto {
+    private int period;
     private int weeks;
     private List<day> days;
-
 
     @Getter
     @Setter

@@ -31,12 +31,8 @@ public class MyPageController {
     public JsonResponse<List<MyRoutineRes>> getMyRoutine(
             @RequestParam(required = false) String category){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(category == null || category.equals("all")){
-            List<MyRoutineRes> myRoutineResList = myPageService.getMyRoutine(userEmail);
-            return new JsonResponse<>(myRoutineResList);
-        }
-        List<MyRoutineRes> myRoutineRes = myPageService.getMyRoutineByCate(userEmail, category);
-        return new JsonResponse<>(myRoutineRes);
+        List<MyRoutineRes> myRoutineResList = myPageService.getMyRoutine(userEmail, category);
+        return new JsonResponse<>(myRoutineResList);
     }
 
     /**
