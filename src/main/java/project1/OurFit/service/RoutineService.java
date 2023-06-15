@@ -287,12 +287,14 @@ public class RoutineService {
         List<Long> enrollDetailIds = enrollDetails.stream().map(EnrollDetail::getId).collect(Collectors.toList());
         List<EnrollDetailSet> enrollDetailSets = enrollDetailSetRepository.findByEnrollDetailIdIn(enrollDetailIds);
 
-        exerciseEnrollRepository.delete(exerciseEnroll);
         CompletableFuture<Void> enrollDetailSetDeleteFuture = CompletableFuture.runAsync(() -> {
             enrollDetailSetRepository.deleteAll(enrollDetailSets);
-        });
-        CompletableFuture<Void> enrollDetailDeleteFuture = CompletableFuture.runAsync(() -> {
-            enrollDetailRepository.deleteAll(enrollDetails);
+        }).thenRun(() -> {
+            CompletableFuture<Void> enrollDetailDeleteFuture = CompletableFuture.runAsync(() -> {
+                enrollDetailRepository.deleteAll(enrollDetails);
+            }).thenRun(() -> {
+                exerciseEnrollRepository.delete(exerciseEnroll);
+            });
         });
     }
 }
