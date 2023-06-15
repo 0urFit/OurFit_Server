@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import project1.OurFit.entity.*;
 import project1.OurFit.repository.*;
+import project1.OurFit.request.ExerciseCompleteDto;
 import project1.OurFit.response.EnrollDetailDto;
 import project1.OurFit.response.MyLikeRes;
 import project1.OurFit.response.MyRoutineRes;
@@ -49,11 +50,14 @@ public class MyPageService {
         return myRoutineRes;
     }
 
-    //complete 하면 enroll_detail_set rate 를 바꿔야 하는데 값을 모르겠네
-    public void completeRoutine(Long rouId) {
-        EnrollDetail enrollDetail = enrollDetailRepository.findById(rouId)
-                .orElseThrow(() -> new BaseException(NOTFOUND));
-//        enrollDetail.completeRoutine();
+    public void completeRoutine(String email, ExerciseCompleteDto completeDto) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
+
+        ExerciseRoutine exerciseRoutine = routineRepository.findById(completeDto.getRoutineId())
+                .orElseThrow(() -> new BaseException(NOT_FOUND_ROUTINE));
+
+
     }
 
     public List<EnrollDetailDto> getEnrollDetails(String email, Long routineId, int week) {
@@ -147,7 +151,6 @@ public class MyPageService {
         setDetailDto.setSequence(set.getSequence());
         setDetailDto.setReps(set.getReps());
         setDetailDto.setWeight(set.getWeight());
-        setDetailDto.setComplete(set.getComplete());
         return setDetailDto;
     }
 
