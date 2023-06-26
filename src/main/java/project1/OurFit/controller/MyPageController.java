@@ -3,6 +3,7 @@ package project1.OurFit.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import project1.OurFit.request.ExerciseCompleteDto;
 import project1.OurFit.response.EnrollDetailDto;
 import project1.OurFit.response.ExerciseDetailDto;
 import project1.OurFit.response.MyLikeRes;
@@ -48,7 +49,6 @@ public class MyPageController {
     }
 
 
-
     /**
      * MyPage 들어갔을 때 좋아요 한 루틴 조회
      * @return
@@ -61,10 +61,11 @@ public class MyPageController {
         return new JsonResponse<>(myLikeRes);
     }
 
-    @PatchMapping("mypage/exercise/{rouId}/complete")
+    @PatchMapping("mypage/exercise/complete")
     @ResponseBody
-    public JsonResponse<JsonResponseStatus> completeRoutine(@PathVariable Long rouId){
-        myPageService.completeRoutine(rouId);
+    public JsonResponse<JsonResponseStatus> completeRoutine(@RequestBody ExerciseCompleteDto completeDto){
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        myPageService.completeRoutine(userEmail, completeDto);
         return new JsonResponse<>(SUCCESS);
     }
 }

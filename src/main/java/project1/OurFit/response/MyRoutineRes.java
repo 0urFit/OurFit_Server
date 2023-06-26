@@ -14,9 +14,11 @@ public class MyRoutineRes {
     private String imgpath;
     private String category;
     private int weekProgress;
+    private boolean isLiked;
+    private boolean isEnrolled;
     private Long Id;
 
-    public MyRoutineRes(ExerciseRoutine ex, int weekProgress){
+    public MyRoutineRes(ExerciseRoutine ex, int weekProgress, boolean isLiked, boolean isEnrolled){
         this.routineName=ex.getRoutineName();
         this.level=ex.getLevel();
         this.fewTime=ex.getFewTime();
@@ -24,6 +26,8 @@ public class MyRoutineRes {
         this.imgpath=ex.getImgpath();
         this.category=ex.getCategory();
         this.weekProgress = weekProgress;
+        this.isLiked = isLiked;
+        this.isEnrolled = isEnrolled;
         this.Id=ex.getId();
     }
 }

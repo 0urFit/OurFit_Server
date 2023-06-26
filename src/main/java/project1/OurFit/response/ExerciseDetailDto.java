@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ExerciseDetailDto {
     private int period;
+    private boolean isLiked;
     private int weeks;
     private List<day> days;
 

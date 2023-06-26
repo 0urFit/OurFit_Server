@@ -19,4 +19,7 @@ public interface ExerciseLikeRepository extends JpaRepository<ExerciseLike,Long>
     Optional<ExerciseLike> findByMemberEmailAndExerciseRoutineId(@Param("email") String email, @Param("routineId") Long routineId);
 
     boolean existsByMemberEmailAndExerciseRoutineId(String userEmail, Long routineId);
+
+    @Query("SELECT el.exerciseRoutine.id FROM ExerciseLike el WHERE el.member.email = :email AND el.exerciseRoutine.id IN :routineIds")
+    List<Long> findLikedRoutineIdsByMemberEmail(@Param("email") String email, @Param("routineIds") List<Long> routineIds);
 }

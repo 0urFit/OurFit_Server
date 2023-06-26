@@ -8,7 +8,5 @@ import java.util.Optional;
 
 public interface ExerciseRoutineRepository extends JpaRepository<ExerciseRoutine,Long> {
 
-    Optional<ExerciseRoutine> findByIdAndCategory(Long id, String category);
-
     List<ExerciseRoutine> findByCategory(String category);
 }

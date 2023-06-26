@@ -23,6 +23,7 @@ public class MyPageService {
     private final ExerciseLikeRepository exerciseLikeRepository;
     private final EnrollDetailRepository enrollDetailRepository;
     private final MemberRepository memberRepository;
+    private final ExerciseLogsRepository exerciseLogsRepository;
 
     public List<MyRoutineRes> getMyRoutine(String userEmail, String category) {
         List<ExerciseEnroll> enrollRepositoryList;
@@ -32,10 +33,21 @@ public class MyPageService {
         else
             enrollRepositoryList = exerciseEnrollRepository.findByMemberEmailAndExerciseRoutine_Category(userEmail, category);
 
+        List<Long> routineIds = enrollRepositoryList.stream()
+                .map(exerciseEnroll -> exerciseEnroll.getExerciseRoutine().getId())
+                .collect(Collectors.toList());
+
+        // check likes and enrolls for all routine IDs in one go
+        List<Long> likedRoutineIds = exerciseLikeRepository.findLikedRoutineIdsByMemberEmail(userEmail, routineIds);
+        List<Long> enrolledRoutineIds = exerciseEnrollRepository.findEnrolledRoutineIdsByMemberEmail(userEmail, routineIds);
+
         return enrollRepositoryList.stream()
-                .map(exerciseEnroll -> new MyRoutineRes(
-                        exerciseEnroll.getExerciseRoutine(),
-                        exerciseEnroll.getWeekProgress()))
+                .map(exerciseEnroll -> {
+                    ExerciseRoutine routine = exerciseEnroll.getExerciseRoutine();
+                    boolean isLiked = likedRoutineIds.contains(routine.getId());
+                    boolean isEnrolled = enrolledRoutineIds.contains(routine.getId());
+                    return new MyRoutineRes(routine, exerciseEnroll.getWeekProgress(), isLiked, isEnrolled);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -57,7 +69,39 @@ public class MyPageService {
         ExerciseRoutine exerciseRoutine = routineRepository.findById(completeDto.getRoutineId())
                 .orElseThrow(() -> new BaseException(NOT_FOUND_ROUTINE));
 
+        Optional<ExerciseLogs> exerciseLog = exerciseLogsRepository.findByMemberAndExerciseRoutineAndWeekAndDay
+                (member, exerciseRoutine, completeDto.getWeek(), completeDto.getDay());
 
+        if (exerciseLog.isPresent()) {
+            ExerciseLogs exerciseLogs = exerciseLog.get();
+            exerciseLogs.setPercent_rate(completeDto.getPercent_rate());
+            exerciseLogsRepository.save(exerciseLogs);
+        } else {
+            ExerciseLogs exerciseLogs = new ExerciseLogs();
+            exerciseLogs.setMember(member);
+            exerciseLogs.setExerciseRoutine(exerciseRoutine);
+            exerciseLogs.setWeek(completeDto.getWeek());
+            exerciseLogs.setDay(completeDto.getDay());
+            exerciseLogs.setPercent_rate(completeDto.getPercent_rate());
+            exerciseLogsRepository.save(exerciseLogs);
+        }
+
+        if (completeDto.isLastday()) {
+            double averagePercentRate = calculateAveragePercentRate(completeDto.getRoutineId(), completeDto.getWeek());
+            if (averagePercentRate >= 80) {
+                ExerciseEnroll exerciseEnroll = exerciseEnrollRepository.findByMemberAndExerciseRoutine(member, exerciseRoutine);
+                exerciseEnroll.setWeekProgress(exerciseEnroll.getWeekProgress() + 1);
+                exerciseEnrollRepository.save(exerciseEnroll);
+            }
+        }
+    }
+
+    private double calculateAveragePercentRate(long routineId, int week) {
+        List<ExerciseLogs> exerciseLogsList = exerciseLogsRepository.findByExerciseRoutineIdAndWeek(routineId, week);
+        double sum = 0.0;
+        for (ExerciseLogs exerciseLog : exerciseLogsList)
+            sum += exerciseLog.getPercent_rate();
+        return sum / exerciseLogsList.size();
     }
 
     public List<EnrollDetailDto> getEnrollDetails(String email, Long routineId, int week) {

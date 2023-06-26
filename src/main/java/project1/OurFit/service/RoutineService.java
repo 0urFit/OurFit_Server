@@ -99,9 +99,11 @@ public class RoutineService {
 
         List<ExerciseDetail> details = exerciseDetailRepository.findAllByWeekAndExerciseRoutine(routineId, week);
 
+        boolean isLiked = exerciseLikeRepository.existsByMemberEmailAndExerciseRoutineId(email, routineId);
+
         Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay = groupExerciseDetails(details);
 
-        return buildExerciseDetailDtoList(detailsByWeekAndDay, member, exerciseRoutine.getPeriod());
+        return buildExerciseDetailDtoList(detailsByWeekAndDay, member, exerciseRoutine.getPeriod(), isLiked);
     }
 
     private Map<Integer, Map<String, List<ExerciseDetail>>> groupExerciseDetails(List<ExerciseDetail> details) {
@@ -118,9 +120,10 @@ public class RoutineService {
     private List<ExerciseDetailDto> buildExerciseDetailDtoList(
             Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay,
             Member member,
-            int period) {
+            int period,
+            boolean isLiked) {
         return detailsByWeekAndDay.entrySet().stream()
-                .map(entry -> buildExerciseDetailDto(entry.getKey(), entry.getValue(), member, period))
+                .map(entry -> buildExerciseDetailDto(entry.getKey(), entry.getValue(), member, period, isLiked))
                 .collect(Collectors.toList());
     }
 
@@ -128,10 +131,12 @@ public class RoutineService {
             Integer weeks,
             Map<String, List<ExerciseDetail>> detailsByDay,
             Member member,
-            int period) {
+            int period,
+            boolean isLiked) {
         ExerciseDetailDto dto = new ExerciseDetailDto();
         dto.setWeeks(weeks);
         dto.setPeriod(period);
+        dto.setLiked(isLiked);
 
         List<ExerciseDetailDto.day> days = detailsByDay.entrySet().stream()
                 .sorted(Comparator.comparingInt(dayEntry -> getDayOrder(dayEntry.getKey())))
@@ -238,6 +243,7 @@ public class RoutineService {
         ExerciseEnroll exerciseEnroll = new ExerciseEnroll();
         exerciseEnroll.setMember(member);
         exerciseEnroll.setExerciseRoutine(routine);
+        exerciseEnroll.setWeekProgress(1);
 
         List<ExerciseDetail> details = exerciseDetailRepository.findAllByExerciseRoutineIdWithSets(routine.getId());
 

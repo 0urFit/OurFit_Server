@@ -22,4 +22,9 @@ public interface ExerciseEnrollRepository extends JpaRepository<ExerciseEnroll, 
     Optional<Object> findByMemberIdAndExerciseRoutineId(Long id, Long routineId);
 
     List<ExerciseEnroll> findByMemberEmailAndExerciseRoutine_Category(String userEmail, String cate);
+
+    ExerciseEnroll findByMemberAndExerciseRoutine(Member member, ExerciseRoutine exerciseRoutine);
+
+    @Query("SELECT ee.exerciseRoutine.id FROM ExerciseEnroll ee WHERE ee.member.email = :email AND ee.exerciseRoutine.id IN :routineIds")
+    List<Long> findEnrolledRoutineIdsByMemberEmail(@Param("email") String email, @Param("routineIds") List<Long> routineIds);
 }

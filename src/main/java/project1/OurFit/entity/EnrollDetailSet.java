@@ -16,13 +16,8 @@ public class EnrollDetailSet {
     private double weight;
     private int reps;
     private int sequence;
-    private Boolean complete = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enrollDetailId")
     private EnrollDetail enrollDetail;
-
-    public void completeRoutine(){
-        this.complete=true;
-    }
 }
