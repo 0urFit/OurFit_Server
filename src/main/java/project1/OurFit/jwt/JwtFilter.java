@@ -8,6 +8,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,69 +18,66 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
+import project1.constant.exception.ExpiredJwtTokenException;
+import project1.constant.exception.InvalidJwtException;
+import project1.constant.exception.MissingJwtException;
 import project1.constant.response.JsonResponse;
 import project1.constant.response.JsonResponseStatus;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.Set;
 
+@RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    private final JwtTokenProvider tokenProvider;
-    public JwtFilter(JwtTokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Set<String> authenticationPaths = Set.of("/exercise/", "/post", "/mypage");
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        String jwt = resolveToken(httpServletRequest);
-        String requestURI = httpServletRequest.getRequestURI();
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        if (!StringUtils.hasText(jwt)) {
-            filterChain.doFilter(servletRequest, servletResponse);
-            return;
-        }
+        String path = httpServletRequest.getRequestURI();
 
-        if (tokenProvider.validateToken(jwt)) {
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            filterChain.doFilter(servletRequest, servletResponse);
-            return;
-        }
-
-        logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
-        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-
-        if (!httpServletResponse.isCommitted()) {
-            ResponseEntity<String> responseEntity = createErrorResponse();
-            httpServletResponse.setCharacterEncoding("UTF-8");
-            httpServletResponse.setStatus(responseEntity.getStatusCode().value());
-            httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            httpServletResponse.getWriter().write(Objects.requireNonNull(responseEntity.getBody()));
+        if (authenticationPaths.stream().anyMatch(path::startsWith)) {
+            try {
+                String jwt = getBearerToken(httpServletRequest.getHeader(AUTHORIZATION_HEADER));
+                jwtTokenProvider.validateToken(jwt);
+                Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                chain.doFilter(request, response);
+            } catch (InvalidJwtException e) {
+                sendResponse(httpServletResponse, JsonResponseStatus.INVALID_JWT);
+            } catch (ExpiredJwtTokenException e) {
+                sendResponse(httpServletResponse, JsonResponseStatus.ACCESS_TOKEN_EXPIRED);
+            } catch (MissingJwtException e) {
+                sendResponse(httpServletResponse, JsonResponseStatus.MISSING_JWT);
+            }
+        } else {
+            chain.doFilter(request, response);
         }
     }
 
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-
-        return null;
+    private void sendResponse(HttpServletResponse response, JsonResponseStatus status) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
+        response.getWriter().write(convertObjectToJson(new JsonResponse<>(status)));
     }
 
-    private ResponseEntity<String> createErrorResponse() throws JsonProcessingException {
-        JsonResponse<JsonResponseStatus> jsonResponse = new JsonResponse<>(JsonResponseStatus.ACCESS_TOKEN_EXPIRED);
-        ObjectMapper objectMapper = new ObjectMapper();
+    private String convertObjectToJson(Object object) throws IOException {
+        if (object == null)
+            return null;
+        return objectMapper.writeValueAsString(object);
+    }
 
-        String jsonBody = objectMapper.writeValueAsString(jsonResponse);
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(jsonBody);
+    private String getBearerToken(String token) {
+        if (StringUtils.hasText(token) && token.startsWith("Bearer "))
+            return token.substring(7);
+        throw new MissingJwtException(JsonResponseStatus.MISSING_JWT);
     }
 }

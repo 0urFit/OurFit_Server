@@ -11,6 +11,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import project1.constant.exception.ExpiredJwtTokenException;
+import project1.constant.exception.InvalidJwtException;
+import project1.constant.response.JsonResponseStatus;
 
 import java.security.Key;
 import java.util.ArrayList;
@@ -20,35 +23,43 @@ import java.util.Date;
 public class JwtTokenProvider implements InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
-    private final String secret;
+    private final String accessSecret;
     private final String refreshSecret;
-    private final long tokenValidityInMilliseconds;
-    private final long refreshTokenValidityInMilliseconds;
-    private Key secretKey;
+    private final long accessTokenValidity;
+    private final long refreshTokenValidity;
+    private Key accessSecretKey;
     private Key refreshSecretKey;
 
     public JwtTokenProvider(
-            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.access-secret}") String accessSecret,
             @Value("${jwt.refresh-secret}") String refreshSecret,
-            @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds,
+            @Value("${jwt.access-token-validity-in-seconds}") long accessTokenValidityInSeconds,
             @Value("${jwt.refresh-token-validity-in-seconds}") long refreshTokenValidityInSeconds) {
-        this.secret = secret;
+        this.accessSecret = accessSecret;
         this.refreshSecret = refreshSecret;
-        this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
-        this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 1000;
+        this.accessTokenValidity = accessTokenValidityInSeconds * 1000;
+        this.refreshTokenValidity = refreshTokenValidityInSeconds * 1000;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+        byte[] keyBytes = Decoders.BASE64.decode(accessSecret);
+        this.accessSecretKey = Keys.hmacShaKeyFor(keyBytes);
         keyBytes = Decoders.BASE64.decode(refreshSecret);
         this.refreshSecretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(String username) {
+    public String createAccessToken(String username) {
+        return buildJwtToken(username, accessSecretKey, accessTokenValidity);
+    }
+
+    public String createRefreshToken(String username) {
+        return buildJwtToken(username, refreshSecretKey, refreshTokenValidity);
+    }
+
+    private String buildJwtToken(String username, Key secretKey, long validityPeriod) {
         long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+        Date validity = new Date(now + validityPeriod);
 
         return Jwts.builder()
                 .setSubject(username)
@@ -57,21 +68,10 @@ public class JwtTokenProvider implements InitializingBean {
                 .compact();
     }
 
-    public String createRefreshToken(Authentication authentication) {
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + this.refreshTokenValidityInMilliseconds);
-
-        return Jwts.builder()
-                .setSubject(authentication.getName())
-                .signWith(refreshSecretKey, SignatureAlgorithm.HS512)
-                .setExpiration(validity)
-                .compact();
-    }
-
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
                 .parserBuilder()
-                .setSigningKey(secretKey)
+                .setSigningKey(accessSecretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -83,18 +83,14 @@ public class JwtTokenProvider implements InitializingBean {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(accessSecretKey).build().parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            logger.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-            logger.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            logger.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            logger.info("JWT 토큰이 잘못되었습니다.");
+            logger.info("Expired JWT token.");
+            throw new ExpiredJwtTokenException(JsonResponseStatus.ACCESS_TOKEN_EXPIRED);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new InvalidJwtException();
         }
-        return false;
     }
 
     public Claims parseToken(String token) {

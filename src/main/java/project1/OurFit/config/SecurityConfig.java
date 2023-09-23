@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 import project1.OurFit.jwt.JwtAuthenticationEntryPoint;
+import project1.OurFit.jwt.JwtSecurityConfig;
 import project1.OurFit.jwt.JwtTokenProvider;
 
 @Configuration
@@ -58,9 +59,9 @@ public class SecurityConfig {
                 .requestMatchers( "/exercise/**", "/post/**", "/mypage/**").authenticated()
                 .anyRequest().permitAll()
 
-                .and()
-                .requiresChannel()
-                .anyRequest().requiresSecure()
+//                .and()
+//                .requiresChannel()
+//                .anyRequest().requiresSecure()
 
                 .and()
                 .apply(new JwtSecurityConfig(jwtTokenProvider));

@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import project1.OurFit.response.GetPostDto;
+import project1.OurFit.response.GetPostAllDto;
 import project1.OurFit.service.PostService;
 import project1.constant.response.JsonResponse;
 
@@ -19,7 +19,7 @@ public class PostController {
 
     @GetMapping("/post")
     @ResponseBody
-    public JsonResponse<List<GetPostDto>> post() {
+    public JsonResponse<List<GetPostAllDto>> post() {
         return new JsonResponse<>(postService.getAllPost());
     }
 }

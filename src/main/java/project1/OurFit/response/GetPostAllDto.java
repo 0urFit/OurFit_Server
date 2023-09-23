@@ -9,7 +9,7 @@ import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GetPostDto {
+public class GetPostAllDto {
     private Long id;
     private String category;
     private String gender;

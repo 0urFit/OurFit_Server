@@ -2,10 +2,12 @@ package project1.OurFit.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.entity.*;
 import project1.OurFit.repository.*;
 import project1.OurFit.request.ExerciseCompleteDto;
 import project1.OurFit.response.EnrollDetailDto;
+import project1.OurFit.response.MemberDto;
 import project1.OurFit.response.MyLikeRes;
 import project1.OurFit.response.MyRoutineRes;
 import project1.constant.exception.BaseException;
@@ -17,6 +19,7 @@ import static project1.constant.response.JsonResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MyPageService {
     private final ExerciseEnrollRepository exerciseEnrollRepository;
     private final ExerciseRoutineRepository routineRepository;
@@ -52,11 +55,19 @@ public class MyPageService {
     }
 
     public List<MyLikeRes> getMyLikeRoutine(String userEmail) {
-
         List<ExerciseLike> allByMemberEmail = exerciseLikeRepository.findByMemberEmail(userEmail);
+        List<ExerciseEnroll> allExerciseEnrollsByMember = exerciseEnrollRepository.findByMemberEmail(userEmail);
+        Set<Long> enrolledRoutineIds = allExerciseEnrollsByMember.stream()
+                .map(enroll -> enroll.getExerciseRoutine().getId())
+                .collect(Collectors.toSet());
+
         List<MyLikeRes> myRoutineRes = new ArrayList<>();
         for (ExerciseLike exerciseLike : allByMemberEmail) {
-            MyLikeRes a = new MyLikeRes(exerciseLike.getExerciseRoutine());
+            Long routineId = exerciseLike.getExerciseRoutine().getId();
+            MyLikeRes a = new MyLikeRes(
+                    exerciseLike.getExerciseRoutine(),
+                    exerciseLike.getExerciseRoutine().getCategory(),
+                    enrolledRoutineIds.contains(routineId));
             myRoutineRes.add(a);
         }
         return myRoutineRes;
@@ -208,5 +219,11 @@ public class MyPageService {
             case "Sat" -> 5;
             default -> Integer.MAX_VALUE;
         };
+    }
+
+    public MemberDto getMyInfo(String userEmail) {
+        Member member = memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
+        return new MemberDto(member);
     }
 }

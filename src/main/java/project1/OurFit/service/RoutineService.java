@@ -25,6 +25,7 @@ import static project1.constant.response.JsonResponseStatus.*;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class RoutineService {
     private final ExerciseLikeRepository exerciseLikeRepository;
     private final MemberRepository memberRepository;
@@ -34,24 +35,26 @@ public class RoutineService {
     private final EnrollDetailRepository enrollDetailRepository;
     private final EnrollDetailSetRepository enrollDetailSetRepository;
 
-    public void postLike(String userEmail, Long routineId) {
+    public boolean postLike(String userEmail, Long routineId) {
         Member member=memberRepository.findByEmail(userEmail)
                 .orElseThrow(()-> new BaseException(NOT_FOUND_MEMBER));
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
                 .orElseThrow(()-> new BaseException(NOT_FOUND_ROUTINE));
 
         if (exerciseLikeRepository.existsByMemberEmailAndExerciseRoutineId(userEmail, routineId))
-            return;
+            return true;
 
         ExerciseLike like = new ExerciseLike(member,exerciseRoutine);
         exerciseLikeRepository.save(like);
+        return true;
     }
 
-    public void deleteLike(String userEmail, Long routineId) { //걍 좋아요 테이블
+    public boolean deleteLike(String userEmail, Long routineId) { //걍 좋아요 테이블
         ExerciseLike exerciseLike = exerciseLikeRepository
                 .findByMemberEmailAndExerciseRoutineId(userEmail, routineId)
                 .orElseThrow(() -> new BaseException(NOTFOUND));
         exerciseLikeRepository.delete(exerciseLike);
+        return false;
     }
 
     public List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutineByCategory(String category, String userEmail) {
@@ -103,7 +106,7 @@ public class RoutineService {
 
         Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay = groupExerciseDetails(details);
 
-        return buildExerciseDetailDtoList(detailsByWeekAndDay, member, exerciseRoutine.getPeriod(), isLiked);
+        return buildExerciseDetailDtoList(detailsByWeekAndDay, member, exerciseRoutine, isLiked);
     }
 
     private Map<Integer, Map<String, List<ExerciseDetail>>> groupExerciseDetails(List<ExerciseDetail> details) {
@@ -120,7 +123,7 @@ public class RoutineService {
     private List<ExerciseDetailDto> buildExerciseDetailDtoList(
             Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay,
             Member member,
-            int period,
+            ExerciseRoutine period,
             boolean isLiked) {
         return detailsByWeekAndDay.entrySet().stream()
                 .map(entry -> buildExerciseDetailDto(entry.getKey(), entry.getValue(), member, period, isLiked))
@@ -131,11 +134,12 @@ public class RoutineService {
             Integer weeks,
             Map<String, List<ExerciseDetail>> detailsByDay,
             Member member,
-            int period,
+            ExerciseRoutine period,
             boolean isLiked) {
         ExerciseDetailDto dto = new ExerciseDetailDto();
+        dto.setRoutineName(period.getRoutineName());
         dto.setWeeks(weeks);
-        dto.setPeriod(period);
+        dto.setPeriod(period.getPeriod());
         dto.setLiked(isLiked);
 
         List<ExerciseDetailDto.day> days = detailsByDay.entrySet().stream()
@@ -302,5 +306,9 @@ public class RoutineService {
                 exerciseEnrollRepository.delete(exerciseEnroll);
             });
         });
+    }
+
+    public boolean inquiryLike(String userEmail, Long routineId) {
+        return exerciseLikeRepository.existsByMemberEmailAndExerciseRoutineId(userEmail, routineId);
     }
 }

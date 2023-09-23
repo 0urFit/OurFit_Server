@@ -19,7 +19,7 @@ public interface ExerciseEnrollRepository extends JpaRepository<ExerciseEnroll, 
 
     boolean existsByMemberIdAndExerciseRoutineId(Long memberId, Long routineId);
 
-    Optional<Object> findByMemberIdAndExerciseRoutineId(Long id, Long routineId);
+    Optional<ExerciseEnroll> findByMemberIdAndExerciseRoutineId(Long id, Long routineId);
 
     List<ExerciseEnroll> findByMemberEmailAndExerciseRoutine_Category(String userEmail, String cate);
 

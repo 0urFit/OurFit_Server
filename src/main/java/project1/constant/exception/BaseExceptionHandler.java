@@ -51,4 +51,11 @@ public class BaseExceptionHandler {
     public JsonResponse<JsonResponseStatus> TooManyRequestHandle(TooManyRequestException exception) {
         return new JsonResponse<>(JsonResponseStatus.TOO_MANY_REQUESTS);
     }
+
+    @ExceptionHandler(ExpiredJwtTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public JsonResponse<JsonResponseStatus> ExpiredJwtTokenException(ExpiredJwtTokenException exception) {
+        return new JsonResponse<>(JsonResponseStatus.ACCESS_TOKEN_EXPIRED);
+    }
 }

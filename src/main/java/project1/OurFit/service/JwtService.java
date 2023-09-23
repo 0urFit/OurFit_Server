@@ -27,8 +27,8 @@ public class JwtService {
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtTokenProvider.createToken(authentication.getName());
-        String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
+        String token = jwtTokenProvider.createAccessToken(authentication.getName());
+        String refreshToken = jwtTokenProvider.createRefreshToken(authentication.getName());
         saveRefreshToken(email, refreshToken);
         return new PostLoginDto(token, refreshToken, null, null);
     }

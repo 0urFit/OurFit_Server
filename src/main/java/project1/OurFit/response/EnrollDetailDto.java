@@ -19,7 +19,6 @@ public class EnrollDetailDto {
     private int weeks;
     private List<day> days;
 
-
     @Getter
     @Setter
     @NoArgsConstructor
@@ -42,7 +41,6 @@ public class EnrollDetailDto {
                 private int sequence;
                 private double weight;
                 private int reps;
-                private boolean complete = false;
             }
         }
     }

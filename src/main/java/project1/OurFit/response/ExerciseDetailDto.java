@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ExerciseDetailDto {
+    private String routineName;
     private int period;
     private boolean isLiked;
     private int weeks;

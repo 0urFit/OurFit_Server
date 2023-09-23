@@ -3,7 +3,7 @@ package project1.OurFit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import project1.OurFit.repository.PostRepository;
-import project1.OurFit.response.GetPostDto;
+import project1.OurFit.response.GetPostAllDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,9 +14,9 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public List<GetPostDto> getAllPost() {
+    public List<GetPostAllDto> getAllPost() {
         return postRepository.findAll().stream()
-                .map(post -> new GetPostDto(
+                .map(post -> new GetPostAllDto(
                         post.getId(),
                         post.getCategory(),
                         post.getGender(),

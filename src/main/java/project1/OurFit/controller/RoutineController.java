@@ -22,10 +22,9 @@ public class RoutineController {
      * @return
      */
     @PostMapping("/exercise/{routineId}/likes")
-    public JsonResponse<JsonResponseStatus> postLike(@PathVariable Long routineId){
+    public JsonResponse<Boolean> postLike(@PathVariable Long routineId) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        routineService.postLike(userEmail,routineId);
-        return new JsonResponse<>(JsonResponseStatus.SUCCESS);
+        return new JsonResponse<>(routineService.postLike(userEmail,routineId));
     }
 
     /**
@@ -34,10 +33,15 @@ public class RoutineController {
      * @return
      */
     @DeleteMapping("/exercise/{routineId}/likes")
-    public JsonResponse<JsonResponseStatus> deleteLike(@PathVariable Long routineId){
+    public JsonResponse<Boolean> deleteLike(@PathVariable Long routineId) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        routineService.deleteLike(userEmail, routineId);
-        return new JsonResponse<>(JsonResponseStatus.SUCCESS);
+        return new JsonResponse<>(routineService.deleteLike(userEmail, routineId));
+    }
+
+    @GetMapping("/exercise/liked/{routineId}")
+    public JsonResponse<Boolean> inquiryLike(@PathVariable Long routineId) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return new JsonResponse<>(routineService.inquiryLike(userEmail, routineId));
     }
 
     /**

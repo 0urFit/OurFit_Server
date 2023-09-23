@@ -26,6 +26,8 @@ public enum JsonResponseStatus {
     ACCESS_TOKEN_EXPIRED(false, HttpStatus.UNAUTHORIZED.value(), "액세스 토큰이 만료되었습니다."),
     TOO_MANY_REQUESTS(false, HttpStatus.TOO_MANY_REQUESTS.value(), "15분 후에 다시 시도하세요."),
     NOT_FOUND_ENROLL(false, HttpStatus.NOT_FOUND.value(), "등록된 운동이 없습니다."),
+    INVALID_JWT(false, HttpStatus.UNAUTHORIZED.value(), "잘못된 JWT 입니다."),
+    MISSING_JWT(false, HttpStatus.UNAUTHORIZED.value(), "토큰이 없습니다."),
     /**
      * 500 :  Database, Server 오류
      */

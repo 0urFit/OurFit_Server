@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import project1.OurFit.request.ExerciseCompleteDto;
-import project1.OurFit.response.EnrollDetailDto;
-import project1.OurFit.response.ExerciseDetailDto;
-import project1.OurFit.response.MyLikeRes;
-import project1.OurFit.response.MyRoutineRes;
+import project1.OurFit.response.*;
 import project1.OurFit.service.MyPageService;
 import project1.constant.response.JsonResponse;
 import project1.constant.response.JsonResponseStatus;
@@ -21,16 +18,22 @@ import static project1.constant.response.JsonResponseStatus.SUCCESS;
 public class MyPageController {
     private final MyPageService myPageService;
 
+    @GetMapping("/mypage")
+    @ResponseBody
+    public JsonResponse<MemberDto> getMyInfo() {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return new JsonResponse<>(myPageService.getMyInfo(userEmail));
+    }
+
     /**
      * API문서 5-1
      * url : mypage?category=diet
      * MyPage 들어갔을 때 등록한 루틴 조회
      * @return
      */
-    @GetMapping("/mypage")
+    @GetMapping("/mypage/exercise")
     @ResponseBody
-    public JsonResponse<List<MyRoutineRes>> getMyRoutine(
-            @RequestParam(required = false) String category){
+    public JsonResponse<List<MyRoutineRes>> getMyRoutine(String category){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         List<MyRoutineRes> myRoutineResList = myPageService.getMyRoutine(userEmail, category);
         return new JsonResponse<>(myRoutineResList);
@@ -42,10 +45,10 @@ public class MyPageController {
      */
     @GetMapping("/mypage/exercise/{routineId}/{week}")
     @ResponseBody
-    public JsonResponse<List<EnrollDetailDto>> getMyRoutineDetail(
+    public JsonResponse<EnrollDetailDto> getMyRoutineDetail(
             @PathVariable Long routineId, @PathVariable int week){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return new JsonResponse<>(myPageService.getEnrollDetails(email, routineId, week));
+        return new JsonResponse<>(myPageService.getEnrollDetails(email, routineId, week).get(0));
     }
 
 
