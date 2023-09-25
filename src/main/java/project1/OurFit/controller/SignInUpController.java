@@ -39,16 +39,14 @@ public class SignInUpController {
     @GetMapping("/checkemail/{email}")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> checkEmail(@PathVariable String email) {
-        if (memberService.findEmail(email))
-            throw new DuplicateException(JsonResponseStatus.EMAIL_CONFLICT);
+        memberService.findEmail(email);
         return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
     @GetMapping("/checknick/{nickname}")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> checkNickname(@PathVariable String nickname) {
-        if (memberService.findNickname(nickname))
-            throw new DuplicateException(JsonResponseStatus.NICKNAME_CONFLICT);
+        memberService.findNickname(nickname);
         return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 

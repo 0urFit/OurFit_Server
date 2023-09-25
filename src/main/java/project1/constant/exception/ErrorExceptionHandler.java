@@ -22,7 +22,7 @@ public class ErrorExceptionHandler {
     @ExceptionHandler(LoginException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
-    public JsonResponse<JsonResponseStatus> LoginException(LoginException exception) {
+    public JsonResponse<JsonResponseStatus> LoginExceptionHandle(LoginException exception) {
         return new JsonResponse<>(exception.getStatus());
     }
 

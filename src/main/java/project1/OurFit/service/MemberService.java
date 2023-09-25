@@ -39,12 +39,14 @@ public class MemberService {
         throw new LoginException(JsonResponseStatus.LOGIN_FAIL);
     }
 
-    public Boolean findEmail(String email){
-        return checkExistence(email, memberRepository::existsByEmail);
+    public void findEmail(String email){
+        if (!checkExistence(email, memberRepository::existsByEmail))
+            throw new DuplicateException(JsonResponseStatus.EMAIL_CONFLICT);
     }
 
     public Boolean findNickname(String nickname) {
-        return checkExistence(nickname, memberRepository::existsByNickname);
+        if (!checkExistence(nickname, memberRepository::existsByNickname))
+            throw new DuplicateException(JsonResponseStatus.NICKNAME_CONFLICT);
     }
 
     private Boolean checkExistence(String value, Function<String, Boolean> existsFunction) {
