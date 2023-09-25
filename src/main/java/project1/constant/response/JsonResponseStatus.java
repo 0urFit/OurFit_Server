@@ -12,6 +12,7 @@ public enum JsonResponseStatus {
     /**
      * 400 : Request, Response 오류
      */
+    LOGIN_FAIL(false, HttpStatus.UNAUTHORIZED.value(), "아이디나 비밀번호가 맞지 않습니다."),
     RESPONSE_ERROR(false, HttpStatus.NOT_FOUND.value(), "값을 불러오는데 실패하였습니다."),
     USERS_EMPTY_EMAIL(false, HttpStatus.OK.value(), "이메일 사용가능합니다."),
     NOTFOUND(false,HttpStatus.NOT_FOUND.value(),"값을 찾을 수 없습니다"),

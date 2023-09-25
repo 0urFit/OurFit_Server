@@ -1,15 +1,13 @@
 package project1.constant.exception;
 
 import lombok.Getter;
-import lombok.Setter;
 import project1.constant.response.JsonResponseStatus;
 
 @Getter
-@Setter
-public class TooManyRequestException extends RuntimeException {
-    private JsonResponseStatus status;
+public class LoginException extends RuntimeException {
+    JsonResponseStatus status;
 
-    public TooManyRequestException(JsonResponseStatus status) {
+    public LoginException(JsonResponseStatus status) {
         super(status.getMessage());
         this.status = status;
     }

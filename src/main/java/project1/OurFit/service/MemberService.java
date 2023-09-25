@@ -5,11 +5,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.entity.Member;
+import project1.OurFit.request.LoginDTO;
 import project1.OurFit.request.MemberDTO;
 import project1.OurFit.repository.MemberRepository;
 import project1.OurFit.response.PostLoginDto;
 import project1.constant.exception.BaseException;
 import project1.constant.exception.DuplicateException;
+import project1.constant.exception.LoginException;
 import project1.constant.response.JsonResponseStatus;
 
 import java.util.UUID;
@@ -29,12 +31,12 @@ public class MemberService {
         this.jwtService = jwtService;
     }
 
-    public boolean findEmailAndPassword(String email, String password) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(JsonResponseStatus.UNAUTHORIZED));
-        if (passwordEncoder.matches(password, member.getPassword()))
-            return true;
-        return false;
+    public Member findEmailAndPassword(LoginDTO login) {
+        Member member = memberRepository.findByEmail(login.getEmail())
+                .orElseThrow(() -> new LoginException(JsonResponseStatus.LOGIN_FAIL));
+        if (passwordEncoder.matches(login.getPassword(), member.getPassword()))
+            return member;
+        throw new LoginException(JsonResponseStatus.LOGIN_FAIL);
     }
 
     public Boolean findEmail(String email){

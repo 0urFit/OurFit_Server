@@ -18,28 +18,16 @@ import project1.constant.response.JsonResponseStatus;
 public class JwtService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final MemberRepository memberRepository;
 
-    public PostLoginDto authorize(String email, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(email, password);
-
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtTokenProvider.createAccessToken(authentication.getName());
-        String refreshToken = jwtTokenProvider.createRefreshToken(authentication.getName());
-        saveRefreshToken(email, refreshToken);
-        return new PostLoginDto(token, refreshToken, null, null);
+    public PostLoginDto createToken(Member member) {
+        String accessToken = jwtTokenProvider.createAccessToken(member.getEmail());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
+        saveRefreshToken(member, refreshToken);
+        return new PostLoginDto(accessToken, refreshToken, null, null);
     }
 
-    public PostLoginDto authorize(String email) {
-        return authorize(email, "");
-    }
-
-    private void saveRefreshToken(String email, String refreshToken) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(JsonResponseStatus.UNAUTHORIZED));
+    private void saveRefreshToken(Member member, String refreshToken) {
         member.setRefreshToken(refreshToken);
         memberRepository.save(member);
     }

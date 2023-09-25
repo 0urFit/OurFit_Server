@@ -10,7 +10,7 @@ import lombok.Setter;
 public class PostLoginDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String token;
+    private String accessToken;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String refreshToken;
 

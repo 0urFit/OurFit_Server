@@ -11,12 +11,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class BaseExceptionHandler {
+public class ErrorExceptionHandler {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BaseException.class)
     public JsonResponse<JsonResponseStatus> BaseExceptionHandle(BaseException exception) {
         return new JsonResponse<>(JsonResponseStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(LoginException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public JsonResponse<JsonResponseStatus> LoginException(LoginException exception) {
+        return new JsonResponse<>(exception.getStatus());
     }
 
     @ExceptionHandler(DuplicateException.class)
@@ -43,13 +50,6 @@ public class BaseExceptionHandler {
     @ResponseBody
     public JsonResponse<JsonResponseStatus> AccessTokenHandle(AccessTokenException exception) {
         return new JsonResponse<>(JsonResponseStatus.ACCESS_TOKEN_EXPIRED);
-    }
-
-    @ExceptionHandler(TooManyRequestException.class)
-    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
-    @ResponseBody
-    public JsonResponse<JsonResponseStatus> TooManyRequestHandle(TooManyRequestException exception) {
-        return new JsonResponse<>(JsonResponseStatus.TOO_MANY_REQUESTS);
     }
 
     @ExceptionHandler(ExpiredJwtTokenException.class)
