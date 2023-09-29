@@ -444,9 +444,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_http_request">HTTP request</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_회원가입">회원가입</h3>
+<div class="sect3">
+<h4 id="_회원가입_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /signup HTTP/1.1
@@ -469,10 +470,8 @@ Content-Length: 243
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_request_fields">Request fields</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_회원가입_request_fields">Request fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -540,10 +539,106 @@ Content-Length: 243
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="_회원가입_http_response">HTTP response</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 90
+
+{
+  "code" : "200",
+  "message" : "요청에 성공하였습니다.",
+  "success" : true
+}</code></pre>
 </div>
-<div class="sect1">
-<h2 id="_http_response">HTTP response</h2>
-<div class="sectionbody">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_이메일_체크">이메일 체크</h3>
+<div class="sect3">
+<h4 id="_이메일_체크_http_request">HTTP request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /checkemail?email=goodproject@naver.com HTTP/1.1
+Host: 43.200.180.163:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_이메일_체크_query_parameters">Query parameters</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_이메일_체크_http_response">HTTP response</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 90
+
+{
+  "code" : "200",
+  "message" : "요청에 성공하였습니다.",
+  "success" : true
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_닉네임_체크">닉네임 체크</h3>
+<div class="sect3">
+<h4 id="_닉네임_체크_http_request">HTTP request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /checknick?nick=goodproject HTTP/1.1
+Host: 43.200.180.163:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_닉네임_체크_query_parameters">Query parameters</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nick</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">닉네임</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_닉네임_체크_http_response">HTTP response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -563,7 +658,7 @@ Content-Length: 90
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-09-30 01:24:03 +0900
+Last updated 2023-09-30 02:58:46 +0900
 </div>
 </div>
 </body>

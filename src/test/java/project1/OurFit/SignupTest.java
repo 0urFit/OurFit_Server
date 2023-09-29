@@ -30,7 +30,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 @Transactional
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @Import(RestDocsConfiguration.class)
-public class LoginTest {
+public class SignupTest {
     @Autowired private RestDocumentationResultHandler restDocs;
     private MockMvc mockMvc;
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -47,9 +47,8 @@ public class LoginTest {
     }
 
     @Test
-    public void signUp() throws Exception {
+    void signUp() throws Exception {
         // Given
-
         MemberDTO member = new MemberDTO();
         member.setEmail("aossuper8@naver.com");
         member.setPassword("aossuper8");
