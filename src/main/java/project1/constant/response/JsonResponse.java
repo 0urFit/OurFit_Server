@@ -10,7 +10,7 @@ import static project1.constant.response.JsonResponseStatus.SUCCESS;
 @AllArgsConstructor
 public class JsonResponse<T> {
     private final boolean isSuccess;
-    private final int code;
+    private final String code;
     private final String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL) // null일때는 json 변환 안함
@@ -22,7 +22,7 @@ public class JsonResponse<T> {
         this.message = status.getMessage();
     }
 
-    public JsonResponse(boolean isSuccess, int code, String message) {
+    public JsonResponse(boolean isSuccess, String code, String message) {
         this.isSuccess = isSuccess;
         this.code = code;
         this.message = message;
@@ -44,7 +44,7 @@ public class JsonResponse<T> {
     }
 
     //상태코드
-    public JsonResponse(T result,int code) {
+    public JsonResponse(T result, String code) {
         this.isSuccess = SUCCESS.isSuccess();
         this.code = code;
         this.message = SUCCESS.getMessage();

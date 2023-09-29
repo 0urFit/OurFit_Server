@@ -35,21 +35,37 @@ public class SignInUpController {
         return new JsonResponse<>(jwtService.createToken(member));
     }
 
-    @GetMapping("/checkemail/{email}")
+    /**
+     * 이메일 중복체크 API
+     * url : ?email=aossuper7@naver.com
+     * @param email
+     * @return
+     */
+    @GetMapping("/checkemail")
     @ResponseBody
-    public JsonResponse<JsonResponseStatus> checkEmail(@PathVariable String email) {
-        memberService.findEmail(email);
+    public JsonResponse<JsonResponseStatus> checkEmail(final String email) {
+        memberService.validateEmail(email);
         return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
-    @GetMapping("/checknick/{nickname}")
+    /**
+     * 닉네임 중복체크 API
+     * url : ?nick=aossuper7
+     * @param nick
+     * @return
+     */
+    @GetMapping("/checknick")
     @ResponseBody
-    public JsonResponse<JsonResponseStatus> checkNickname(@PathVariable String nickname) {
-        memberService.findNickname(nickname);
+    public JsonResponse<JsonResponseStatus> checkNickname(final String nick) {
+        memberService.validateNickname(nick);
         return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
-    //회원가입
+    /**
+     * 회원가입 API
+     * @param member
+     * @return
+     */
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public JsonResponse<JsonResponseStatus> signup(@RequestBody MemberDTO member) {
@@ -60,7 +76,7 @@ public class SignInUpController {
     @GetMapping("/kakao")
     @ResponseBody
     public JsonResponse<PostLoginDto> oauthKakaoLogin(
-            @RequestParam("authorizationCode") String code) {
+            @RequestParam("authorizationCode") final String code) {
         String accessToken = kakaoAccessTokenProviderService.getAccessToken(code);
         SignUpDto signUpDto = kakaoUserInfoProviderService.getUserInfo(accessToken);
 

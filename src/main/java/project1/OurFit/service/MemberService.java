@@ -34,37 +34,54 @@ public class MemberService {
         throw new LoginException(JsonResponseStatus.LOGIN_FAIL);
     }
 
-    public void findEmail(String email){
-        if (checkExistence(email, memberRepository::existsByEmail))
+    /**
+     * 이메일 중복확인 여부 검사
+     * @param email
+     * @throws DuplicateException 이메일이 이미 사용 중일 때 발생
+     */
+    public void validateEmail(final String email){
+        if (memberRepository.existsByEmail(email))
             throw new DuplicateException(JsonResponseStatus.EMAIL_CONFLICT);
     }
 
-    public void findNickname(String nickname) {
-        if (checkExistence(nickname, memberRepository::existsByNickname))
+    /**
+     * 닉네임 중복확인 여부 검사
+     * @param nickname
+     * @throws DuplicateException 닉네임이 이미 사용 중일 때 발생
+     */
+    public void validateNickname(final String nickname) {
+        if (memberRepository.existsByNickname(nickname))
             throw new DuplicateException(JsonResponseStatus.NICKNAME_CONFLICT);
     }
 
-    private Boolean checkExistence(String value, Function<String, Boolean> existsFunction) {
-        return existsFunction.apply(value);
-    }
-
-    public Boolean join(MemberDTO memberDTO) {
-        Boolean checkEmail = memberRepository.existsByEmail(memberDTO.getEmail());
-        Boolean checkNickname = memberRepository.existsByNickname(memberDTO.getNickname());
+    /**
+     * 회원가입
+     * @param memberDTO
+     * @throws DuplicateException 이메일&닉네임 중복 되었을 때 발생
+     */
+    public void join(MemberDTO memberDTO) {
+        checkEmailAndNicknameExistance(memberDTO);
 
         if (memberDTO.getPassword() == null) // 카카오로 회원가입한 사람은 임시 비밀번호 생성, 자체 로그인 방지
-            memberDTO.setPassword(UUID.randomUUID().toString());
+            assignTemporaryPassword(memberDTO);
 
-        if (checkEmail && checkNickname)
+        saveMember(memberDTO);
+    }
+
+    private void checkEmailAndNicknameExistance(MemberDTO memberDTO) {
+        Boolean emailExists = memberRepository.existsByEmail(memberDTO.getEmail());
+        Boolean nicknameExists = memberRepository.existsByNickname(memberDTO.getNickname());
+
+        if (emailExists && nicknameExists)
             throw new DuplicateException(JsonResponseStatus.ALL_CONFLICT);
-        else if (checkEmail)
+        if (emailExists)
             throw new DuplicateException(JsonResponseStatus.EMAIL_CONFLICT);
-        else if (checkNickname)
+        if (nicknameExists)
             throw new DuplicateException(JsonResponseStatus.NICKNAME_CONFLICT);
-        else {
-            saveMember(memberDTO);
-            return true;
-        }
+    }
+
+    private void assignTemporaryPassword(MemberDTO memberDTO) {
+        memberDTO.setPassword(UUID.randomUUID().toString());
     }
 
     private void saveMember(MemberDTO memberDTO) {
@@ -77,6 +94,7 @@ public class MemberService {
     /*
      * kakao login service
      */
+
     public Member findKakaoId(SignUpDto signUpDto) {
         return memberRepository.findByEmail(signUpDto.getEmail())
                 .orElseThrow(() -> new UnregisteredUserException(JsonResponseStatus.NOT_FOUND_MEMBER, signUpDto));
