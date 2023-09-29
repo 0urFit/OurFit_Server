@@ -1,16 +1,21 @@
 package project1.OurFit.service;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.entity.*;
 import project1.OurFit.repository.*;
 import project1.OurFit.request.ExerciseCompleteDto;
+import project1.OurFit.request.MemberDTO;
 import project1.OurFit.response.EnrollDetailDto;
 import project1.OurFit.response.MemberDto;
 import project1.OurFit.response.MyLikeRes;
 import project1.OurFit.response.MyRoutineRes;
 import project1.constant.exception.BaseException;
+import project1.constant.exception.NotFoundException;
+import project1.constant.exception.UnregisteredUserException;
+import project1.constant.response.JsonResponseStatus;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -225,5 +230,18 @@ public class MyPageService {
         Member member = memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
         return new MemberDto(member);
+    }
+
+    public void saveMyInfo(MemberDto memberDto, String email) {
+        Member member = memberRepository.findByEmail(email)
+                        .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        member.setNickname(memberDto.getNickname());
+        member.setHeight(memberDto.getHeight());
+        member.setWeight(memberDto.getWeight());
+        member.setSquat(memberDto.getSquat());
+        member.setBenchpress(memberDto.getBenchpress());
+        member.setDeadlift(memberDto.getDeadlift());
+        member.setOverheadpress(memberDto.getOverheadpress());
+        memberRepository.save(member);
     }
 }

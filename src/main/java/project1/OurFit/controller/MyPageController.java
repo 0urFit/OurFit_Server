@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import project1.OurFit.request.ExerciseCompleteDto;
+import project1.OurFit.request.MemberDTO;
 import project1.OurFit.response.*;
 import project1.OurFit.service.MyPageService;
 import project1.constant.response.JsonResponse;
@@ -56,7 +57,7 @@ public class MyPageController {
      * MyPage 들어갔을 때 좋아요 한 루틴 조회
      * @return
      */
-    @GetMapping("mypage/like")
+    @GetMapping("/mypage/like")
     @ResponseBody
     public JsonResponse<List<MyLikeRes>> getMyLikeRoutine(){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -64,11 +65,20 @@ public class MyPageController {
         return new JsonResponse<>(myLikeRes);
     }
 
-    @PatchMapping("mypage/exercise/complete")
+    @PatchMapping("/mypage/exercise/complete")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> completeRoutine(@RequestBody ExerciseCompleteDto completeDto){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         myPageService.completeRoutine(userEmail, completeDto);
+        return new JsonResponse<>(SUCCESS);
+    }
+
+    @PatchMapping("/mypage/m")
+    @ResponseBody
+    public JsonResponse<JsonResponseStatus> setMyInfo(@RequestBody MemberDto memberDto) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(userEmail);
+        myPageService.saveMyInfo(memberDto, userEmail);
         return new JsonResponse<>(SUCCESS);
     }
 }
