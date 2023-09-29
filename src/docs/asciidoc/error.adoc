@@ -1,0 +1,12 @@
+= ErrorCode Document
+
+=== 회원가입 ErrorCode
+[cols="1,2,1,1"]
+|===
+| code | 설명 및 메시지 | Http 상태코드 | Status 설명
+
+| SGN100 | 이메일 중복 에러 | 409 | conflict
+| SGN101 | 닉네임 중복 애러 | 409 | conflict
+| SGN102 | 이메일, 닉네임 모두 중복 에러 | 409 | conflict
+|===
+
