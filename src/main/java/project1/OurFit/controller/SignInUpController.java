@@ -2,23 +2,21 @@ package project1.OurFit.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import project1.OurFit.entity.Member;
 import project1.OurFit.response.PostLoginDto;
+import project1.OurFit.response.SignUpDto;
 import project1.OurFit.service.JwtService;
+import project1.OurFit.service.KakaoAccessTokenProviderService;
+import project1.OurFit.service.KakaoUserInfoProviderService;
 import project1.constant.Oauth;
-import project1.constant.exception.BaseException;
-import project1.constant.exception.DuplicateException;
+import project1.constant.exception.LoginException;
 import project1.constant.response.JsonResponse;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project1.OurFit.request.LoginDTO;
 import project1.OurFit.request.MemberDTO;
-import project1.OurFit.request.OAuthTokenDTO;
-import project1.OurFit.response.PostKakaoProfile;
-import project1.OurFit.service.KakaoService;
 import project1.OurFit.service.MemberService;
 import project1.constant.response.JsonResponseStatus;
 
@@ -26,7 +24,8 @@ import project1.constant.response.JsonResponseStatus;
 @RequiredArgsConstructor
 public class SignInUpController {
     private final MemberService memberService;
-    private final KakaoService kakaoService;
+    private final KakaoAccessTokenProviderService kakaoAccessTokenProviderService;
+    private final KakaoUserInfoProviderService kakaoUserInfoProviderService;
     private final JwtService jwtService;
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -58,23 +57,16 @@ public class SignInUpController {
         return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
-//    @GetMapping("/kakao")
-//    @ResponseBody
-//    public synchronized ResponseEntity<JsonResponse<PostLoginDto>> oauthKakaoLogin(
-//            @RequestParam("authorizationCode") String code) {
-//        OAuthTokenDTO oAuthToken = kakaoService.requestOAuthToken(code);
-//        PostKakaoProfile info =  kakaoService.getUserProfile(oAuthToken.getAccess_token());
-//
-//        Boolean isEmailExist = memberService.findEmail(info.getKakao_account().getEmail());
-//        if (isEmailExist)
-//            return ResponseEntity.ok(new JsonResponse<>(jwtService.createToken(info.getKakao_account().getEmail())));
-//
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-//                new JsonResponse<>(
-//                        new PostLoginDto(null, null,
-//                            info.getKakao_account().getEmail(), info.getKakao_account().getGender()),
-//                    JsonResponseStatus.UNAUTHORIZED));
-//    }
+    @GetMapping("/kakao")
+    @ResponseBody
+    public JsonResponse<PostLoginDto> oauthKakaoLogin(
+            @RequestParam("authorizationCode") String code) {
+        String accessToken = kakaoAccessTokenProviderService.getAccessToken(code);
+        SignUpDto signUpDto = kakaoUserInfoProviderService.getUserInfo(accessToken);
+
+        Member member = memberService.findKakaoId(signUpDto);
+        return new JsonResponse<>(jwtService.createToken(member));
+    }
 
     @GetMapping("/oauth/kakao")
     public String test() {

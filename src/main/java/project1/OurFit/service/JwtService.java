@@ -24,7 +24,7 @@ public class JwtService {
         String accessToken = jwtTokenProvider.createAccessToken(member.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
         saveRefreshToken(member, refreshToken);
-        return new PostLoginDto(accessToken, refreshToken, null, null);
+        return new PostLoginDto(accessToken, refreshToken);
     }
 
     private void saveRefreshToken(Member member, String refreshToken) {

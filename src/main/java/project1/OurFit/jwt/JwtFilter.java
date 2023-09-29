@@ -1,6 +1,5 @@
 package project1.OurFit.jwt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,18 +8,13 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 import project1.constant.exception.ExpiredJwtTokenException;
 import project1.constant.exception.InvalidJwtException;
-import project1.constant.exception.MissingJwtException;
+import project1.constant.exception.NotFoundException;
 import project1.constant.response.JsonResponse;
 import project1.constant.response.JsonResponseStatus;
 
@@ -54,7 +48,7 @@ public class JwtFilter extends GenericFilterBean {
                 sendResponse(httpServletResponse, JsonResponseStatus.INVALID_JWT);
             } catch (ExpiredJwtTokenException e) {
                 sendResponse(httpServletResponse, JsonResponseStatus.ACCESS_TOKEN_EXPIRED);
-            } catch (MissingJwtException e) {
+            } catch (NotFoundException e) {
                 sendResponse(httpServletResponse, JsonResponseStatus.MISSING_JWT);
             }
         } else {
@@ -78,6 +72,6 @@ public class JwtFilter extends GenericFilterBean {
     private String getBearerToken(String token) {
         if (StringUtils.hasText(token) && token.startsWith("Bearer "))
             return token.substring(7);
-        throw new MissingJwtException(JsonResponseStatus.MISSING_JWT);
+        throw new NotFoundException(JsonResponseStatus.MISSING_JWT);
     }
 }

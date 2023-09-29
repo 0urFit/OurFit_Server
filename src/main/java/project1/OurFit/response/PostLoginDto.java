@@ -13,9 +13,4 @@ public class PostLoginDto {
     private String accessToken;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String refreshToken;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String email;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String gender;
 }

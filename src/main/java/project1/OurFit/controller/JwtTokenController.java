@@ -34,9 +34,9 @@ public class JwtTokenController {
         Claims claims = jwtTokenProvider.parseToken(refreshToken);
         String email = claims.getSubject();
 
-        String accessToken = jwtTokenProvider.createRefreshToken(email);
+        String accessToken = jwtTokenProvider.createAccessToken(email);
 
-        return new JsonResponse<>(new PostLoginDto(accessToken, null, null, null));
+        return new JsonResponse<>(new PostLoginDto(accessToken, null));
     }
 
 }

@@ -271,15 +271,16 @@ public class RoutineService {
                 enrollDetailSets.add(enrollDetailSet);
             }
         }
-
-        exerciseEnrollRepository.save(exerciseEnroll);
-        CompletableFuture<Void> enrollDetailsFuture = CompletableFuture.runAsync(() -> {
+        CompletableFuture<Void> exerciseEnrollFuture = CompletableFuture.runAsync(() -> {
+            exerciseEnrollRepository.save(exerciseEnroll);
+        });
+        CompletableFuture<Void> enrollDetailFuture = CompletableFuture.runAsync(() -> {
             enrollDetailRepository.saveAll(enrollDetails);
         });
-
-        CompletableFuture<Void> enrollDetailSetsFuture = CompletableFuture.runAsync(() -> {
+        CompletableFuture<Void> enrollDetailSetFuture = CompletableFuture.runAsync(() -> {
             enrollDetailSetRepository.saveAll(enrollDetailSets);
         });
+
     }
 
     public void deleteEnrollExercise(String email, Long routineId) {
@@ -297,15 +298,9 @@ public class RoutineService {
         List<Long> enrollDetailIds = enrollDetails.stream().map(EnrollDetail::getId).collect(Collectors.toList());
         List<EnrollDetailSet> enrollDetailSets = enrollDetailSetRepository.findByEnrollDetailIdIn(enrollDetailIds);
 
-        CompletableFuture<Void> enrollDetailSetDeleteFuture = CompletableFuture.runAsync(() -> {
-            enrollDetailSetRepository.deleteAll(enrollDetailSets);
-        }).thenRun(() -> {
-            CompletableFuture<Void> enrollDetailDeleteFuture = CompletableFuture.runAsync(() -> {
-                enrollDetailRepository.deleteAll(enrollDetails);
-            }).thenRun(() -> {
-                exerciseEnrollRepository.delete(exerciseEnroll);
-            });
-        });
+        enrollDetailSetRepository.deleteAll(enrollDetailSets);
+        enrollDetailRepository.deleteAll(enrollDetails);
+        exerciseEnrollRepository.delete(exerciseEnroll);
     }
 
     public boolean inquiryLike(String userEmail, Long routineId) {

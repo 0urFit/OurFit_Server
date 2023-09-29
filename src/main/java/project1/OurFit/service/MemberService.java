@@ -1,5 +1,6 @@
 package project1.OurFit.service;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -8,28 +9,22 @@ import project1.OurFit.entity.Member;
 import project1.OurFit.request.LoginDTO;
 import project1.OurFit.request.MemberDTO;
 import project1.OurFit.repository.MemberRepository;
-import project1.OurFit.response.PostLoginDto;
-import project1.constant.exception.BaseException;
-import project1.constant.exception.DuplicateException;
-import project1.constant.exception.LoginException;
+import project1.OurFit.response.SignUpDto;
+import project1.constant.exception.*;
 import project1.constant.response.JsonResponseStatus;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
 @Transactional
 @Service
+@RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
-        this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-    }
 
     public Member findEmailAndPassword(LoginDTO login) {
         Member member = memberRepository.findByEmail(login.getEmail())
@@ -40,21 +35,17 @@ public class MemberService {
     }
 
     public void findEmail(String email){
-        if (!checkExistence(email, memberRepository::existsByEmail))
+        if (checkExistence(email, memberRepository::existsByEmail))
             throw new DuplicateException(JsonResponseStatus.EMAIL_CONFLICT);
     }
 
-    public Boolean findNickname(String nickname) {
-        if (!checkExistence(nickname, memberRepository::existsByNickname))
+    public void findNickname(String nickname) {
+        if (checkExistence(nickname, memberRepository::existsByNickname))
             throw new DuplicateException(JsonResponseStatus.NICKNAME_CONFLICT);
     }
 
     private Boolean checkExistence(String value, Function<String, Boolean> existsFunction) {
         return existsFunction.apply(value);
-    }
-
-    public Boolean checkMember(String email){
-        return memberRepository.existsByEmail(email);
     }
 
     public Boolean join(MemberDTO memberDTO) {
@@ -81,5 +72,13 @@ public class MemberService {
         memberDTO.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
         Member member = modelMapper.map(memberDTO, Member.class);
         memberRepository.save(member);
+    }
+
+    /*
+     * kakao login service
+     */
+    public Member findKakaoId(SignUpDto signUpDto) {
+        return memberRepository.findByEmail(signUpDto.getEmail())
+                .orElseThrow(() -> new UnregisteredUserException(JsonResponseStatus.NOT_FOUND_MEMBER, signUpDto));
     }
 }
