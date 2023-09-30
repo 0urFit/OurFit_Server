@@ -7,3 +7,4 @@
 
 include::signup.adoc[]
 include::error.adoc[]
+include::login.adoc[]
