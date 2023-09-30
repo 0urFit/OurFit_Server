@@ -2,7 +2,6 @@ package project1.OurFit.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import project1.OurFit.entity.Member;
 import project1.OurFit.response.PostLoginDto;
 import project1.OurFit.response.SignUpDto;
@@ -10,7 +9,6 @@ import project1.OurFit.service.JwtService;
 import project1.OurFit.service.KakaoAccessTokenProviderService;
 import project1.OurFit.service.KakaoUserInfoProviderService;
 import project1.constant.Oauth;
-import project1.constant.exception.LoginException;
 import project1.constant.response.JsonResponse;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -28,10 +26,15 @@ public class SignInUpController {
     private final KakaoUserInfoProviderService kakaoUserInfoProviderService;
     private final JwtService jwtService;
 
+    /**
+     * 자체 로그인 API
+     * @param login
+     * @return
+     */
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse<PostLoginDto> login(@RequestBody LoginDTO login, HttpServletRequest request) {
-        Member member = memberService.findEmailAndPassword(login);
+    public JsonResponse<PostLoginDto> login(@RequestBody LoginDTO login) {
+        Member member = memberService.authenticateMember(login);
         return new JsonResponse<>(jwtService.createToken(member));
     }
 

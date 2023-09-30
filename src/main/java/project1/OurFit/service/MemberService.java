@@ -26,16 +26,29 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Member findEmailAndPassword(LoginDTO login) {
-        Member member = memberRepository.findByEmail(login.getEmail())
+    /**
+     * 로그인 Service
+     * @param login
+     * @throws LoginException 아이디나 비밀번호가 틀렸을 때 발생
+     */
+    public Member authenticateMember(LoginDTO login) {
+        Member member = findMemberByEmail(login.getEmail());
+        validatePassword(login.getPassword(), member.getPassword());
+        return member;
+    }
+
+    private Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new LoginException(JsonResponseStatus.LOGIN_FAIL));
-        if (passwordEncoder.matches(login.getPassword(), member.getPassword()))
-            return member;
-        throw new LoginException(JsonResponseStatus.LOGIN_FAIL);
+    }
+
+    private void validatePassword(String rawPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(rawPassword, encodedPassword))
+            throw new LoginException(JsonResponseStatus.LOGIN_FAIL);
     }
 
     /**
-     * 이메일 중복확인 여부 검사
+     * 이메일 중복확인 여부 검사 Service
      * @param email
      * @throws DuplicateException 이메일이 이미 사용 중일 때 발생
      */
@@ -45,7 +58,7 @@ public class MemberService {
     }
 
     /**
-     * 닉네임 중복확인 여부 검사
+     * 닉네임 중복확인 여부 검사 Service
      * @param nickname
      * @throws DuplicateException 닉네임이 이미 사용 중일 때 발생
      */
@@ -55,7 +68,7 @@ public class MemberService {
     }
 
     /**
-     * 회원가입
+     * 회원가입 Service
      * @param memberDTO
      * @throws DuplicateException 이메일&닉네임 중복 되었을 때 발생
      */
