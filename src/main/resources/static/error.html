@@ -466,19 +466,53 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">SGN100</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">이메일 중복 에러</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">409</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">conflict</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conflict</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SGN101</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">닉네임 중복 애러</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">409</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">conflict</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conflict</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SGN102</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">이메일, 닉네임 모두 중복 에러</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">409</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">conflict</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conflict</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_로그인_errorcode">로그인 ErrorCode</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">code</th>
+<th class="tableblock halign-left valign-top">설명 및 메시지</th>
+<th class="tableblock halign-left valign-top">Http 상태코드</th>
+<th class="tableblock halign-left valign-top">Status 설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LGN100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">아이디 or 비밀번호가 맞지 않음</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unauthorized</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LGN101</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DB에 등록된 회원이 아님<br>
+           회원가입 페이지로 이동(이메일, 성별 제공)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NotFound</p></td>
 </tr>
 </tbody>
 </table>
@@ -487,7 +521,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-09-30 01:26:25 +0900
+Last updated 2023-10-01 20:23:05 +0900
 </div>
 </div>
 </body>

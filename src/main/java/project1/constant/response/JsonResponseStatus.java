@@ -9,19 +9,20 @@ public enum JsonResponseStatus {
      * 200 : 요청 성공
      */
     SUCCESS(true, "200", "요청에 성공하였습니다."),
+    USERS_EMPTY_EMAIL(true, "200", "이메일 사용 가능합니다."),
+    USERS_EMPTY_NICKNAME(true, "200", "닉네임 사용 가능합니다."),
     /**
      * 400 : Request, Response 오류
      */
-    LOGIN_FAIL(false, "401", "아이디나 비밀번호가 맞지 않습니다."),
-    RESPONSE_ERROR(false, "404", "값을 불러오는데 실패하였습니다."),
-    USERS_EMPTY_EMAIL(false, "200", "이메일 사용가능합니다."),
-    NOTFOUND(false,"404","값을 찾을 수 없습니다"),
-    UNAUTHORIZED(false, "401", "인증에 실패하였습니다."),
     EMAIL_CONFLICT(false, "SGN100", "이메일 중복입니다."),
     NICKNAME_CONFLICT(false, "SGN101", "닉네임 중복입니다."),
     ALL_CONFLICT(false, "SGN102", "모두 중복입니다."),
+    LOGIN_FAIL(false, "LGN100", "아이디나 비밀번호가 맞지 않습니다."),
+    NOT_FOUND_MEMBER(false, "LGN101","유저를 찾을 수 없습니다"),
+    RESPONSE_ERROR(false, "404", "값을 불러오는데 실패하였습니다."),
+    NOTFOUND(false,"404","값을 찾을 수 없습니다"),
+    UNAUTHORIZED(false, "401", "인증에 실패하였습니다."),
     NOT_FOUND_ROUTINE(false, "404","루틴을 찾을 수 없습니다."),
-    NOT_FOUND_MEMBER(false, "404","유저를 찾을 수 없습니다"),
     REFRESH_TOKEN_EXPIRED(false, "401", "리프레시 토큰이 만료되었습니다."),
     REFRESH_TOKEN_NOT_FOUND(false, "404", "리프레시 토큰이 없습니다."),
     ACCESS_TOKEN_EXPIRED(false, "401", "액세스 토큰이 만료되었습니다."),

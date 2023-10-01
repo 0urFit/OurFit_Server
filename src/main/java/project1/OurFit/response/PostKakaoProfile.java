@@ -13,6 +13,6 @@ public class PostKakaoProfile {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class KakaoAccount {
         public String email;
-        public String gender = "undefined";
+        public String gender;
     }
 }

@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import project1.OurFit.jwt.JwtTokenProvider;
 import project1.OurFit.repository.JwtTokenRepository;
 import project1.OurFit.request.RefreshTokenRequest;
-import project1.OurFit.response.PostLoginDto;
-import project1.constant.exception.BaseException;
+import project1.OurFit.response.JwtTokenDto;
 import project1.constant.exception.RefreshTokenException;
 import project1.constant.response.JsonResponse;
 import project1.constant.response.JsonResponseStatus;
@@ -23,7 +22,7 @@ public class JwtTokenController {
 
     @PostMapping("/newtoken")
     @ResponseBody
-    public JsonResponse<PostLoginDto> refreshAccessToken(
+    public JsonResponse<JwtTokenDto> refreshAccessToken(
             @RequestBody RefreshTokenRequest refreshTokenRequest) {
 
         String refreshToken = refreshTokenRequest.getRefreshToken();
@@ -36,7 +35,7 @@ public class JwtTokenController {
 
         String accessToken = jwtTokenProvider.createAccessToken(email);
 
-        return new JsonResponse<>(new PostLoginDto(accessToken, null));
+        return new JsonResponse<>(new JwtTokenDto(accessToken, null));
     }
 
 }

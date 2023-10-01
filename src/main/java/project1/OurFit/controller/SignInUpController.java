@@ -1,9 +1,8 @@
 package project1.OurFit.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import project1.OurFit.entity.Member;
-import project1.OurFit.response.PostLoginDto;
+import project1.OurFit.response.JwtTokenDto;
 import project1.OurFit.response.SignUpDto;
 import project1.OurFit.service.JwtService;
 import project1.OurFit.service.KakaoAccessTokenProviderService;
@@ -33,7 +32,7 @@ public class SignInUpController {
      */
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonResponse<PostLoginDto> login(@RequestBody LoginDTO login) {
+    public JsonResponse<JwtTokenDto> login(@RequestBody LoginDTO login) {
         Member member = memberService.authenticateMember(login);
         return new JsonResponse<>(jwtService.createToken(member));
     }
@@ -48,7 +47,7 @@ public class SignInUpController {
     @ResponseBody
     public JsonResponse<JsonResponseStatus> checkEmail(final String email) {
         memberService.validateEmail(email);
-        return new JsonResponse<>(JsonResponseStatus.SUCCESS);
+        return new JsonResponse<>(JsonResponseStatus.USERS_EMPTY_EMAIL);
     }
 
     /**
@@ -61,7 +60,7 @@ public class SignInUpController {
     @ResponseBody
     public JsonResponse<JsonResponseStatus> checkNickname(final String nick) {
         memberService.validateNickname(nick);
-        return new JsonResponse<>(JsonResponseStatus.SUCCESS);
+        return new JsonResponse<>(JsonResponseStatus.USERS_EMPTY_NICKNAME);
     }
 
     /**
@@ -76,9 +75,14 @@ public class SignInUpController {
         return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
+    /**
+     * kakao 로그인 & 회원가입 API
+     * @param code
+     * @return
+     */
     @GetMapping("/kakao")
     @ResponseBody
-    public JsonResponse<PostLoginDto> oauthKakaoLogin(
+    public JsonResponse<JwtTokenDto> oauthKakaoLogin(
             @RequestParam("authorizationCode") final String code) {
         String accessToken = kakaoAccessTokenProviderService.getAccessToken(code);
         SignUpDto signUpDto = kakaoUserInfoProviderService.getUserInfo(accessToken);

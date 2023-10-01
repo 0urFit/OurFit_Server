@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-public class PostLoginDto {
+public class JwtTokenDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String accessToken;

@@ -3,6 +3,7 @@ package project1.OurFit.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,39 +17,41 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class KakaoAccessTokenProviderService {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired private RestTemplate restTemplate;
+    @Value("${kakao.client.id}")
+    private String clidentId;
+    @Value("${kakao.redirect.url}")
+    private String redirectUrl;
 
-    public String getAccessToken(String code) {
-        JsonNode root = sendAccessTokenRequest(code).getBody();
-        return root.get("access_token").asText();
+    public String getAccessToken(final String code) {
+        JsonNode responseBody = requestAccessToken(code).getBody();
+        return responseBody.get("access_token").asText();
     }
 
-    private HttpHeaders createHeadersWithContentType() {
+    private HttpHeaders createContentTypeHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         return headers;
     }
 
-    private MultiValueMap<String, String> createAccessTokenParams(String code) {
+    private MultiValueMap<String, String> createTokenRequestParameters(final String code) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", "2be5601c4dcce1fe89db958b51887271");
-        params.add("redirect_url", "http://localhost:3000/verifying");
+        params.add("client_id", clidentId);
+        params.add("redirect_url", redirectUrl);
         params.add("code", code);
         return params;
     }
 
-    private HttpEntity<MultiValueMap<String, String>> createAccessTokenRequest(String code) {
-        HttpHeaders headers = createHeadersWithContentType();
-        MultiValueMap<String, String> params = createAccessTokenParams(code);
-        return new HttpEntity<>(params, headers);
+    private HttpEntity<MultiValueMap<String, String>> createTokenRequestEntity(final String code) {
+        return new HttpEntity<>(createTokenRequestParameters(code), createContentTypeHeaders());
     }
 
-    private ResponseEntity<JsonNode> sendAccessTokenRequest(String code) {
+    private ResponseEntity<JsonNode> requestAccessToken(final String code) {
         return restTemplate.exchange(
                 "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
-                createAccessTokenRequest(code),
+                createTokenRequestEntity(code),
                 JsonNode.class
         );
     }
