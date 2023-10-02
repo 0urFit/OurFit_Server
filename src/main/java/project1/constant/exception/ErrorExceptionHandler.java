@@ -43,14 +43,14 @@ public class ErrorExceptionHandler {
     @ExceptionHandler(RefreshTokenException.class)
     @ResponseBody
     public JsonResponse<JsonResponseStatus> refreshTokenExceptionHandle(RefreshTokenException exception) {
-        return new JsonResponse<>(JsonResponseStatus.REFRESH_TOKEN_NOT_FOUND);
+        return new JsonResponse<>(exception.getStatus());
     }
 
     @ExceptionHandler(AccessTokenException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
     public JsonResponse<JsonResponseStatus> accessTokenExceptionHandle(AccessTokenException exception) {
-        return new JsonResponse<>(JsonResponseStatus.ACCESS_TOKEN_EXPIRED);
+        return new JsonResponse<>(exception.getStatus());
     }
 
     @ExceptionHandler(ExpiredJwtTokenException.class)

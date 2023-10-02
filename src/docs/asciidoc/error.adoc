@@ -19,3 +19,18 @@
 | LGN101 | DB에 등록된 회원이 아님 +
            회원가입 페이지로 이동(이메일, 성별 제공) | 404 | NotFound
 |===
+
+=== JWT ErrorCode
+[cols="1,2,1,1"]
+|===
+| code | 설명 및 메시지 | Http 상태코드 | Status 설명
+
+| JWT100 | 엑세스 토큰이 없음 | 401 | Unauthorized
+| JWT101 | 잘못된 JWT | 401 | Unauthorized
+| JWT102 | 엑세스토큰 기한 만료 +
+           리프레시 토큰 이용해서 액세스 토큰 갱신 | 401 | Unauthorized
+| JWT200 | 일치하는 리프레시 토큰이 없음 +
+           로그인 창으로 이동 | 404 | NotFound
+| JWT201 | 리프레시 토큰 기한 만료 +
+           로그인 창으로 이동 | 401 | Unauthorized
+|===

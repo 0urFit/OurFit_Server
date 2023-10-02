@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import project1.constant.exception.ExpiredJwtTokenException;
 import project1.constant.exception.InvalidJwtException;
+import project1.constant.exception.RefreshTokenException;
 import project1.constant.response.JsonResponseStatus;
 
 import java.security.Key;
@@ -42,7 +43,7 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(accessSecret);
         this.accessSecretKey = Keys.hmacShaKeyFor(keyBytes);
         keyBytes = Decoders.BASE64.decode(refreshSecret);
@@ -100,8 +101,10 @@ public class JwtTokenProvider implements InitializingBean {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (JwtException e) {
-            throw new JwtException("유효하지 않은 토큰입니다.");
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredJwtTokenException(JsonResponseStatus.REFRESH_TOKEN_EXPIRED);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new RefreshTokenException(JsonResponseStatus.INVALID_JWT);
         }
     }
 }
