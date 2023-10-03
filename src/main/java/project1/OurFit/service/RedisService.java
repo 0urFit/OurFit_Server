@@ -1,6 +1,7 @@
 package project1.OurFit.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project1.OurFit.entity.RefreshToken;
 import project1.OurFit.repository.RefreshTokenRedisRepository;
@@ -11,6 +12,7 @@ import project1.constant.response.JsonResponseStatus;
 @Service
 @RequiredArgsConstructor
 public class RedisService {
+    @Autowired
     private RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     public RefreshToken getRedisByEmail(final String email) {
