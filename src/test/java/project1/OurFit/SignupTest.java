@@ -42,6 +42,7 @@ public class SignupTest {
     ) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
+                .defaultRequest(post("/").header(HttpHeaders.HOST, "54.180.88.182:8080"))
                 .alwaysDo(restDocs)
                 .build();
     }
@@ -63,7 +64,6 @@ public class SignupTest {
 
         //When & Then
         mockMvc.perform(post("/signup")
-                        .header(HttpHeaders.HOST, "43.200.180.163:8080")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(member)))
                 .andExpect(status().isOk())

@@ -56,7 +56,7 @@ public class KakaoLoginTest {
     ) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
-                .defaultRequest(get("/").header(HttpHeaders.HOST, "43.200.180.163:8080"))
+                .defaultRequest(get("/").header(HttpHeaders.HOST, "54.180.88.182:8080"))
                 .alwaysDo(restDocs)
                 .build();
     }
