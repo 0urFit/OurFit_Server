@@ -82,10 +82,9 @@ public class JwtTokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, new ArrayList<>());
     }
 
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(accessSecretKey).build().parseClaimsJws(token);
-            return true;
         } catch (ExpiredJwtException e) {
             logger.info("Expired JWT token.");
             throw new ExpiredJwtTokenException(JsonResponseStatus.ACCESS_TOKEN_EXPIRED);

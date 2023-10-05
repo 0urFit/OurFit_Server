@@ -57,7 +57,7 @@ public class ErrorExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
     public JsonResponse<JsonResponseStatus> expiredJwtTokenExceptionHandle(ExpiredJwtTokenException exception) {
-        return new JsonResponse<>(JsonResponseStatus.ACCESS_TOKEN_EXPIRED);
+        return new JsonResponse<>(exception.getStatus());
     }
 
     @ExceptionHandler(UnregisteredUserException.class)

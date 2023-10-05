@@ -2,6 +2,7 @@ package project1.OurFit.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import project1.OurFit.entity.RefreshToken;
 import project1.OurFit.repository.RefreshTokenRedisRepository;
@@ -15,6 +16,7 @@ public class RedisService {
     @Autowired
     private RefreshTokenRedisRepository refreshTokenRedisRepository;
 
+    @Cacheable(value = "token", key = "#email")
     public RefreshToken getRedisByEmail(final String email) {
         return refreshTokenRedisRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(JsonResponseStatus.NOT_FOUND_MEMBER));

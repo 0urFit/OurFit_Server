@@ -517,11 +517,65 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </tbody>
 </table>
 </div>
+<div class="sect2">
+<h3 id="_jwt_errorcode">JWT ErrorCode</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">code</th>
+<th class="tableblock halign-left valign-top">설명 및 메시지</th>
+<th class="tableblock halign-left valign-top">Http 상태코드</th>
+<th class="tableblock halign-left valign-top">Status 설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JWT100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">엑세스 토큰이 없음</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unauthorized</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JWT101</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">잘못된 JWT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unauthorized</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JWT102</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">엑세스토큰 기한 만료<br>
+           리프레시 토큰 이용해서 액세스 토큰 갱신</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unauthorized</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JWT200</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일치하는 리프레시 토큰이 없음<br>
+           로그인 창으로 이동</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NotFound</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JWT201</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리프레시 토큰 기한 만료<br>
+           로그인 창으로 이동</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unauthorized</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-10-01 20:23:05 +0900
+Last updated 2023-10-02 00:24:23 +0900
 </div>
 </div>
 </body>

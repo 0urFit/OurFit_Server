@@ -24,11 +24,9 @@ public class JwtTokenController {
     public JsonResponse<JwtTokenDto> refreshAccessToken(@RequestBody JwtTokenDto jwtTokenDto) {
         String refreshToken = jwtTokenDto.getRefreshToken();
         String email = jwtService.extractEmailFromRefreshToken(refreshToken);
-        System.out.println(email);
         RefreshToken storedRefreshToken = redisService.getRedisByEmail(email);
         redisService.validateRefreshToken(storedRefreshToken, refreshToken);
         String newAccessToken = jwtTokenProvider.createAccessToken(email);
         return new JsonResponse<>(new JwtTokenDto(newAccessToken, null));
     }
-
 }

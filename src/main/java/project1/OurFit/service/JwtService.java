@@ -2,6 +2,8 @@ package project1.OurFit.service;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import project1.OurFit.entity.Member;
 import project1.OurFit.entity.RefreshToken;
@@ -38,7 +40,8 @@ public class JwtService {
         return jwtTokenProvider.createRefreshToken(member.getEmail());
     }
 
-    private void saveRefreshToken(Member member, String refreshToken) {
+    @CachePut(value = "token", key = "#member.email")
+    public void saveRefreshToken(Member member, String refreshToken) {
         RefreshToken refreshToken1 = new RefreshToken(member.getEmail(), refreshToken);
         refreshTokenRedisRepository.save(refreshToken1);
     }

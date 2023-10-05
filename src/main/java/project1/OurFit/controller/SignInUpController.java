@@ -1,6 +1,7 @@
 package project1.OurFit.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import project1.OurFit.entity.Member;
 import project1.OurFit.response.JwtTokenDto;
 import project1.OurFit.response.SignUpDto;
@@ -32,6 +33,7 @@ public class SignInUpController {
      */
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
+    @CacheEvict(value = "token", key = "#login.email") // 기존에 있던 캐시 삭제
     public JsonResponse<JwtTokenDto> login(@RequestBody LoginDTO login) {
         Member member = memberService.authenticateMember(login);
         return new JsonResponse<>(jwtService.createToken(member));
