@@ -8,4 +8,6 @@
 include::signup.adoc[]
 include::login.adoc[]
 
+include::renewToken.adoc[]
+
 include::error.adoc[]

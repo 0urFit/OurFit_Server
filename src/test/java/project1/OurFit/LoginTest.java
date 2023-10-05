@@ -15,7 +15,6 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -44,7 +43,7 @@ public class LoginTest {
     ) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
-                .defaultRequest(post("/").header(HttpHeaders.HOST, "54.180.88.182:8080"))
+                .defaultRequest(post("/").header(HttpHeaders.HOST, "54.180.88.182"))
                 .alwaysDo(restDocs)
                 .build();
     }

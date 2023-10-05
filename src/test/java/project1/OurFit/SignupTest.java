@@ -42,7 +42,7 @@ public class SignupTest {
     ) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
-                .defaultRequest(post("/").header(HttpHeaders.HOST, "54.180.88.182:8080"))
+                .defaultRequest(post("/").header(HttpHeaders.HOST, "54.180.88.182"))
                 .alwaysDo(restDocs)
                 .build();
     }
