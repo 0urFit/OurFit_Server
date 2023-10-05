@@ -80,44 +80,9 @@ public class MyPageService {
 
     public void completeRoutine(String email, ExerciseCompleteDto completeDto) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 
-        ExerciseRoutine exerciseRoutine = routineRepository.findById(completeDto.getRoutineId())
-                .orElseThrow(() -> new BaseException(NOT_FOUND_ROUTINE));
 
-        Optional<ExerciseLogs> exerciseLog = exerciseLogsRepository.findByMemberAndExerciseRoutineAndWeekAndDay
-                (member, exerciseRoutine, completeDto.getWeek(), completeDto.getDay());
-
-        if (exerciseLog.isPresent()) {
-            ExerciseLogs exerciseLogs = exerciseLog.get();
-            exerciseLogs.setPercent_rate(completeDto.getPercent_rate());
-            exerciseLogsRepository.save(exerciseLogs);
-        } else {
-            ExerciseLogs exerciseLogs = new ExerciseLogs();
-            exerciseLogs.setMember(member);
-            exerciseLogs.setExerciseRoutine(exerciseRoutine);
-            exerciseLogs.setWeek(completeDto.getWeek());
-            exerciseLogs.setDay(completeDto.getDay());
-            exerciseLogs.setPercent_rate(completeDto.getPercent_rate());
-            exerciseLogsRepository.save(exerciseLogs);
-        }
-
-        if (completeDto.isLastday()) {
-            double averagePercentRate = calculateAveragePercentRate(completeDto.getRoutineId(), completeDto.getWeek());
-            if (averagePercentRate >= 80) {
-                ExerciseEnroll exerciseEnroll = exerciseEnrollRepository.findByMemberAndExerciseRoutine(member, exerciseRoutine);
-                exerciseEnroll.setWeekProgress(exerciseEnroll.getWeekProgress() + 1);
-                exerciseEnrollRepository.save(exerciseEnroll);
-            }
-        }
-    }
-
-    private double calculateAveragePercentRate(long routineId, int week) {
-        List<ExerciseLogs> exerciseLogsList = exerciseLogsRepository.findByExerciseRoutineIdAndWeek(routineId, week);
-        double sum = 0.0;
-        for (ExerciseLogs exerciseLog : exerciseLogsList)
-            sum += exerciseLog.getPercent_rate();
-        return sum / exerciseLogsList.size();
     }
 
     public List<EnrollDetailDto> getEnrollDetails(String email, Long routineId, int week) {

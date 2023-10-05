@@ -57,11 +57,22 @@ public class RoutineService {
         return false;
     }
 
+    /**
+     * 카테고리별 운동루틴 조회 service
+     * @param category
+     * @param userEmail
+     * @return
+     */
     public List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutineByCategory(String category, String userEmail) {
         List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findByCategory(category);
         return getExerciseRoutineWithEnrollmentStatus(userEmail, exerciseRoutineList);
     }
 
+    /**
+     * 운동루틴 all 조회 service
+     * @param userEmail
+     * @return
+     */
     public List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutine(String userEmail) {
         List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findAll();
         return getExerciseRoutineWithEnrollmentStatus(userEmail, exerciseRoutineList);
@@ -69,28 +80,32 @@ public class RoutineService {
 
     private List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutineWithEnrollmentStatus(
             String userEmail, List<ExerciseRoutine> exerciseRoutineList) {
-        List<ExerciseRoutineWithEnrollmentStatusDto> result = new ArrayList<>();
 
-        List<ExerciseEnroll> exerciseEnrolls = exerciseEnrollRepository.findAllByMemberEmail(userEmail);
-        List<ExerciseLike> exerciseLikes = exerciseLikeRepository.findAllByMemberEmail(userEmail);
+        Set<ExerciseRoutine> enrolledRoutines = getEnrolledRoutines(userEmail);
+        Set<ExerciseRoutine> likedRoutines = getLikedRoutines(userEmail);
 
-        Set<ExerciseRoutine> enrolledRoutines = exerciseEnrolls.stream()
-                .map(ExerciseEnroll::getExerciseRoutine)
-                .collect(Collectors.toSet());
+        return exerciseRoutineList.stream()
+                .map(routine -> createDtoWithStatus(routine, enrolledRoutines, likedRoutines))
+                .collect(Collectors.toList());
+    }
 
-        Set<ExerciseRoutine> likedRoutines = exerciseLikes.stream()
+    private ExerciseRoutineWithEnrollmentStatusDto createDtoWithStatus(
+            ExerciseRoutine routine, Set<ExerciseRoutine> enrolledRoutines, Set<ExerciseRoutine> likedRoutines) {
+        boolean isEnrolled = enrolledRoutines.contains(routine);
+        boolean isLiked = likedRoutines.contains(routine);
+        return new ExerciseRoutineWithEnrollmentStatusDto(routine, isEnrolled, isLiked);
+    }
+
+    private Set<ExerciseRoutine> getLikedRoutines(String userEmail) {
+        return exerciseLikeRepository.findAllByMemberEmail(userEmail).stream()
                 .map(ExerciseLike::getExerciseRoutine)
                 .collect(Collectors.toSet());
+    }
 
-        for (ExerciseRoutine exerciseRoutine : exerciseRoutineList) {
-            boolean isEnrolled = enrolledRoutines.contains(exerciseRoutine);
-            boolean isLiked = likedRoutines.contains(exerciseRoutine);
-            ExerciseRoutineWithEnrollmentStatusDto dto =
-                    new ExerciseRoutineWithEnrollmentStatusDto(exerciseRoutine, isEnrolled, isLiked);
-            result.add(dto);
-        }
-
-        return result;
+    private Set<ExerciseRoutine> getEnrolledRoutines(String userEmail) {
+        return exerciseEnrollRepository.findAllByMemberEmail(userEmail).stream()
+                .map(ExerciseEnroll::getExerciseRoutine)
+                .collect(Collectors.toSet());
     }
 
     public List<ExerciseDetailDto> getExerciseDetails(Long routineId, String email, int week) {

@@ -24,5 +24,4 @@ public class ExerciseLogs {
 
     private int week;
     private String day;
-    private double percent_rate;
 }

@@ -65,7 +65,7 @@ public class MyPageController {
         return new JsonResponse<>(myLikeRes);
     }
 
-    @PatchMapping("/mypage/exercise/complete")
+    @PostMapping("/mypage/exercise/{routineId}/complete")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> completeRoutine(@RequestBody ExerciseCompleteDto completeDto){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();

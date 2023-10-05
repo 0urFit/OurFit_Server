@@ -30,4 +30,5 @@ public class ExerciseRoutine {
     private int level;
     private int period;
     private String routineName;
+    private String dayOfWeek;
 }
