@@ -1,0 +1,4 @@
+= 루틴
+
+=== 카테고리별 루틴 목록 가져오기
+operation::routine-by-category/get-routine-by-category[snippets='http-request,path-parameters,response-body,response-fields']
