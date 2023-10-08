@@ -24,6 +24,7 @@ public class EnrollDetailDto {
     @NoArgsConstructor
     public static class day {
         private String day;
+        private boolean success;
         private List<exercises> exercises;
 
         @Getter

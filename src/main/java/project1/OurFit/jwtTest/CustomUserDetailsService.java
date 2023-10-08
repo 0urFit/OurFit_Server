@@ -1,4 +1,4 @@
-package project1.OurFit.jwt;
+package project1.OurFit.jwtTest;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

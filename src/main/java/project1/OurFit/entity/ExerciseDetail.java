@@ -15,7 +15,7 @@ public class ExerciseDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int weeks;
+    private int fewWeek;
     private String name;
     private String day;
     private int sequence;

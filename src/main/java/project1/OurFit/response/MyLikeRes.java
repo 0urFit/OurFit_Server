@@ -21,8 +21,8 @@ public class MyLikeRes {
         this.routineName=ex.getRoutineName();
         this.imgPath=ex.getImgpath();
         this.level=ex.getLevel();
-        this.fewTime=ex.getFewTime();
-        this.period=ex.getPeriod();
+        this.fewTime=ex.getDaysPerWeek();
+        this.period=ex.getProgramLength();
         this.Id=ex.getId();
         this.category = category;
         this.enrolled = enrolled;

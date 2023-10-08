@@ -9,7 +9,7 @@ import java.util.List;
 public interface EnrollDetailRepository extends JpaRepository<EnrollDetail,Long> {
 
     @EntityGraph(attributePaths = {"exerciseDetail", "enrollDetailSets"})
-    List<EnrollDetail> findAllByExerciseDetail_ExerciseRoutine_IdAndExerciseDetail_Weeks(Long exerciseRoutineId, int weeks);
+    List<EnrollDetail> findAllByExerciseDetail_ExerciseRoutine_IdAndExerciseDetail_fewWeek(Long exerciseRoutineId, int fewWeek);
 
     List<EnrollDetail> findByExerciseEnrollId(Long id);
 }

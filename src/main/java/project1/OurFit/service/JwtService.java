@@ -2,13 +2,11 @@ package project1.OurFit.service;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import project1.OurFit.entity.Member;
 import project1.OurFit.entity.RefreshToken;
-import project1.OurFit.jwt.JwtTokenProvider;
-import project1.OurFit.repository.MemberRepository;
+import project1.OurFit.jwtTest.JwtTokenProvider;
 import project1.OurFit.repository.RefreshTokenRedisRepository;
 import project1.OurFit.response.JwtTokenDto;
 

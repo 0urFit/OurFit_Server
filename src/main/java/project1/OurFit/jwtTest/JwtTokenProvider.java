@@ -1,4 +1,4 @@
-package project1.OurFit.jwt;
+package project1.OurFit.jwtTest;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

@@ -1,4 +1,4 @@
-package project1.OurFit.jwt;
+package project1.OurFit.jwtTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;

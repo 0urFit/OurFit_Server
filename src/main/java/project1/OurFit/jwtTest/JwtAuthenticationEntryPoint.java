@@ -1,4 +1,4 @@
-package project1.OurFit.jwt;
+package project1.OurFit.jwtTest;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,21 +1,17 @@
 package project1.OurFit.service;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.entity.*;
 import project1.OurFit.repository.*;
 import project1.OurFit.request.ExerciseCompleteDto;
-import project1.OurFit.request.MemberDTO;
 import project1.OurFit.response.EnrollDetailDto;
 import project1.OurFit.response.MemberDto;
 import project1.OurFit.response.MyLikeRes;
 import project1.OurFit.response.MyRoutineRes;
 import project1.constant.exception.BaseException;
 import project1.constant.exception.NotFoundException;
-import project1.constant.exception.UnregisteredUserException;
-import project1.constant.response.JsonResponseStatus;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,11 +74,18 @@ public class MyPageService {
         return myRoutineRes;
     }
 
-    public void completeRoutine(String email, ExerciseCompleteDto completeDto) {
+    public void completeRoutine(String email, ExerciseCompleteDto completeDto, Long routineId) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        ExerciseRoutine exerciseRoutine = routineRepository.findById(routineId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ROUTINE));
 
-
+        ExerciseLogs exerciseLogs = new ExerciseLogs();
+        exerciseLogs.setDay(completeDto.getDay());
+        exerciseLogs.setWeek(completeDto.getWeek());
+        exerciseLogs.setExerciseRoutine(exerciseRoutine);
+        exerciseLogs.setMember(member);
+        exerciseLogsRepository.save(exerciseLogs);
     }
 
     public List<EnrollDetailDto> getEnrollDetails(String email, Long routineId, int week) {
@@ -93,7 +96,7 @@ public class MyPageService {
                 .orElseThrow(() -> new BaseException(NOT_FOUND_ROUTINE));
 
         List<EnrollDetail> details = enrollDetailRepository.
-                findAllByExerciseDetail_ExerciseRoutine_IdAndExerciseDetail_Weeks(routineId, week)
+                findAllByExerciseDetail_ExerciseRoutine_IdAndExerciseDetail_fewWeek(routineId, week)
                 .stream()
                 .filter(detail -> detail.getExerciseEnroll().getMember().getId().equals(member.getId()))
                 .collect(Collectors.toList());
@@ -106,7 +109,7 @@ public class MyPageService {
     private Map<Integer, Map<String, List<EnrollDetail>>> groupEnrollDetails(List<EnrollDetail> details) {
         return details.stream()
                 .collect(Collectors.groupingBy(
-                        detail -> detail.getExerciseDetail().getWeeks(),
+                        detail -> detail.getExerciseDetail().getFewWeek(),
                         Collectors.groupingBy(
                                 detail -> detail.getExerciseDetail().getDay(),
                                 Collectors.toList()
@@ -130,8 +133,8 @@ public class MyPageService {
         dto.setRoutineName(exerciseRoutine.getRoutineName());
         dto.setCategory(exerciseRoutine.getCategory());
         dto.setLevel(exerciseRoutine.getLevel());
-        dto.setFewTime(exerciseRoutine.getFewTime());
-        dto.setPeriod(exerciseRoutine.getPeriod());
+        dto.setFewTime(exerciseRoutine.getDaysPerWeek());
+        dto.setPeriod(exerciseRoutine.getProgramLength());
         dto.setWeeks(weeks);
 
         List<EnrollDetailDto.day> days = detailsByDay.entrySet().stream()
@@ -143,11 +146,21 @@ public class MyPageService {
         return dto;
     }
 
-    private EnrollDetailDto.day buildDayDto(
-            String day,
-            List<EnrollDetail> details) {
+    private boolean checkExerciseLogExists(Long memberId, Long routineId, int week, String day) {
+        return exerciseLogsRepository.findByMemberIdAndExerciseRoutineIdAndWeekAndDay(memberId, routineId, week, day).isPresent();
+    }
+
+    private EnrollDetailDto.day buildDayDto(String day, List<EnrollDetail> details) {
         EnrollDetailDto.day dayDto = new EnrollDetailDto.day();
         dayDto.setDay(day);
+
+        // Check if the exercise log exists
+        EnrollDetail firstDetail = details.get(0); // Assuming details list is not empty and all details have the same member and routine
+        boolean logExists = checkExerciseLogExists(firstDetail.getExerciseEnroll().getMember().getId(),
+                firstDetail.getExerciseDetail().getExerciseRoutine().getId(),
+                firstDetail.getExerciseDetail().getFewWeek(),
+                day);
+        dayDto.setSuccess(logExists);
 
         List<EnrollDetailDto.day.exercises> exercises = details.stream()
                 .map(this::buildExercisesDto)

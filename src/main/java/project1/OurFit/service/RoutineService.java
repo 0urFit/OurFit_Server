@@ -10,6 +10,7 @@ import project1.OurFit.repository.*;
 import project1.OurFit.response.ExerciseDetailDto;
 import project1.OurFit.response.ExerciseRoutineWithEnrollmentStatusDto;
 import project1.constant.exception.BaseException;
+import project1.constant.exception.NotFoundException;
 import project1.constant.response.JsonResponse;
 import project1.constant.response.JsonResponseStatus;
 
@@ -34,6 +35,17 @@ public class RoutineService {
     private final ExerciseDetailRepository exerciseDetailRepository;
     private final EnrollDetailRepository enrollDetailRepository;
     private final EnrollDetailSetRepository enrollDetailSetRepository;
+    private static final List<String> DAYS_ORDER = Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
+
+    private Member findByEmail(String userEmail) {
+        return memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+    }
+
+    private ExerciseRoutine findByExerciseRoutine(long routineId) {
+        return exerciseRoutineRepository.findById(routineId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ROUTINE));
+    }
 
     public boolean postLike(String userEmail, Long routineId) {
         Member member=memberRepository.findByEmail(userEmail)
@@ -64,6 +76,7 @@ public class RoutineService {
      * @return
      */
     public List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutineByCategory(String category, String userEmail) {
+        findByEmail(userEmail);
         List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findByCategory(category);
         return getExerciseRoutineWithEnrollmentStatus(userEmail, exerciseRoutineList);
     }
@@ -74,6 +87,7 @@ public class RoutineService {
      * @return
      */
     public List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutine(String userEmail) {
+        findByEmail(userEmail);
         List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findAll();
         return getExerciseRoutineWithEnrollmentStatus(userEmail, exerciseRoutineList);
     }
@@ -108,144 +122,97 @@ public class RoutineService {
                 .collect(Collectors.toSet());
     }
 
-    public List<ExerciseDetailDto> getExerciseDetails(Long routineId, String email, int week) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
 
-        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
-                .orElseThrow(() -> new BaseException(NOT_FOUND_ROUTINE));
+    /**
+     * 주차&날짜별로 상세 루틴 가져오기 service
+     * @param routineId
+     * @param email
+     * @param week
+     * @return
+     */
+    public List<ExerciseDetailDto> getExerciseDetails(
+            final String email, final Long routineId, final int week) {
+        Member member = findByEmail(email);
+        ExerciseRoutine routine = findByExerciseRoutine(routineId);
+        boolean isLiked = exerciseLikeRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId);
 
-        List<ExerciseDetail> details = exerciseDetailRepository.findAllByWeekAndExerciseRoutine(routineId, week);
-
-        boolean isLiked = exerciseLikeRepository.existsByMemberEmailAndExerciseRoutineId(email, routineId);
-
-        Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay = groupExerciseDetails(details);
-
-        return buildExerciseDetailDtoList(detailsByWeekAndDay, member, exerciseRoutine, isLiked);
-    }
-
-    private Map<Integer, Map<String, List<ExerciseDetail>>> groupExerciseDetails(List<ExerciseDetail> details) {
-        return details.stream()
-                .collect(Collectors.groupingBy(
-                        ExerciseDetail::getWeeks,
-                        Collectors.groupingBy(
-                                ExerciseDetail::getDay,
-                                Collectors.toList()
-                        )
-                ));
-    }
-
-    private List<ExerciseDetailDto> buildExerciseDetailDtoList(
-            Map<Integer, Map<String, List<ExerciseDetail>>> detailsByWeekAndDay,
-            Member member,
-            ExerciseRoutine period,
-            boolean isLiked) {
-        return detailsByWeekAndDay.entrySet().stream()
-                .map(entry -> buildExerciseDetailDto(entry.getKey(), entry.getValue(), member, period, isLiked))
-                .collect(Collectors.toList());
-    }
-
-    private ExerciseDetailDto buildExerciseDetailDto(
-            Integer weeks,
-            Map<String, List<ExerciseDetail>> detailsByDay,
-            Member member,
-            ExerciseRoutine period,
-            boolean isLiked) {
-        ExerciseDetailDto dto = new ExerciseDetailDto();
-        dto.setRoutineName(period.getRoutineName());
-        dto.setWeeks(weeks);
-        dto.setPeriod(period.getPeriod());
-        dto.setLiked(isLiked);
-
-        List<ExerciseDetailDto.day> days = detailsByDay.entrySet().stream()
-                .sorted(Comparator.comparingInt(dayEntry -> getDayOrder(dayEntry.getKey())))
-                .map(dayEntry -> buildDayDto(dayEntry.getKey(), dayEntry.getValue(), member))
-                .collect(Collectors.toList());
-
-        dto.setDays(days);
+        List<ExerciseDetail> exerciseDetails = exerciseDetailRepository.findByExerciseRoutineIdAndWeeks(routineId, week);
+        List<ExerciseDetailDto> dto = new ArrayList<>();
+        dto.add(buildExerciseDetailDto(member, routine, isLiked, exerciseDetails));
         return dto;
     }
 
-    private ExerciseDetailDto.day buildDayDto(
-            String day,
-            List<ExerciseDetail> details,
-            Member member) {
-        ExerciseDetailDto.day dayDto = new ExerciseDetailDto.day();
-        dayDto.setDay(day);
+    private ExerciseDetailDto buildExerciseDetailDto(
+            Member member, ExerciseRoutine routine, boolean isLiked, List<ExerciseDetail> exerciseDetails) {
+        ExerciseDetailDto dto = new ExerciseDetailDto();
+        dto.setRoutineName(routine.getRoutineName());
+        dto.setLevel(routine.getLevel());
+        dto.setWeeks(routine.getDaysPerWeek());
+        dto.setPeriod(routine.getProgramLength());
+        dto.setIsliked(isLiked);
+        dto.setDays(constructDaysList(member, exerciseDetails));
+        return dto;
+    }
 
-        List<ExerciseDetailDto.day.exercises> exercisesList = details.stream()
-                .sorted(Comparator.comparingInt(ExerciseDetail::getSequence))
-                .map(detail -> buildExerciseDto(detail, member))
+    private List<ExerciseDetailDto.day> constructDaysList(Member member, List<ExerciseDetail> exerciseDetails) {
+        Map<String, List<ExerciseDetail>> groupedByDay = exerciseDetails.stream()
+                .collect(Collectors.groupingBy(ExerciseDetail::getDay));
+        return DAYS_ORDER.stream()
+                .filter(groupedByDay::containsKey)
+                .map(dayName -> createdayDto(member, dayName, groupedByDay.get(dayName)))
                 .collect(Collectors.toList());
+    }
 
-        dayDto.setExercises(exercisesList);
+    private ExerciseDetailDto.day createdayDto(Member member, String dayName, List<ExerciseDetail> details) {
+        ExerciseDetailDto.day dayDto = new ExerciseDetailDto.day();
+        dayDto.setDay(dayName);
+        dayDto.setExercises(constructExercisesList(member, details));
         return dayDto;
     }
 
-    private ExerciseDetailDto.day.exercises buildExerciseDto(
-            ExerciseDetail detail,
-            Member member) {
-        ExerciseDetailDto.day.exercises exercisesDto = new ExerciseDetailDto.day.exercises();
-        exercisesDto.setName(detail.getName());
-
-        List<ExerciseDetailDto.day.exercises.SetDetail> setsList = buildSetDtoList(detail, member);
-
-        exercisesDto.setSets(setsList);
-        return exercisesDto;
+    private List<ExerciseDetailDto.day.exercises> constructExercisesList(Member member, List<ExerciseDetail> details) {
+        return details.stream().map(detail -> {
+                    ExerciseDetailDto.day.exercises exerciseDto = new ExerciseDetailDto.day.exercises();
+                    exerciseDto.setName(detail.getName());
+                    exerciseDto.setSets(constructSetDetailsList(member, detail.getExerciseDetailSetList()));
+                    return exerciseDto;
+                }).collect(Collectors.toList());
     }
 
-    private List<ExerciseDetailDto.day.exercises.SetDetail> buildSetDtoList(
-            ExerciseDetail detail,
-            Member member) {
-        List<ExerciseDetailSet> sets = detail.getExerciseDetailSetList();
-        return sets.stream()
-                .map(set -> buildSetDetailDto(set, member))
-                .collect(Collectors.toList());
-    }
-
-    private ExerciseDetailDto.day.exercises.SetDetail buildSetDetailDto(
-            ExerciseDetailSet set,
-            Member member) {
-        ExerciseDetailDto.day.exercises.SetDetail setDto = new ExerciseDetailDto.day.exercises.SetDetail();
-        setDto.setSequence(set.getSequence());
-        setDto.setWeight(calculateWeight(member, set));
-        setDto.setReps(set.getReps());
-        return setDto;
-    }
-
-    private int getDayOrder(String day) {
-        return switch (day) {
-            case "Mon" -> 0;
-            case "Tue" -> 1;
-            case "Wed" -> 2;
-            case "Thu" -> 3;
-            case "Fri" -> 4;
-            case "Sat" -> 5;
-            default -> Integer.MAX_VALUE;
-        };
+    private List<ExerciseDetailDto.day.exercises.SetDetail> constructSetDetailsList(
+            Member member, List<ExerciseDetailSet> setList) {
+        return setList.stream().map(set -> {
+            ExerciseDetailDto.day.exercises.SetDetail setDetailDto = new ExerciseDetailDto.day.exercises.SetDetail();
+            setDetailDto.setSequence(set.getSequence());
+            setDetailDto.setWeight(calculateWeight(member, set));
+            setDetailDto.setReps(set.getReps());
+            return setDetailDto;
+        }).collect(Collectors.toList());
     }
 
     private double calculateWeight(Member member, ExerciseDetailSet set) {
-        String exercise = set.getExercise();
+        String exercise = set.getExerciseType();
         Double increase = set.getIncrease();
 
         if (exercise == null) {
             return set.getWeight();
         }
 
-        Double memberWeight = switch (exercise) {
+        Double baseWeight = getBaseWeightForMemberExercise(member, exercise);
+        if (baseWeight == null)
+            return set.getWeight();
+
+        return Math.round(baseWeight * increase * 10.0) / 10.0;
+    }
+
+    private Double getBaseWeightForMemberExercise(Member member, String exercise) {
+        return switch (exercise) {
             case "squat" -> member.getSquat();
             case "deadlift" -> member.getDeadlift();
             case "benchpress" -> member.getBenchpress();
             case "overheadpress" -> member.getOverheadpress();
             default -> null;
         };
-
-        if (memberWeight == null) {
-            return set.getWeight();
-        } else {
-            return Math.round(memberWeight * increase * 10.0) / 10.0;
-        }
     }
 
     public void enrollExercise(String email, Long routineId) {

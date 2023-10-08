@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import project1.OurFit.request.MemberDTO;
-import project1.OurFit.response.MemberDto;
 
 import java.util.ArrayList;
 import java.util.List;

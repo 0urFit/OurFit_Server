@@ -21,8 +21,8 @@ public class MyRoutineRes {
     public MyRoutineRes(ExerciseRoutine ex, int weekProgress, boolean isLiked, boolean isEnrolled){
         this.routineName=ex.getRoutineName();
         this.level=ex.getLevel();
-        this.fewTime=ex.getFewTime();
-        this.period=ex.getPeriod();
+        this.fewTime=ex.getDaysPerWeek();
+        this.period=ex.getProgramLength();
         this.imgpath=ex.getImgpath();
         this.category=ex.getCategory();
         this.weekProgress = weekProgress;

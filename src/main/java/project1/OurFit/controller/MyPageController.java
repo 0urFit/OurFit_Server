@@ -65,11 +65,12 @@ public class MyPageController {
         return new JsonResponse<>(myLikeRes);
     }
 
-    @PostMapping("/mypage/exercise/{routineId}/complete")
+    @PatchMapping("/mypage/exercise/{routineId}/complete")
     @ResponseBody
-    public JsonResponse<JsonResponseStatus> completeRoutine(@RequestBody ExerciseCompleteDto completeDto){
+    public JsonResponse<JsonResponseStatus> completeRoutine(
+            @RequestBody ExerciseCompleteDto completeDto, @PathVariable Long routineId){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        myPageService.completeRoutine(userEmail, completeDto);
+        myPageService.completeRoutine(userEmail, completeDto, routineId);
         return new JsonResponse<>(SUCCESS);
     }
 

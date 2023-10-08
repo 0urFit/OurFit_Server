@@ -22,9 +22,9 @@ public class ExerciseRoutineWithEnrollmentStatusDto {
         this.id = exerciseRoutine.getId();
         this.category = exerciseRoutine.getCategory();
         this.imgpath = exerciseRoutine.getImgpath();
-        this.fewTime = exerciseRoutine.getFewTime();
+        this.fewTime = exerciseRoutine.getDaysPerWeek();
         this.level = exerciseRoutine.getLevel();
-        this.period = exerciseRoutine.getPeriod();
+        this.period = exerciseRoutine.getProgramLength();
         this.routineName = exerciseRoutine.getRoutineName();
         this.isEnrolled = enrolled;
         this.isLiked = liked;
