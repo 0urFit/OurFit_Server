@@ -34,8 +34,7 @@ public class RoutineService {
     private final ExerciseRoutineRepository exerciseRoutineRepository;
     private final ExerciseEnrollRepository exerciseEnrollRepository;
     private final ExerciseDetailRepository exerciseDetailRepository;
-    private final EnrollDetailRepository enrollDetailRepository;
-    private final EnrollDetailSetRepository enrollDetailSetRepository;
+    private final ExerciseLogsRepository exerciseLogsRepository;
     private static final List<String> DAYS_ORDER = Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
 
     private Member findByEmail(String userEmail) {
@@ -125,7 +124,7 @@ public class RoutineService {
 
 
     /**
-     * 주차&날짜별로 상세 루틴 가져오기 service
+     * 주차별로 상세 루틴 가져오기 service
      * @param routineId
      * @param email
      * @param week
@@ -253,6 +252,12 @@ public class RoutineService {
 
         exerciseEnrollRepository.findByMemberIdAndExerciseRoutineId(member.getId(), routineId)
                 .ifPresent(exerciseEnrollRepository::delete);
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            List<ExerciseLogs> logs = exerciseLogsRepository
+                    .findByMemberIdAndExerciseRoutineId(member.getId(), routineId);
+            exerciseLogsRepository.deleteAll(logs);
+        });
+
     }
 
     public boolean inquiryLike(String userEmail, Long routineId) {

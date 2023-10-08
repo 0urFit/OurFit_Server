@@ -27,11 +27,6 @@ public class RoutineController {
         return new JsonResponse<>(routineService.postLike(userEmail,routineId));
     }
 
-    /**
-     * 운동루틴 좋아요 취소 API
-     * @param routineId
-     * @return
-     */
     @DeleteMapping("/exercise/{routineId}/likes")
     public JsonResponse<Boolean> deleteLike(@PathVariable Long routineId) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -65,7 +60,6 @@ public class RoutineController {
 
     /**
      * 운동 상세 루틴 조회 API
-     * url : ?week=1
      * @param routineId
      * @param weekNumber
      * @return

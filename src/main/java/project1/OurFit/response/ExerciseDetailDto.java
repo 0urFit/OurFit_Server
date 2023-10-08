@@ -1,5 +1,6 @@
 package project1.OurFit.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ public class ExerciseDetailDto {
     private int level;
     private int weeks;
     private int period;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private boolean isliked;
     private List<day> days;
 
@@ -22,6 +24,8 @@ public class ExerciseDetailDto {
     @NoArgsConstructor
     public static class day {
         private String day;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        private boolean issuccess;
         private List<exercises> exercises;
 
         @Getter

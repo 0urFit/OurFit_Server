@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import project1.OurFit.request.ExerciseCompleteDto;
-import project1.OurFit.request.MemberDTO;
 import project1.OurFit.response.*;
 import project1.OurFit.service.MyPageService;
 import project1.constant.response.JsonResponse;
@@ -45,13 +44,15 @@ public class MyPageController {
     }
 
     /**
-     * API 문서 5-2
-     * 저장한 운동 루틴 Detail Page
+     * 저장한 운동 상세 루틴 가져오기 API
+     * @param routineId
+     * @param week
+     * @return
      */
     @GetMapping("/mypage/exercise/{routineId}/{week}")
     @ResponseBody
-    public JsonResponse<EnrollDetailDto> getMyRoutineDetail(
-            @PathVariable Long routineId, @PathVariable int week){
+    public JsonResponse<ExerciseDetailDto> getMyRoutineDetail(
+            @PathVariable final Long routineId, @PathVariable final int week){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return new JsonResponse<>(myPageService.getEnrollDetails(email, routineId, week).get(0));
     }
