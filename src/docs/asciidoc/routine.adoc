@@ -5,3 +5,9 @@ operation::routine-by-category-test/get-routine-by-category[snippets='http-reque
 
 === 상세 루틴 목록 가져오기
 operation::routine-detail-test/get-routine-detail[snippets='http-request,request-headers,path-parameters,response-body,response-fields']
+
+=== 운동 루틴 등록
+operation::routine-save-and-del-test/save-my-routine[snippets='http-request,request-headers,path-parameters,http-response']
+
+=== 운동 루틴 등록 삭제
+operation::routine-save-and-del-test/delete-my-routine[snippets='http-request,request-headers,path-parameters,http-response']

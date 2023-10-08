@@ -451,7 +451,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/all HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY1MTI5fQ.mZzLRG1Mt-z4zn0d-w7FUr7eBLHL_E1PA3GH4ssYLBSJUa6iU4gQa3iAwQ74fAPIvAYEnPV1fGOMIHTnFjWBsg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY4ODk4fQ.590HKRX6A1fxJPaJw1OUi-MzZyncCgU4fAn5gfiCr5H9DVp4j4Gga4mTCNplHFXt9kFJku0peabFcMhsCUlmLA
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -640,7 +640,7 @@ Host: 54.180.88.182</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/1/week/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY1MTI5fQ.mZzLRG1Mt-z4zn0d-w7FUr7eBLHL_E1PA3GH4ssYLBSJUa6iU4gQa3iAwQ74fAPIvAYEnPV1fGOMIHTnFjWBsg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY4ODk4fQ.590HKRX6A1fxJPaJw1OUi-MzZyncCgU4fAn5gfiCr5H9DVp4j4Gga4mTCNplHFXt9kFJku0peabFcMhsCUlmLA
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -1259,11 +1259,174 @@ Host: 54.180.88.182</code></pre>
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_운동_루틴_등록">운동 루틴 등록</h3>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_http_request">HTTP request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /exercise/4 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY4ODk4fQ.590HKRX6A1fxJPaJw1OUi-MzZyncCgU4fAn5gfiCr5H9DVp4j4Gga4mTCNplHFXt9kFJku0peabFcMhsCUlmLA
+Host: 54.180.88.182
+Content-Type: application/x-www-form-urlencoded</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_request_headers">Request headers</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer {AccessToken}</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_path_parameters">Path parameters</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /exercise/{routineId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>routineId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">루틴 번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_http_response">HTTP response</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 90
+
+{
+  "code" : "200",
+  "message" : "요청에 성공하였습니다.",
+  "success" : true
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_운동_루틴_등록_삭제">운동 루틴 등록 삭제</h3>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_삭제_http_request">HTTP request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /exercise/4 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY4ODk4fQ.590HKRX6A1fxJPaJw1OUi-MzZyncCgU4fAn5gfiCr5H9DVp4j4Gga4mTCNplHFXt9kFJku0peabFcMhsCUlmLA
+Host: 54.180.88.182</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_삭제_request_headers">Request headers</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer {AccessToken}</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_삭제_path_parameters">Path parameters</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /exercise/{routineId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>routineId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">루틴 번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_삭제_http_response">HTTP response</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 90
+
+{
+  "code" : "200",
+  "message" : "요청에 성공하였습니다.",
+  "success" : true
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-10-08 18:53:42 +0900
+Last updated 2023-10-08 21:11:19 +0900
 </div>
 </div>
 </body>
