@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>액세스 토큰 재발급</title>
+<title>JWT 토큰</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -438,18 +438,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>액세스 토큰 재발급</h1>
+<h1>JWT 토큰</h1>
 <div class="details">
 <span id="revnumber">version 0.0.1-SNAPSHOT</span>
 </div>
 </div>
 <div id="content">
-<div class="paragraph">
-<p>ㅇ</p>
-</div>
-<div class="sect1">
-<h2 id="_http_request">HTTP request</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_액세스_토큰_재발급">액세스 토큰 재발급</h3>
+<div class="sect3">
+<h4 id="_액세스_토큰_재발급_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /newtoken HTTP/1.1
@@ -458,15 +456,13 @@ Host: 54.180.88.182
 Content-Length: 195
 
 {
-  "refreshToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3OTY2Mzk1fQ.L2Jd_9QD0lGVriBN4xNIFA8ZM9SgUw2z0xts6OMwOaPV7vIqjlZHUF_p97KSryOi8H0OWiNTcb-c0p0AzCbqPA"
+  "refreshToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3OTcyOTEzfQ.oLaUrSR_dmz2V75su4T0zbsLPqZ-IYynWfyubkhlVUGb-02GVEbNjN9wmJnIcn_YMSu3nFqu8c2J21O3GzH5NA"
 }</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_request_fields">Request fields</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_액세스_토큰_재발급_request_fields">Request fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -489,10 +485,8 @@ Content-Length: 195
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_http_response">HTTP response</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_액세스_토큰_재발급_http_response">HTTP response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -503,17 +497,15 @@ Content-Length: 303
   "code" : "200",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "accessToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzYwNjMwfQ.hGCDEG9hQiBwsygY3phlBPc2LKLwZtXhT096llI2YbS3lTAyfHanEKHMkTFRPAdstenaZ4c5nRr5LHRByTtfKA"
+    "accessToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY1MTI5fQ.mZzLRG1Mt-z4zn0d-w7FUr7eBLHL_E1PA3GH4ssYLBSJUa6iU4gQa3iAwQ74fAPIvAYEnPV1fGOMIHTnFjWBsg"
   },
   "success" : true
 }</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_response_fields">Response fields</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_액세스_토큰_재발급_response_fields">Response fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -556,7 +548,7 @@ Content-Length: 303
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-10-08 18:33:58 +0900
+Last updated 2023-10-08 19:22:06 +0900
 </div>
 </div>
 </body>

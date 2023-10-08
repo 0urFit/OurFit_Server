@@ -204,16 +204,25 @@ public class MyPageService {
         };
     }
 
+    /**
+     * 사용자 정보 가져오기 service
+     * @param userEmail
+     * @return
+     */
     public MemberDto getMyInfo(String userEmail) {
         Member member = memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
         return new MemberDto(member);
     }
 
+    /**
+     * 개인정보 수정 Service
+     * @param memberDto
+     * @param email
+     */
     public void saveMyInfo(MemberDto memberDto, String email) {
         Member member = memberRepository.findByEmail(email)
                         .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
-        member.setNickname(memberDto.getNickname());
         member.setHeight(memberDto.getHeight());
         member.setWeight(memberDto.getWeight());
         member.setSquat(memberDto.getSquat());

@@ -1,0 +1,6 @@
+= 마이페이지
+
+=== 개인정보 가져오기
+operation::mypage-test/get-my-info[snippets='http-request,request-headers,http-response,response-fields']
+=== 개인정보 수정
+operation::mypage-test/update-my-info[snippets='http-request,request-headers,request-fields,http-response']

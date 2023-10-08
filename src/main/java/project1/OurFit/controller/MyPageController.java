@@ -19,6 +19,10 @@ import static project1.constant.response.JsonResponseStatus.SUCCESS;
 public class MyPageController {
     private final MyPageService myPageService;
 
+    /**
+     * 사용자 개인정보 조회
+     * @return
+     */
     @GetMapping("/mypage")
     @ResponseBody
     public JsonResponse<MemberDto> getMyInfo() {
@@ -28,7 +32,7 @@ public class MyPageController {
 
     /**
      * API문서 5-1
-     * url : mypage?category=diet
+     * url : mypage?category=diet성
      * MyPage 들어갔을 때 등록한 루틴 조회
      * @return
      */
@@ -78,7 +82,6 @@ public class MyPageController {
     @ResponseBody
     public JsonResponse<JsonResponseStatus> setMyInfo(@RequestBody MemberDto memberDto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(userEmail);
         myPageService.saveMyInfo(memberDto, userEmail);
         return new JsonResponse<>(SUCCESS);
     }

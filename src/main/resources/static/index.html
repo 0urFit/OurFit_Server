@@ -459,18 +459,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_카카오_로그인">카카오 로그인</a></li>
 </ul>
 </li>
-<li><a href="#_액세스_토큰_재발급">액세스 토큰 재발급</a>
-<ul class="sectlevel1">
-<li><a href="#_액세스_토큰_재발급_http_request">HTTP request</a></li>
-<li><a href="#_액세스_토큰_재발급_request_fields">Request fields</a></li>
-<li><a href="#_액세스_토큰_재발급_http_response">HTTP response</a></li>
-<li><a href="#_액세스_토큰_재발급_response_fields">Response fields</a></li>
+<li><a href="#_jwt_토큰">JWT 토큰</a>
+<ul class="sectlevel2">
+<li><a href="#_액세스_토큰_재발급">액세스 토큰 재발급</a></li>
 </ul>
 </li>
 <li><a href="#_루틴">루틴</a>
 <ul class="sectlevel2">
 <li><a href="#_카테고리별_루틴_목록_가져오기">카테고리별 루틴 목록 가져오기</a></li>
 <li><a href="#_상세_루틴_목록_가져오기">상세 루틴 목록 가져오기</a></li>
+</ul>
+</li>
+<li><a href="#_마이페이지">마이페이지</a>
+<ul class="sectlevel2">
+<li><a href="#_개인정보_가져오기">개인정보 가져오기</a></li>
+<li><a href="#_개인정보_수정">개인정보 수정</a></li>
 </ul>
 </li>
 <li><a href="#_errorcode_document">ErrorCode Document</a>
@@ -751,8 +754,8 @@ Content-Length: 65
   "code" : "200",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "accessToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzYwNjMxfQ.A83QHIyiQ03PpLa4EbrLWXqzEoBjT55WZ79xOAeuuMMXzq0sjdoAC6nLt9dyGHK1CCqzJun0d12gmFWIjMRFcw",
-    "refreshToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3OTY4NDMxfQ.dPk-cCE6xKc3IbZdhM3G58J8ElYpLu7e_hf_wia1zaxEjf1co7tcafcAaiwcc-Lve9IzNlwgC4z0shv1Q9-mWg"
+    "accessToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY1MTMxfQ.ji_Uo-xtARRoWz7KFMItavukbNUW4VE4LpO8UW5EOrp8EzDSS_dFyA2HgKD0yyVM_jtiK9eSxcwSkpcD-BpexA",
+    "refreshToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3OTcyOTMxfQ.P5EEll-50JxwveJXxiKipeRr98HzGXkARPcNZQONSlZgZuL_NjCad-nfGjyEiWrI7cF_7vDGYyyQayOv7oR64A"
   },
   "success" : true
 }</code></pre>
@@ -863,15 +866,11 @@ Host: 54.180.88.182</code></pre>
 </table>
 </div>
 </div>
-<h1 id="_액세스_토큰_재발급" class="sect0"><a class="link" href="#_액세스_토큰_재발급">액세스 토큰 재발급</a></h1>
-<div class="openblock partintro">
-<div class="content">
-ㅇ
-</div>
-</div>
-<div class="sect1">
-<h2 id="_액세스_토큰_재발급_http_request"><a class="link" href="#_액세스_토큰_재발급_http_request">HTTP request</a></h2>
-<div class="sectionbody">
+<h1 id="_jwt_토큰" class="sect0"><a class="link" href="#_jwt_토큰">JWT 토큰</a></h1>
+<div class="sect2">
+<h3 id="_액세스_토큰_재발급"><a class="link" href="#_액세스_토큰_재발급">액세스 토큰 재발급</a></h3>
+<div class="sect3">
+<h4 id="_액세스_토큰_재발급_http_request"><a class="link" href="#_액세스_토큰_재발급_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /newtoken HTTP/1.1
@@ -880,15 +879,13 @@ Host: 54.180.88.182
 Content-Length: 195
 
 {
-  "refreshToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3OTY2Mzk1fQ.L2Jd_9QD0lGVriBN4xNIFA8ZM9SgUw2z0xts6OMwOaPV7vIqjlZHUF_p97KSryOi8H0OWiNTcb-c0p0AzCbqPA"
+  "refreshToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3OTcyOTEzfQ.oLaUrSR_dmz2V75su4T0zbsLPqZ-IYynWfyubkhlVUGb-02GVEbNjN9wmJnIcn_YMSu3nFqu8c2J21O3GzH5NA"
 }</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_액세스_토큰_재발급_request_fields"><a class="link" href="#_액세스_토큰_재발급_request_fields">Request fields</a></h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_액세스_토큰_재발급_request_fields"><a class="link" href="#_액세스_토큰_재발급_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -911,10 +908,8 @@ Content-Length: 195
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_액세스_토큰_재발급_http_response"><a class="link" href="#_액세스_토큰_재발급_http_response">HTTP response</a></h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_액세스_토큰_재발급_http_response"><a class="link" href="#_액세스_토큰_재발급_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -925,17 +920,15 @@ Content-Length: 303
   "code" : "200",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "accessToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzYwNjMwfQ.hGCDEG9hQiBwsygY3phlBPc2LKLwZtXhT096llI2YbS3lTAyfHanEKHMkTFRPAdstenaZ4c5nRr5LHRByTtfKA"
+    "accessToken" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY1MTI5fQ.mZzLRG1Mt-z4zn0d-w7FUr7eBLHL_E1PA3GH4ssYLBSJUa6iU4gQa3iAwQ74fAPIvAYEnPV1fGOMIHTnFjWBsg"
   },
   "success" : true
 }</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_액세스_토큰_재발급_response_fields"><a class="link" href="#_액세스_토큰_재발급_response_fields">Response fields</a></h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_액세스_토큰_재발급_response_fields"><a class="link" href="#_액세스_토큰_재발급_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -982,7 +975,7 @@ Content-Length: 303
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /exercise/all HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzYwNjMwfQ.hGCDEG9hQiBwsygY3phlBPc2LKLwZtXhT096llI2YbS3lTAyfHanEKHMkTFRPAdstenaZ4c5nRr5LHRByTtfKA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY1MTI5fQ.mZzLRG1Mt-z4zn0d-w7FUr7eBLHL_E1PA3GH4ssYLBSJUa6iU4gQa3iAwQ74fAPIvAYEnPV1fGOMIHTnFjWBsg
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -1026,8 +1019,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 7,
     "period" : 8,
     "routineName" : "BodyBuilding 2분할",
-    "liked" : false,
-    "enrolled" : false
+    "enrolled" : false,
+    "liked" : false
   }, {
     "id" : 2,
     "category" : "bodybuilding",
@@ -1036,8 +1029,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 5,
     "period" : 8,
     "routineName" : "BodyBuilding 3분할",
-    "liked" : false,
-    "enrolled" : false
+    "enrolled" : false,
+    "liked" : false
   }, {
     "id" : 3,
     "category" : "bodybuilding",
@@ -1046,8 +1039,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 5,
     "period" : 8,
     "routineName" : "BodyBuilding 4분할",
-    "liked" : false,
-    "enrolled" : false
+    "enrolled" : false,
+    "liked" : false
   }, {
     "id" : 4,
     "category" : "bodybuilding",
@@ -1056,8 +1049,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 6,
     "period" : 8,
     "routineName" : "BodyBuilding 5분할",
-    "liked" : false,
-    "enrolled" : false
+    "enrolled" : false,
+    "liked" : false
   }, {
     "id" : 5,
     "category" : "Strength",
@@ -1066,8 +1059,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 10,
     "period" : 12,
     "routineName" : "메드게르만",
-    "liked" : false,
-    "enrolled" : false
+    "enrolled" : false,
+    "liked" : false
   }, {
     "id" : 6,
     "category" : "Strength",
@@ -1076,8 +1069,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 4,
     "period" : 6,
     "routineName" : "웬들러 531",
-    "liked" : false,
-    "enrolled" : false
+    "enrolled" : false,
+    "liked" : false
   } ],
   "success" : true
 }</code></pre>
@@ -1171,7 +1164,7 @@ Host: 54.180.88.182</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /exercise/1/week/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzYwNjMwfQ.hGCDEG9hQiBwsygY3phlBPc2LKLwZtXhT096llI2YbS3lTAyfHanEKHMkTFRPAdstenaZ4c5nRr5LHRByTtfKA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY1MTI5fQ.mZzLRG1Mt-z4zn0d-w7FUr7eBLHL_E1PA3GH4ssYLBSJUa6iU4gQa3iAwQ74fAPIvAYEnPV1fGOMIHTnFjWBsg
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -1242,75 +1235,75 @@ Host: 54.180.88.182</code></pre>
         "name" : "BenchPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         } ]
       }, {
         "name" : "InclineBenchPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         } ]
       }, {
         "name" : "CableCrossOver",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 17.5,
+          "weight" : 0.3,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 17.5,
+          "weight" : 0.3,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 17.5,
+          "weight" : 0.3,
           "reps" : 8
         } ]
       }, {
         "name" : "OverHeadPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 24.0,
+          "weight" : 0.6,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 24.0,
+          "weight" : 0.6,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 24.0,
+          "weight" : 0.6,
           "reps" : 8
         } ]
       }, {
         "name" : "DumbbellPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 12.0,
+          "weight" : 0.3,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 12.0,
+          "weight" : 0.3,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 12.0,
+          "weight" : 0.3,
           "reps" : 8
         } ]
       }, {
@@ -1350,30 +1343,30 @@ Host: 54.180.88.182</code></pre>
         "name" : "Squat",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 84.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 84.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 84.0,
+          "weight" : 0.7,
           "reps" : 8
         } ]
       }, {
         "name" : "LegPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 180.0,
+          "weight" : 1.5,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 180.0,
+          "weight" : 1.5,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 180.0,
+          "weight" : 1.5,
           "reps" : 8
         } ]
       }, {
@@ -1473,45 +1466,45 @@ Host: 54.180.88.182</code></pre>
         "name" : "BenchPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         } ]
       }, {
         "name" : "InclineBenchPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 49.0,
+          "weight" : 0.7,
           "reps" : 8
         } ]
       }, {
         "name" : "CableCrossOver",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 17.5,
+          "weight" : 0.3,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 17.5,
+          "weight" : 0.3,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 17.5,
+          "weight" : 0.3,
           "reps" : 8
         } ]
       }, {
@@ -1581,30 +1574,30 @@ Host: 54.180.88.182</code></pre>
         "name" : "Squat",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 84.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 84.0,
+          "weight" : 0.7,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 84.0,
+          "weight" : 0.7,
           "reps" : 8
         } ]
       }, {
         "name" : "LegPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 180.0,
+          "weight" : 1.5,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 180.0,
+          "weight" : 1.5,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 180.0,
+          "weight" : 1.5,
           "reps" : 8
         } ]
       }, {
@@ -1790,6 +1783,263 @@ Host: 54.180.88.182</code></pre>
 </table>
 </div>
 </div>
+<h1 id="_마이페이지" class="sect0"><a class="link" href="#_마이페이지">마이페이지</a></h1>
+<div class="sect2">
+<h3 id="_개인정보_가져오기"><a class="link" href="#_개인정보_가져오기">개인정보 가져오기</a></h3>
+<div class="sect3">
+<h4 id="_개인정보_가져오기_http_request"><a class="link" href="#_개인정보_가져오기_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /mypage HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY1MTMwfQ.ldXkbAkFajuv3PkdoIn2vXlvqWpeCr6T7RJvxnlDqAPRl4hx3FPV6sufZUoA1G5A12wRJ6jA3FmY1p97HApc6A
+Host: 54.180.88.182</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_개인정보_가져오기_request_headers"><a class="link" href="#_개인정보_가져오기_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer {AccessToken}</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_개인정보_가져오기_http_response"><a class="link" href="#_개인정보_가져오기_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 271
+
+{
+  "code" : "200",
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "nickname" : "aossuper7",
+    "height" : 1.0,
+    "weight" : 1.0,
+    "squat" : 1.0,
+    "benchpress" : 1.0,
+    "deadlift" : 1.0,
+    "overheadpress" : 1.0
+  },
+  "success" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_개인정보_가져오기_response_fields"><a class="link" href="#_개인정보_가져오기_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">http 상태코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상태 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>success</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">닉네임</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.height</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">키</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weight</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">몸무게</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.squat</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스쿼트</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.benchpress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">벤치프레스</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.deadlift</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">데드리프트</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.overheadpress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오버헤드프레스</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_개인정보_수정"><a class="link" href="#_개인정보_수정">개인정보 수정</a></h3>
+<div class="sect3">
+<h4 id="_개인정보_수정_http_request"><a class="link" href="#_개인정보_수정_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /mypage/m HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY1MTI5fQ.mZzLRG1Mt-z4zn0d-w7FUr7eBLHL_E1PA3GH4ssYLBSJUa6iU4gQa3iAwQ74fAPIvAYEnPV1fGOMIHTnFjWBsg
+Host: 54.180.88.182
+Content-Length: 131
+
+{
+  "height" : 180.0,
+  "weight" : 72.0,
+  "squat" : 120.0,
+  "benchpress" : 65.0,
+  "deadlift" : 115.0,
+  "overheadpress" : 45.0
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_개인정보_수정_request_headers"><a class="link" href="#_개인정보_수정_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer {AccessToken}</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_개인정보_수정_request_fields"><a class="link" href="#_개인정보_수정_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>height</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">키</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>weight</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">몸무게</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>squat</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스쿼트</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>benchpress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">벤치프레스</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deadlift</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">데드리프트</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>overheadpress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오버헤드프레스</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_개인정보_수정_http_response"><a class="link" href="#_개인정보_수정_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 90
+
+{
+  "code" : "200",
+  "message" : "요청에 성공하였습니다.",
+  "success" : true
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 <h1 id="_errorcode_document" class="sect0"><a class="link" href="#_errorcode_document">ErrorCode Document</a></h1>
 <div class="sect2">
 <h3 id="_회원가입_errorcode"><a class="link" href="#_회원가입_errorcode">회원가입 ErrorCode</a></h3>
@@ -1922,7 +2172,7 @@ Host: 54.180.88.182</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-10-07 17:34:43 +0900
+Last updated 2023-10-08 19:48:18 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

@@ -1,5 +1,7 @@
 package project1.OurFit.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +11,7 @@ import project1.OurFit.entity.Member;
 @Setter
 @NoArgsConstructor
 public class MemberDto {
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String nickname;
     private Double height;
     private Double weight;
