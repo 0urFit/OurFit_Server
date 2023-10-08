@@ -91,6 +91,11 @@ public class RoutineController {
         return new JsonResponse<>(JsonResponseStatus.SUCCESS);
     }
 
+    /**
+     * 운동 루틴 등록 삭제 API
+     * @param id
+     * @return
+     */
     @DeleteMapping("/exercise/{id}")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> deleteEnrollExercise(@PathVariable Long id) {

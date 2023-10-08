@@ -224,7 +224,7 @@ public class RoutineService {
     public void enrollExercise(String email, Long routineId) {
         Member member = findByEmail(email);
 
-        if (!exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId)) { // 이미 등록되어 있다면
+        if (!exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId)) { // 등록되어 있지 않다면
             ExerciseRoutine exerciseRoutine = findByExerciseRoutine(routineId);
             enrollMemberInExercise(member, exerciseRoutine);
         }
@@ -243,24 +243,16 @@ public class RoutineService {
         return exerciseEnroll;
     }
 
+    /**
+     * 운동 루틴 등록 삭제 Service
+     * @param email
+     * @param routineId
+     */
     public void deleteEnrollExercise(String email, Long routineId) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
+        Member member = findByEmail(email);
 
-        if (!exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId)) {
-            return; // 루틴이 등록되지 않았을 경우 함수 종료
-        }
-
-        ExerciseEnroll exerciseEnroll = (ExerciseEnroll) exerciseEnrollRepository.findByMemberIdAndExerciseRoutineId(member.getId(), routineId)
-                .orElseThrow(() -> new BaseException(NOT_FOUND_ENROLL));
-
-        List<EnrollDetail> enrollDetails = enrollDetailRepository.findByExerciseEnrollId(exerciseEnroll.getId());
-        List<Long> enrollDetailIds = enrollDetails.stream().map(EnrollDetail::getId).collect(Collectors.toList());
-        List<EnrollDetailSet> enrollDetailSets = enrollDetailSetRepository.findByEnrollDetailIdIn(enrollDetailIds);
-
-        enrollDetailSetRepository.deleteAll(enrollDetailSets);
-        enrollDetailRepository.deleteAll(enrollDetails);
-        exerciseEnrollRepository.delete(exerciseEnroll);
+        exerciseEnrollRepository.findByMemberIdAndExerciseRoutineId(member.getId(), routineId)
+                .ifPresent(exerciseEnrollRepository::delete);
     }
 
     public boolean inquiryLike(String userEmail, Long routineId) {
