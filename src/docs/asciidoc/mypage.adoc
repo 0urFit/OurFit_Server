@@ -1,6 +1,10 @@
 = 마이페이지
 
 === 개인정보 가져오기
-operation::mypage-test/get-my-info[snippets='http-request,request-headers,http-response,response-fields']
+operation::mypage-test/get-my-info[snippets='http-request,request-headers,response-body,response-fields']
 === 개인정보 수정
-operation::mypage-test/update-my-info[snippets='http-request,request-headers,request-fields,http-response']
+operation::mypage-test/update-my-info[snippets='http-request,request-headers,request-fields,response-body']
+=== 저장한 운동 루틴 목록 가져오기
+
+=== 저장한 운동 상세 루틴 가져오기
+operation::mypage-routine-detail-test/get-routine-detail-test[snippets='http-request,request-headers,path-parameters,response-body,response-fields']

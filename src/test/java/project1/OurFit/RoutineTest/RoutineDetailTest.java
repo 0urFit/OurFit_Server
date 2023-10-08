@@ -82,13 +82,14 @@ public class RoutineDetailTest {
                                 fieldWithPath("period").description("운동 기간 (주 단위)"),
                                 fieldWithPath("isliked").description("사용자가 좋아요 눌렀는지 여부")
                         ).andWithPrefix("result[].days[].",
-                                fieldWithPath("day").description("날짜")
+                                fieldWithPath("day").description("요일"),
+                                fieldWithPath("issuccess").description("무시 문서작업용").optional()
                         ).andWithPrefix("result[].days[].exercises[].",
                                 fieldWithPath("name").description("운동 이름")
                         ).andWithPrefix("result[].days[].exercises[].sets[].",
                                 fieldWithPath("sequence").description("운동 순서"),
                                 fieldWithPath("weight").description("사용자 4대 운동요소에 맞춰진 무게"),
-                                fieldWithPath("reps").description("세트 수")
+                                fieldWithPath("reps").description("반복 횟수")
                         )
                 ));
     }

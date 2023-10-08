@@ -451,7 +451,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/all HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY4ODk4fQ.590HKRX6A1fxJPaJw1OUi-MzZyncCgU4fAn5gfiCr5H9DVp4j4Gga4mTCNplHFXt9kFJku0peabFcMhsCUlmLA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2Nzc1NDE2fQ.3rquY5s1VG03GBGC8Xy6fhP3YdB0BjN_fI9GqxESSX490dYTO3grkR3ERCtqZ574_13D7I2KrenmibzhJYdAQQ
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -495,8 +495,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 7,
     "period" : 8,
     "routineName" : "BodyBuilding 2분할",
-    "enrolled" : false,
-    "liked" : false
+    "liked" : false,
+    "enrolled" : true
   }, {
     "id" : 2,
     "category" : "bodybuilding",
@@ -505,8 +505,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 5,
     "period" : 8,
     "routineName" : "BodyBuilding 3분할",
-    "enrolled" : false,
-    "liked" : false
+    "liked" : false,
+    "enrolled" : false
   }, {
     "id" : 3,
     "category" : "bodybuilding",
@@ -515,8 +515,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 5,
     "period" : 8,
     "routineName" : "BodyBuilding 4분할",
-    "enrolled" : false,
-    "liked" : false
+    "liked" : false,
+    "enrolled" : false
   }, {
     "id" : 4,
     "category" : "bodybuilding",
@@ -525,8 +525,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 6,
     "period" : 8,
     "routineName" : "BodyBuilding 5분할",
-    "enrolled" : false,
-    "liked" : false
+    "liked" : false,
+    "enrolled" : false
   }, {
     "id" : 5,
     "category" : "Strength",
@@ -535,8 +535,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 10,
     "period" : 12,
     "routineName" : "메드게르만",
-    "enrolled" : false,
-    "liked" : false
+    "liked" : false,
+    "enrolled" : false
   }, {
     "id" : 6,
     "category" : "Strength",
@@ -545,8 +545,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 4,
     "period" : 6,
     "routineName" : "웬들러 531",
-    "enrolled" : false,
-    "liked" : false
+    "liked" : false,
+    "enrolled" : false
   } ],
   "success" : true
 }</code></pre>
@@ -640,7 +640,7 @@ Host: 54.180.88.182</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/1/week/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY4ODk4fQ.590HKRX6A1fxJPaJw1OUi-MzZyncCgU4fAn5gfiCr5H9DVp4j4Gga4mTCNplHFXt9kFJku0peabFcMhsCUlmLA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2Nzc1NDE2fQ.3rquY5s1VG03GBGC8Xy6fhP3YdB0BjN_fI9GqxESSX490dYTO3grkR3ERCtqZ574_13D7I2KrenmibzhJYdAQQ
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -707,6 +707,7 @@ Host: 54.180.88.182</code></pre>
     "isliked" : false,
     "days" : [ {
       "day" : "Mon",
+      "issuccess" : false,
       "exercises" : [ {
         "name" : "BenchPress",
         "sets" : [ {
@@ -815,6 +816,7 @@ Host: 54.180.88.182</code></pre>
       } ]
     }, {
       "day" : "Tue",
+      "issuccess" : false,
       "exercises" : [ {
         "name" : "Squat",
         "sets" : [ {
@@ -938,6 +940,7 @@ Host: 54.180.88.182</code></pre>
       } ]
     }, {
       "day" : "Thu",
+      "issuccess" : false,
       "exercises" : [ {
         "name" : "BenchPress",
         "sets" : [ {
@@ -1046,6 +1049,7 @@ Host: 54.180.88.182</code></pre>
       } ]
     }, {
       "day" : "Fri",
+      "issuccess" : false,
       "exercises" : [ {
         "name" : "Squat",
         "sets" : [ {
@@ -1233,7 +1237,12 @@ Host: 54.180.88.182</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].days[].day</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">날짜</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].days[].issuccess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">무시 문서작업용</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].days[].exercises[].name</code></p></td>
@@ -1253,7 +1262,7 @@ Host: 54.180.88.182</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].days[].exercises[].sets[].reps</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">세트 수</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">반복 횟수</p></td>
 </tr>
 </tbody>
 </table>
@@ -1266,7 +1275,7 @@ Host: 54.180.88.182</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /exercise/4 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY4ODk4fQ.590HKRX6A1fxJPaJw1OUi-MzZyncCgU4fAn5gfiCr5H9DVp4j4Gga4mTCNplHFXt9kFJku0peabFcMhsCUlmLA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2Nzc1NDE2fQ.3rquY5s1VG03GBGC8Xy6fhP3YdB0BjN_fI9GqxESSX490dYTO3grkR3ERCtqZ574_13D7I2KrenmibzhJYdAQQ
 Host: 54.180.88.182
 Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
@@ -1316,23 +1325,10 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_운동_루틴_등록_http_response">HTTP response</h4>
+<h4 id="_운동_루틴_등록_response_body">Response body</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Content-Type: application/json
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 0
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: SAMEORIGIN
-Content-Length: 90
-
-{
+<pre class="highlight nowrap"><code class="language-json" data-lang="json">{
   "code" : "200",
   "message" : "요청에 성공하였습니다.",
   "success" : true
@@ -1348,7 +1344,7 @@ Content-Length: 90
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /exercise/4 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2NzY4ODk4fQ.590HKRX6A1fxJPaJw1OUi-MzZyncCgU4fAn5gfiCr5H9DVp4j4Gga4mTCNplHFXt9kFJku0peabFcMhsCUlmLA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2Nzc1NDE2fQ.3rquY5s1VG03GBGC8Xy6fhP3YdB0BjN_fI9GqxESSX490dYTO3grkR3ERCtqZ574_13D7I2KrenmibzhJYdAQQ
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -1397,23 +1393,10 @@ Host: 54.180.88.182</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_운동_루틴_등록_삭제_http_response">HTTP response</h4>
+<h4 id="_운동_루틴_등록_삭제_response_body">Response body</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Content-Type: application/json
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 0
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: SAMEORIGIN
-Content-Length: 90
-
-{
+<pre class="highlight nowrap"><code class="language-json" data-lang="json">{
   "code" : "200",
   "message" : "요청에 성공하였습니다.",
   "success" : true
@@ -1426,7 +1409,7 @@ Content-Length: 90
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-10-08 21:11:19 +0900
+Last updated 2023-10-08 22:57:49 +0900
 </div>
 </div>
 </body>

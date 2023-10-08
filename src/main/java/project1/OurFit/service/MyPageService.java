@@ -72,12 +72,23 @@ public class MyPageService {
         return myRoutineRes;
     }
 
+    /**
+     * 운동 완료 Service
+     * @param email
+     * @param completeDto
+     * @param routineId
+     */
     public void completeRoutine(String email, ExerciseCompleteDto completeDto, Long routineId) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
         ExerciseRoutine exerciseRoutine = routineRepository.findById(routineId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ROUTINE));
 
+        saveExerciseLog(member, exerciseRoutine, completeDto);
+
+    }
+
+    private void saveExerciseLog(Member member, ExerciseRoutine exerciseRoutine, ExerciseCompleteDto completeDto) {
         ExerciseLogs exerciseLogs = new ExerciseLogs();
         exerciseLogs.setDay(completeDto.getDay());
         exerciseLogs.setWeek(completeDto.getWeek());

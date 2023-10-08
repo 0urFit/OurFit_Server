@@ -70,6 +70,12 @@ public class MyPageController {
         return new JsonResponse<>(myLikeRes);
     }
 
+    /**
+     * 운동 완료 API
+     * @param completeDto
+     * @param routineId
+     * @return
+     */
     @PatchMapping("/mypage/exercise/{routineId}/complete")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> completeRoutine(
