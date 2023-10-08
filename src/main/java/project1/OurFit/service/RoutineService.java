@@ -10,6 +10,7 @@ import project1.OurFit.repository.*;
 import project1.OurFit.response.ExerciseDetailDto;
 import project1.OurFit.response.ExerciseRoutineWithEnrollmentStatusDto;
 import project1.constant.exception.BaseException;
+import project1.constant.exception.DuplicateException;
 import project1.constant.exception.NotFoundException;
 import project1.constant.response.JsonResponse;
 import project1.constant.response.JsonResponseStatus;
@@ -215,54 +216,31 @@ public class RoutineService {
         };
     }
 
+    /**
+     * 운동 루틴 등록 Service
+     * @param email
+     * @param routineId
+     */
     public void enrollExercise(String email, Long routineId) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(NOT_FOUND_MEMBER));
+        Member member = findByEmail(email);
 
-        ExerciseRoutine routine = exerciseRoutineRepository.findById(routineId)
-                .orElseThrow(() -> new BaseException(NOT_FOUND_ROUTINE));
-
-        if (exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId)) {
-            return;
+        if (!exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId)) { // 이미 등록되어 있다면
+            ExerciseRoutine exerciseRoutine = findByExerciseRoutine(routineId);
+            enrollMemberInExercise(member, exerciseRoutine);
         }
+    }
 
+    private void enrollMemberInExercise(Member member, ExerciseRoutine exerciseRoutine) {
+        ExerciseEnroll exerciseEnroll = createExerciseEnrollInstance(member, exerciseRoutine);
+        exerciseEnrollRepository.save(exerciseEnroll);
+    }
+
+    private ExerciseEnroll createExerciseEnrollInstance(Member member, ExerciseRoutine exerciseRoutine) {
         ExerciseEnroll exerciseEnroll = new ExerciseEnroll();
         exerciseEnroll.setMember(member);
-        exerciseEnroll.setExerciseRoutine(routine);
         exerciseEnroll.setWeekProgress(1);
-
-        List<ExerciseDetail> details = exerciseDetailRepository.findAllByExerciseRoutineIdWithSets(routine.getId());
-
-        List<EnrollDetail> enrollDetails = new ArrayList<>();
-        List<EnrollDetailSet> enrollDetailSets = new ArrayList<>();
-
-        for (ExerciseDetail detail : details) {
-            EnrollDetail enrollDetail = new EnrollDetail();
-            enrollDetail.setExerciseEnroll(exerciseEnroll);
-            enrollDetail.setExerciseDetail(detail);
-            enrollDetails.add(enrollDetail);
-
-            List<ExerciseDetailSet> sets = detail.getExerciseDetailSetList();
-
-            for (ExerciseDetailSet set : sets) {
-                EnrollDetailSet enrollDetailSet = new EnrollDetailSet();
-                enrollDetailSet.setEnrollDetail(enrollDetail);
-                enrollDetailSet.setWeight(calculateWeight(member, set));
-                enrollDetailSet.setReps(set.getReps());
-                enrollDetailSet.setSequence(set.getSequence());
-                enrollDetailSets.add(enrollDetailSet);
-            }
-        }
-        CompletableFuture<Void> exerciseEnrollFuture = CompletableFuture.runAsync(() -> {
-            exerciseEnrollRepository.save(exerciseEnroll);
-        });
-        CompletableFuture<Void> enrollDetailFuture = CompletableFuture.runAsync(() -> {
-            enrollDetailRepository.saveAll(enrollDetails);
-        });
-        CompletableFuture<Void> enrollDetailSetFuture = CompletableFuture.runAsync(() -> {
-            enrollDetailSetRepository.saveAll(enrollDetailSets);
-        });
-
+        exerciseEnroll.setExerciseRoutine(exerciseRoutine);
+        return exerciseEnroll;
     }
 
     public void deleteEnrollExercise(String email, Long routineId) {

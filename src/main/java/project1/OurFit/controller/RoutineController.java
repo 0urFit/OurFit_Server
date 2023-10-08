@@ -78,6 +78,11 @@ public class RoutineController {
         return new JsonResponse<>(routineService.getExerciseDetails(email, routineId, weekNumber));
     }
 
+    /**
+     * 운동 루틴 등록 API
+     * @param id
+     * @return
+     */
     @PostMapping("/exercise/{id}")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> enrollExercise(@PathVariable Long id) {
