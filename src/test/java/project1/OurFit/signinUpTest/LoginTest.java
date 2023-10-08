@@ -1,4 +1,4 @@
-package project1.OurFit;
+package project1.OurFit.signinUpTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package project1.OurFit;
+package project1.OurFit.signinUpTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

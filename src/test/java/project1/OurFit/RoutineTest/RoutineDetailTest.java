@@ -1,4 +1,4 @@
-package project1.OurFit;
+package project1.OurFit.RoutineTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import project1.OurFit.jwt.JwtTokenProvider;
+import project1.OurFit.jwtTest.JwtTokenProvider;
 import project1.RestDocsConfiguration;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -34,8 +34,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @Import(RestDocsConfiguration.class)
-public class RoutineByCategory {
-    @Autowired private RestDocumentationResultHandler restDocs;
+public class RoutineDetailTest {
+    @Autowired
+    private RestDocumentationResultHandler restDocs;
     private MockMvc mockMvc;
     @Autowired private JwtTokenProvider jwtTokenProvider;
 
@@ -53,13 +54,13 @@ public class RoutineByCategory {
     }
 
     @Test
-    void getRoutineByCategory() throws Exception {
+    void getRoutineDetail() throws Exception {
         //Given
         String accessToken = jwtTokenProvider.createAccessToken("aossuper7@naver.com");
 
         //When & Then
-        mockMvc.perform(get("/exercise/{category}", "all")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer "+ accessToken))
+        mockMvc.perform(get("/exercise/{routineId}/week/{week}", "1", "1")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(restDocs.document(
@@ -67,26 +68,27 @@ public class RoutineByCategory {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer {AccessToken}")
                         ),
                         pathParameters(
-                                parameterWithName("category").description("""
-                                        모두 : all +
-                                        바디빌딩 : bodybuilding +
-                                        스트렝스 : strength""")
+                                parameterWithName("routineId").description("루틴 번호"),
+                                parameterWithName("week").description("가져올 해당 주")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("Http 상태코드"),
                                 fieldWithPath("message").description("상태 메시지"),
-                                fieldWithPath("success").description("성공 여부"),
-                                fieldWithPath("result").description("결과")
+                                fieldWithPath("success").description("성공 여부")
                         ).andWithPrefix("result[].",
-                                fieldWithPath("id").description("운동 루틴 번호"),
-                                fieldWithPath("category").description("카테고리"),
-                                fieldWithPath("imgpath").description("이미지 경로"),
-                                fieldWithPath("fewTime").description("일주일 운동 횟수"),
-                                fieldWithPath("level").description("운동 강도 (1~10)"),
+                                fieldWithPath("routineName").description("루틴 이름"),
+                                fieldWithPath("level").description("운동 레벨 (1~10)"),
+                                fieldWithPath("weeks").description("일주일에 몇번 운동 하는지"),
                                 fieldWithPath("period").description("운동 기간 (주 단위)"),
-                                fieldWithPath("routineName").description("운동 루틴 이름"),
-                                fieldWithPath("liked").description("사용자 좋아요 클릭 여부"),
-                                fieldWithPath("enrolled").description("사용자 루틴 저장 여부")
+                                fieldWithPath("isliked").description("사용자가 좋아요 눌렀는지 여부")
+                        ).andWithPrefix("result[].days[].",
+                                fieldWithPath("day").description("날짜")
+                        ).andWithPrefix("result[].days[].exercises[].",
+                                fieldWithPath("name").description("운동 이름")
+                        ).andWithPrefix("result[].days[].exercises[].sets[].",
+                                fieldWithPath("sequence").description("운동 순서"),
+                                fieldWithPath("weight").description("사용자 4대 운동요소에 맞춰진 무게"),
+                                fieldWithPath("reps").description("세트 수")
                         )
                 ));
     }
