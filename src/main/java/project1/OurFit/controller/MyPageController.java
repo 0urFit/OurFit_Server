@@ -76,7 +76,7 @@ public class MyPageController {
      * @param routineId
      * @return
      */
-    @PatchMapping("/mypage/exercise/{routineId}/complete")
+    @PostMapping("/mypage/exercise/{routineId}/complete")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> completeRoutine(
             @RequestBody ExerciseCompleteDto completeDto, @PathVariable Long routineId){
@@ -85,7 +85,23 @@ public class MyPageController {
         return new JsonResponse<>(SUCCESS);
     }
 
-    @PatchMapping("/mypage/m")
+    /**
+     * 운동 완료 취소 API
+     * @param completeDto
+     * @param routineId
+     * @return
+     */
+    @DeleteMapping("/mypage/exercise/{routineId}/complete")
+    @ResponseBody
+    public JsonResponse<JsonResponseStatus> deleteCompleteRoutine(
+            @RequestBody ExerciseCompleteDto completeDto, @PathVariable Long routineId) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        myPageService.deleteCompleteRoutine(userEmail, completeDto, routineId);
+        return new JsonResponse<>(SUCCESS);
+    }
+
+
+    @PatchMapping("/mypage/u")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> setMyInfo(@RequestBody MemberDto memberDto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();

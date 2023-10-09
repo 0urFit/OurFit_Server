@@ -81,11 +81,13 @@ public class MyPageService {
     public void completeRoutine(String email, ExerciseCompleteDto completeDto, Long routineId) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
-        ExerciseRoutine exerciseRoutine = routineRepository.findById(routineId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ROUTINE));
+        ExerciseRoutine exerciseRoutine = routineRepository
+                .findByExerciseRoutineWithEnrollByMemberIdAndRoutineId(member.getId(), routineId)
+                        .orElseThrow(() -> new NotFoundException(NOT_FOUND_ROUTINE));
 
         saveExerciseLog(member, exerciseRoutine, completeDto);
-
+        if (isLastdayofRoutine(exerciseRoutine, completeDto))
+            adjustWeekProgress(exerciseRoutine, 1);
     }
 
     private void saveExerciseLog(Member member, ExerciseRoutine exerciseRoutine, ExerciseCompleteDto completeDto) {
@@ -95,6 +97,41 @@ public class MyPageService {
         exerciseLogs.setExerciseRoutine(exerciseRoutine);
         exerciseLogs.setMember(member);
         exerciseLogsRepository.save(exerciseLogs);
+    }
+
+    private void adjustWeekProgress(ExerciseRoutine routine, int adjustmentValue) {
+        ExerciseEnroll enroll = routine.getExerciseEnrollList().get(0);
+        enroll.setWeekProgress(enroll.getWeekProgress() + adjustmentValue);
+        exerciseEnrollRepository.save(enroll);
+    }
+
+    private boolean isLastdayofRoutine(ExerciseRoutine routine, ExerciseCompleteDto completeDto) {
+        return routine.getLastDay().equals(completeDto.getDay());
+    }
+
+    /**
+     * 운동 완료 취소 Service
+     * @param userEmail
+     * @param completeDto
+     * @param routineId
+     */
+    public void deleteCompleteRoutine(String userEmail, ExerciseCompleteDto completeDto, Long routineId) {
+        Member member = memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        ExerciseRoutine exerciseRoutine = routineRepository
+                .findByExerciseRoutineWithEnrollByMemberIdAndRoutineId(member.getId(), routineId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ROUTINE));
+
+        deletelog(exerciseRoutine, completeDto);
+
+        if (isLastdayofRoutine(exerciseRoutine, completeDto)) {
+            adjustWeekProgress(exerciseRoutine, -1);
+        }
+    }
+
+    private void deletelog(ExerciseRoutine exerciseRoutine, ExerciseCompleteDto completeDto) {
+        exerciseLogsRepository.findByExerciseRoutineAndWeekAndDay(exerciseRoutine, completeDto.getWeek(), completeDto.getDay())
+                .ifPresent(exerciseLogsRepository::delete);
     }
 
     /**
