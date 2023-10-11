@@ -27,6 +27,12 @@ public class MyPageService {
     private final ExerciseLogsRepository exerciseLogsRepository;
     private static final List<String> DAYS_ORDER = Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
 
+    /**
+     * 저장한 운동 루틴 카테고리별로 가져오기 Service
+     * @param userEmail
+     * @param category
+     * @return
+     */
     public List<MyRoutineRes> getMyRoutine(String userEmail, String category) {
         List<ExerciseEnroll> enrollRepositoryList;
 
@@ -39,7 +45,6 @@ public class MyPageService {
                 .map(exerciseEnroll -> exerciseEnroll.getExerciseRoutine().getId())
                 .collect(Collectors.toList());
 
-        // check likes and enrolls for all routine IDs in one go
         List<Long> likedRoutineIds = exerciseLikeRepository.findLikedRoutineIdsByMemberEmail(userEmail, routineIds);
         List<Long> enrolledRoutineIds = exerciseEnrollRepository.findEnrolledRoutineIdsByMemberEmail(userEmail, routineIds);
 

@@ -48,7 +48,7 @@ public class RoutineDetailTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                 .apply(SecurityMockMvcConfigurers.springSecurity())
-                .defaultRequest(get("/").header(HttpHeaders.HOST, "54.180.88.182"))
+                .defaultRequest(get("/").header(HttpHeaders.HOST, "54.180.88.182").secure(true))
                 .alwaysDo(restDocs)
                 .build();
     }
@@ -80,7 +80,8 @@ public class RoutineDetailTest {
                                 fieldWithPath("level").description("운동 레벨 (1~10)"),
                                 fieldWithPath("weeks").description("일주일에 몇번 운동 하는지"),
                                 fieldWithPath("period").description("운동 기간 (주 단위)"),
-                                fieldWithPath("isliked").description("사용자가 좋아요 눌렀는지 여부")
+                                fieldWithPath("isliked").description("사용자가 좋아요 눌렀는지 여부"),
+                                fieldWithPath("isenrolled").description("사용자가 등록 했는지 여부")
                         ).andWithPrefix("result[].days[].",
                                 fieldWithPath("day").description("요일"),
                                 fieldWithPath("issuccess").description("무시 문서작업용").optional()
@@ -90,6 +91,33 @@ public class RoutineDetailTest {
                                 fieldWithPath("sequence").description("운동 순서"),
                                 fieldWithPath("weight").description("사용자 4대 운동요소에 맞춰진 무게"),
                                 fieldWithPath("reps").description("반복 횟수")
+                        )
+                ));
+    }
+
+    @Test
+    void existEnrolled() throws Exception {
+        // Given
+        String accessToken = jwtTokenProvider.createAccessToken("aossuper7@naver.com");
+
+        // When & Then
+        mockMvc.perform(get("/exercise/enrolled/{routineId}", "1")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(restDocs.document(
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer {AccessToken}")
+                        ),
+                        pathParameters(
+                                parameterWithName("routineId").description("루틴 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("Http 상태코드"),
+                                fieldWithPath("message").description("상태 메시지"),
+                                fieldWithPath("success").description("""
+                                        등록 되어 있다면 true +
+                                        등록 되어 있지 않다면 false""")
                         )
                 ));
     }

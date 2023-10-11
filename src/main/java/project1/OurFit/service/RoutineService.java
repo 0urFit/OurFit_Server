@@ -1,26 +1,19 @@
 package project1.OurFit.service;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.entity.*;
 import project1.OurFit.repository.*;
 import project1.OurFit.response.ExerciseDetailDto;
-import project1.OurFit.response.ExerciseRoutineWithEnrollmentStatusDto;
+import project1.OurFit.response.ExerciseRoutineListDto;
 import project1.constant.exception.BaseException;
-import project1.constant.exception.DuplicateException;
 import project1.constant.exception.NotFoundException;
-import project1.constant.response.JsonResponse;
-import project1.constant.response.JsonResponseStatus;
 
 
-import java.time.DayOfWeek;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static project1.constant.response.JsonResponseStatus.*;
 
@@ -75,8 +68,8 @@ public class RoutineService {
      * @param userEmail
      * @return
      */
-    public List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutineByCategory(String category, String userEmail) {
-        findByEmail(userEmail);
+    public List<ExerciseRoutineListDto> getExerciseRoutineByCategory(String category, String userEmail) {
+        Member member = findByEmail(userEmail);
         List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findByCategory(category);
         return getExerciseRoutineWithEnrollmentStatus(userEmail, exerciseRoutineList);
     }
@@ -86,13 +79,13 @@ public class RoutineService {
      * @param userEmail
      * @return
      */
-    public List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutine(String userEmail) {
-        findByEmail(userEmail);
+    public List<ExerciseRoutineListDto> getExerciseRoutine(String userEmail) {
+        Member member = findByEmail(userEmail);
         List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findAll();
         return getExerciseRoutineWithEnrollmentStatus(userEmail, exerciseRoutineList);
     }
 
-    private List<ExerciseRoutineWithEnrollmentStatusDto> getExerciseRoutineWithEnrollmentStatus(
+    private List<ExerciseRoutineListDto> getExerciseRoutineWithEnrollmentStatus(
             String userEmail, List<ExerciseRoutine> exerciseRoutineList) {
 
         Set<ExerciseRoutine> enrolledRoutines = getEnrolledRoutines(userEmail);
@@ -103,11 +96,11 @@ public class RoutineService {
                 .collect(Collectors.toList());
     }
 
-    private ExerciseRoutineWithEnrollmentStatusDto createDtoWithStatus(
+    private ExerciseRoutineListDto createDtoWithStatus(
             ExerciseRoutine routine, Set<ExerciseRoutine> enrolledRoutines, Set<ExerciseRoutine> likedRoutines) {
         boolean isEnrolled = enrolledRoutines.contains(routine);
         boolean isLiked = likedRoutines.contains(routine);
-        return new ExerciseRoutineWithEnrollmentStatusDto(routine, isEnrolled, isLiked);
+        return new ExerciseRoutineListDto(routine, isEnrolled, isLiked);
     }
 
     private Set<ExerciseRoutine> getLikedRoutines(String userEmail) {
@@ -135,21 +128,22 @@ public class RoutineService {
         Member member = findByEmail(email);
         ExerciseRoutine routine = findByExerciseRoutine(routineId);
         boolean isLiked = exerciseLikeRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId);
-
+        boolean isEnrolled = exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId);
         List<ExerciseDetail> exerciseDetails = exerciseDetailRepository.findByExerciseRoutineIdAndWeeks(routineId, week);
         List<ExerciseDetailDto> dto = new ArrayList<>();
-        dto.add(buildExerciseDetailDto(member, routine, isLiked, exerciseDetails));
+        dto.add(buildExerciseDetailDto(member, routine, isLiked, isEnrolled, exerciseDetails));
         return dto;
     }
 
     private ExerciseDetailDto buildExerciseDetailDto(
-            Member member, ExerciseRoutine routine, boolean isLiked, List<ExerciseDetail> exerciseDetails) {
+            Member member, ExerciseRoutine routine, boolean isLiked, boolean isEnrolled, List<ExerciseDetail> exerciseDetails) {
         ExerciseDetailDto dto = new ExerciseDetailDto();
         dto.setRoutineName(routine.getRoutineName());
         dto.setLevel(routine.getLevel());
         dto.setWeeks(routine.getDaysPerWeek());
         dto.setPeriod(routine.getProgramLength());
         dto.setIsliked(isLiked);
+        dto.setIsenrolled(isEnrolled);
         dto.setDays(constructDaysList(member, exerciseDetails));
         return dto;
     }
@@ -262,5 +256,11 @@ public class RoutineService {
 
     public boolean inquiryLike(String userEmail, Long routineId) {
         return exerciseLikeRepository.existsByMemberEmailAndExerciseRoutineId(userEmail, routineId);
+    }
+
+    public void inquiryEnroll(String userEmail, Long routineID) {
+        Member member = findByEmail(userEmail);
+        if (!exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineID))
+            throw new NotFoundException(NOT_FOUND_ENROLL);
     }
 }

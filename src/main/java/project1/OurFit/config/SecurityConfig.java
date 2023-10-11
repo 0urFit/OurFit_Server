@@ -59,9 +59,9 @@ public class SecurityConfig {
                 .requestMatchers( "/exercise/**", "/post/**", "/mypage/**").authenticated()
                 .anyRequest().permitAll()
 
-//                .and()
-//                .requiresChannel()
-//                .anyRequest().requiresSecure()
+                .and()
+                .requiresChannel()
+                .anyRequest().requiresSecure()
 
                 .and()
                 .apply(new JwtSecurityConfig(jwtTokenProvider));

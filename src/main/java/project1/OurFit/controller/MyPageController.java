@@ -39,8 +39,7 @@ public class MyPageController {
     @ResponseBody
     public JsonResponse<List<MyRoutineRes>> getMyRoutine(String category){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<MyRoutineRes> myRoutineResList = myPageService.getMyRoutine(userEmail, category);
-        return new JsonResponse<>(myRoutineResList);
+        return new JsonResponse<>(myPageService.getMyRoutine(userEmail, category));
     }
 
     /**
@@ -58,10 +57,6 @@ public class MyPageController {
     }
 
 
-    /**
-     * MyPage 들어갔을 때 좋아요 한 루틴 조회
-     * @return
-     */
     @GetMapping("/mypage/like")
     @ResponseBody
     public JsonResponse<List<MyLikeRes>> getMyLikeRoutine(){
@@ -100,7 +95,11 @@ public class MyPageController {
         return new JsonResponse<>(SUCCESS);
     }
 
-
+    /**
+     * 개인정보 수정 API
+     * @param memberDto
+     * @return
+     */
     @PatchMapping("/mypage/u")
     @ResponseBody
     public JsonResponse<JsonResponseStatus> setMyInfo(@RequestBody MemberDto memberDto) {

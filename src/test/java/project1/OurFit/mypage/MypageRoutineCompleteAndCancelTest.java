@@ -20,22 +20,24 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import project1.OurFit.jwtTest.JwtTokenProvider;
-import project1.OurFit.response.MemberDto;
+import project1.OurFit.request.ExerciseCompleteDto;
 import project1.RestDocsConfiguration;
 
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 
 @SpringBootTest
 @Transactional
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @Import(RestDocsConfiguration.class)
-public class MypageTest {
+public class MypageRoutineCompleteAndCancelTest {
     @Autowired
     private RestDocumentationResultHandler restDocs;
     private MockMvc mockMvc;
@@ -50,73 +52,66 @@ public class MypageTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                 .apply(SecurityMockMvcConfigurers.springSecurity())
-                .defaultRequest(get("/").header(HttpHeaders.HOST, "54.180.88.182").secure(true))
-                .defaultRequest(patch("/").header(HttpHeaders.HOST, "54.180.88.182").secure(true))
+                .defaultRequest(post("/").header(HttpHeaders.HOST, "54.180.88.182").secure(true))
+                .defaultRequest(delete("/").header(HttpHeaders.HOST, "54.180.88.182").secure(true))
                 .alwaysDo(restDocs)
                 .build();
     }
 
     @Test
-    void getMyInfo() throws Exception {
+    void routineComplete() throws Exception {
         //Given
         String accessToken = jwtTokenProvider.createAccessToken("aossuper7@naver.com");
+        ExerciseCompleteDto dto = new ExerciseCompleteDto();
+        dto.setWeek(1);
+        dto.setDay("Wed");
 
         //When & Then
-        mockMvc.perform(get("/mypage")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+        mockMvc.perform(post("/mypage/exercise/{routineId}/complete", "1")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(restDocs.document(
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer {AccessToken}")
                         ),
-                        responseFields(
-                                fieldWithPath("code").description("http 상태코드"),
-                                fieldWithPath("message").description("상태 메시지"),
-                                fieldWithPath("success").description("성공 여부")
-                        ).andWithPrefix("result.",
-                                fieldWithPath("nickname").description("닉네임"),
-                                fieldWithPath("height").description("키"),
-                                fieldWithPath("weight").description("몸무게"),
-                                fieldWithPath("squat").description("스쿼트"),
-                                fieldWithPath("benchpress").description("벤치프레스"),
-                                fieldWithPath("deadlift").description("데드리프트"),
-                                fieldWithPath("overheadpress").description("오버헤드프레스")
+                        pathParameters(
+                                parameterWithName("routineId").description("루틴 번호")
+                        ),
+                        requestFields(
+                                fieldWithPath("week").description("해당 주차"),
+                                fieldWithPath("day").description("요일")
                         )
                 ));
     }
 
     @Test
-    void updateMyInfo() throws Exception {
+    void cancelRoutineComplete() throws Exception {
         //Given
         String accessToken = jwtTokenProvider.createAccessToken("aossuper7@naver.com");
-        MemberDto memberDto = new MemberDto();
-        memberDto.setHeight(180.0);
-        memberDto.setWeight(72.0);
-        memberDto.setSquat(120.0);
-        memberDto.setBenchpress(65.0);
-        memberDto.setDeadlift(115.0);
-        memberDto.setOverheadpress(45.0);
-
+        ExerciseCompleteDto dto = new ExerciseCompleteDto();
+        dto.setWeek(1);
+        dto.setDay("Wed");
 
         //When & Then
-        mockMvc.perform(patch("/mypage/u")
+        mockMvc.perform(delete("/mypage/exercise/{routineId}/complete", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberDto)))
+                        .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(restDocs.document(
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer {AccessToken}")
                         ),
+                        pathParameters(
+                                parameterWithName("routineId").description("루틴 번호")
+                        ),
                         requestFields(
-                                fieldWithPath("height").description("키"),
-                                fieldWithPath("weight").description("몸무게"),
-                                fieldWithPath("squat").description("스쿼트"),
-                                fieldWithPath("benchpress").description("벤치프레스"),
-                                fieldWithPath("deadlift").description("데드리프트"),
-                                fieldWithPath("overheadpress").description("오버헤드프레스")
+                                fieldWithPath("week").description("해당 주차"),
+                                fieldWithPath("day").description("요일")
                         )
                 ));
     }

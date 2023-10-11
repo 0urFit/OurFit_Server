@@ -43,7 +43,7 @@ public class LoginTest {
     ) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
-                .defaultRequest(post("/").header(HttpHeaders.HOST, "54.180.88.182"))
+                .defaultRequest(post("/").header(HttpHeaders.HOST, "54.180.88.182").secure(true))
                 .alwaysDo(restDocs)
                 .build();
     }

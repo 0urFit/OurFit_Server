@@ -4,7 +4,14 @@
 operation::mypage-test/get-my-info[snippets='http-request,request-headers,response-body,response-fields']
 === 개인정보 수정
 operation::mypage-test/update-my-info[snippets='http-request,request-headers,request-fields,response-body']
-=== 저장한 운동 루틴 목록 가져오기
+=== 등록한 운동 루틴 목록 카테고리별로 가져오기
 
-=== 저장한 운동 상세 루틴 가져오기
+=== 등록한 운동 상세 루틴 가져오기
 operation::mypage-routine-detail-test/get-routine-detail-test[snippets='http-request,request-headers,path-parameters,response-body,response-fields']
+=== 운동 루틴 성공&취소
+성공 API
+
+operation::mypage-routine-complete-and-cancel-test/routine-complete[snippets='http-request']
+성공 취소 API
+
+operation::mypage-routine-complete-and-cancel-test/cancel-routine-complete[snippets='http-request,request-headers,path-parameters,request-fields,response-body']

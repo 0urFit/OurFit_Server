@@ -451,7 +451,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/all HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2Nzc1NDE2fQ.3rquY5s1VG03GBGC8Xy6fhP3YdB0BjN_fI9GqxESSX490dYTO3grkR3ERCtqZ574_13D7I2KrenmibzhJYdAQQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MDA3NjAwfQ.Q0VV0nCewbQ_SRhruZmVGEteKIrNG602z3O034fs1iu5NabKNQJ6ae9W4pyZQTmpKcfrd0vKf9-Y54kM0lnaig
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -640,7 +640,7 @@ Host: 54.180.88.182</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/1/week/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2Nzc1NDE2fQ.3rquY5s1VG03GBGC8Xy6fhP3YdB0BjN_fI9GqxESSX490dYTO3grkR3ERCtqZ574_13D7I2KrenmibzhJYdAQQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MDA3NjAwfQ.Q0VV0nCewbQ_SRhruZmVGEteKIrNG602z3O034fs1iu5NabKNQJ6ae9W4pyZQTmpKcfrd0vKf9-Y54kM0lnaig
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -704,6 +704,7 @@ Host: 54.180.88.182</code></pre>
     "level" : 7,
     "weeks" : 4,
     "period" : 8,
+    "isenrolled" : true,
     "isliked" : false,
     "days" : [ {
       "day" : "Mon",
@@ -1235,6 +1236,11 @@ Host: 54.180.88.182</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사용자가 좋아요 눌렀는지 여부</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].isenrolled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자가 등록 했는지 여부</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].days[].day</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">요일</p></td>
@@ -1275,7 +1281,7 @@ Host: 54.180.88.182</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /exercise/4 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2Nzc1NDE2fQ.3rquY5s1VG03GBGC8Xy6fhP3YdB0BjN_fI9GqxESSX490dYTO3grkR3ERCtqZ574_13D7I2KrenmibzhJYdAQQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MDA3NjAxfQ.o9qSpkZR6EnplMsIS5Hu3Y87ePdi6be_8occyoFoutktg5SXWeAOI_lll7HI7tK4znWZUtDC4HyFOV9KmH3pMA
 Host: 54.180.88.182
 Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
@@ -1344,7 +1350,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /exercise/4 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk2Nzc1NDE2fQ.3rquY5s1VG03GBGC8Xy6fhP3YdB0BjN_fI9GqxESSX490dYTO3grkR3ERCtqZ574_13D7I2KrenmibzhJYdAQQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MDA3NjAxfQ.o9qSpkZR6EnplMsIS5Hu3Y87ePdi6be_8occyoFoutktg5SXWeAOI_lll7HI7tK4znWZUtDC4HyFOV9KmH3pMA
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -1405,11 +1411,114 @@ Host: 54.180.88.182</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_운동_루틴_등록_조회">운동 루틴 등록 조회</h3>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_조회_http_request">HTTP request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/enrolled/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MDA3NjAxfQ.o9qSpkZR6EnplMsIS5Hu3Y87ePdi6be_8occyoFoutktg5SXWeAOI_lll7HI7tK4znWZUtDC4HyFOV9KmH3pMA
+Host: 54.180.88.182</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_조회_request_headers">Request headers</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer {AccessToken}</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_조회_path_parameters">Path parameters</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /exercise/enrolled/{routineId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>routineId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">루틴 아이디</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_조회_response_body">Response body</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-json" data-lang="json">{
+  "code" : "200",
+  "message" : "요청에 성공하였습니다.",
+  "success" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_등록_조회_response_fields">Response fields</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Http 상태코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상태 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>success</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">등록 되어 있다면 true<br>
+등록 되어 있지 않다면 false</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-10-08 22:57:49 +0900
+Last updated 2023-10-11 15:29:16 +0900
 </div>
 </div>
 </body>

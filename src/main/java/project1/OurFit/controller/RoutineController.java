@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import project1.OurFit.response.ExerciseDetailDto;
-import project1.OurFit.response.ExerciseRoutineWithEnrollmentStatusDto;
+import project1.OurFit.response.ExerciseRoutineListDto;
 import project1.OurFit.service.RoutineService;
 import project1.constant.response.JsonResponse;
 import project1.constant.response.JsonResponseStatus;
@@ -39,6 +39,13 @@ public class RoutineController {
         return new JsonResponse<>(routineService.inquiryLike(userEmail, routineId));
     }
 
+    @GetMapping("/exercise/enrolled/{routineId}")
+    public JsonResponse<Boolean> inquiryEnroll(@PathVariable Long routineId) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        routineService.inquiryEnroll(userEmail, routineId);
+        return new JsonResponse<>(JsonResponseStatus.SUCCESS);
+    }
+
     /**
      * 운동 카테고리 조회 API
      * @param category
@@ -46,16 +53,16 @@ public class RoutineController {
      */
     @GetMapping("/exercise/{category}")
     @ResponseBody
-    public JsonResponse<List<ExerciseRoutineWithEnrollmentStatusDto>> getExerciseRoutine(@PathVariable String category) {
+    public JsonResponse<List<ExerciseRoutineListDto>> getExerciseRoutine(@PathVariable String category) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if (category.equals("all")) {
-            List<ExerciseRoutineWithEnrollmentStatusDto> exercises = routineService.getExerciseRoutine(userEmail);
+            List<ExerciseRoutineListDto> exercises = routineService.getExerciseRoutine(userEmail);
             return new JsonResponse<>(exercises);
         }
-        List<ExerciseRoutineWithEnrollmentStatusDto> exerciseRoutineWithEnrollmentStatusDtoList =
+        List<ExerciseRoutineListDto> exerciseRoutineListDtoList =
                 routineService.getExerciseRoutineByCategory(category,userEmail);
-        return new JsonResponse<>(exerciseRoutineWithEnrollmentStatusDtoList);
+        return new JsonResponse<>(exerciseRoutineListDtoList);
     }
 
     /**

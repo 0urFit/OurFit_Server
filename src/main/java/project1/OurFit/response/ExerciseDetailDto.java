@@ -15,6 +15,7 @@ public class ExerciseDetailDto {
     private int level;
     private int weeks;
     private int period;
+    private boolean isenrolled;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private boolean isliked;
     private List<day> days;

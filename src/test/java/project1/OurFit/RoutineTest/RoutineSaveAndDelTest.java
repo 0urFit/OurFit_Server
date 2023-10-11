@@ -47,8 +47,8 @@ public class RoutineSaveAndDelTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                 .apply(SecurityMockMvcConfigurers.springSecurity())
-                .defaultRequest(post("/").header(HttpHeaders.HOST, "54.180.88.182"))
-                .defaultRequest(delete("/").header(HttpHeaders.HOST, "54.180.88.182"))
+                .defaultRequest(post("/").header(HttpHeaders.HOST, "54.180.88.182").secure(true))
+                .defaultRequest(delete("/").header(HttpHeaders.HOST, "54.180.88.182").secure(true))
                 .alwaysDo(restDocs)
                 .build();
     }

@@ -11,3 +11,6 @@ operation::routine-save-and-del-test/save-my-routine[snippets='http-request,requ
 
 === 운동 루틴 등록 삭제
 operation::routine-save-and-del-test/delete-my-routine[snippets='http-request,request-headers,path-parameters,response-body']
+
+=== 운동 루틴 등록 조회
+operation::routine-detail-test/exist-enrolled[snippets='http-request,request-headers,path-parameters,response-body,response-fields']

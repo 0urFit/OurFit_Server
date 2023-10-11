@@ -47,7 +47,7 @@ public class RoutineByCategoryTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                 .apply(SecurityMockMvcConfigurers.springSecurity())
-                .defaultRequest(get("/").header(HttpHeaders.HOST, "54.180.88.182"))
+                .defaultRequest(get("/").header(HttpHeaders.HOST, "54.180.88.182").secure(true))
                 .alwaysDo(restDocs)
                 .build();
     }

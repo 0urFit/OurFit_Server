@@ -7,7 +7,7 @@ import project1.OurFit.entity.ExerciseRoutine;
 
 @Getter @Setter
 @AllArgsConstructor
-public class ExerciseRoutineWithEnrollmentStatusDto {
+public class ExerciseRoutineListDto {
     private Long id;
     private String category;
     private String imgpath;
@@ -18,7 +18,7 @@ public class ExerciseRoutineWithEnrollmentStatusDto {
     private boolean isEnrolled;
     private boolean isLiked;
 
-    public ExerciseRoutineWithEnrollmentStatusDto(ExerciseRoutine exerciseRoutine, boolean enrolled, boolean liked) {
+    public ExerciseRoutineListDto(ExerciseRoutine exerciseRoutine, boolean enrolled, boolean liked) {
         this.id = exerciseRoutine.getId();
         this.category = exerciseRoutine.getCategory();
         this.imgpath = exerciseRoutine.getImgpath();
