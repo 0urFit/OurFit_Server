@@ -11,6 +11,7 @@ public enum JsonResponseStatus {
     SUCCESS(true, "200", "요청에 성공하였습니다."),
     USERS_EMPTY_EMAIL(true, "200", "이메일 사용 가능합니다."),
     USERS_EMPTY_NICKNAME(true, "200", "닉네임 사용 가능합니다."),
+    SUCCESS_EXERCISE(true, "EX100", "운동 완료 했습니다."),
     /**
      * 400 : Request, Response 오류
      */

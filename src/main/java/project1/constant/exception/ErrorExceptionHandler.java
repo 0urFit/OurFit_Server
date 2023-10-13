@@ -17,7 +17,7 @@ public class ErrorExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BaseException.class)
     public JsonResponse<JsonResponseStatus> baseExceptionHandle(BaseException exception) {
-        return new JsonResponse<>(JsonResponseStatus.UNAUTHORIZED);
+        return new JsonResponse<>(exception.getStatus());
     }
 
     @ExceptionHandler(LoginException.class)
@@ -72,5 +72,12 @@ public class ErrorExceptionHandler {
     @ResponseBody
     public JsonResponse<JsonResponseStatus> NotFoundExceptionHandle(NotFoundException exception) {
         return new JsonResponse<>(exception.getStatus());
+    }
+
+    @ExceptionHandler(ExerciseSuccessExecption.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public JsonResponse<JsonResponseStatus> ExerciseSuccessExceptionHandle(ExerciseSuccessExecption execption) {
+        return new JsonResponse<>(execption.getStatus());
     }
 }

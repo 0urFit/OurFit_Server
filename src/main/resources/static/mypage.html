@@ -451,7 +451,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /mypage HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MDA3NjAyfQ.BogikeeazZlGUh_tWM0xIXlkpOFp0m__Bi0mRqe_qetXssKahthg-dVi1o7lKQgQSpHQD9nhEkGoobVtDUhfTg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MTcxNTUwfQ.DVf19HHotT3h3LKYaQ9qz9DeRzbwl8YksfkAgg5z71sRUvsd89rWHnHr1x_64EjUlAqkzjMCUx-tCf4Nsrikfg
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -488,10 +488,10 @@ Host: 54.180.88.182</code></pre>
     "nickname" : "aossuper7",
     "height" : 1.0,
     "weight" : 1.0,
-    "squat" : 1.0,
-    "benchpress" : 1.0,
-    "deadlift" : 1.0,
-    "overheadpress" : 1.0
+    "squat" : 100.0,
+    "benchpress" : 100.0,
+    "deadlift" : 100.0,
+    "overheadpress" : 100.0
   },
   "success" : true
 }</code></pre>
@@ -576,7 +576,7 @@ Host: 54.180.88.182</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">PATCH /mypage/u HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MDA3NjAyfQ.BogikeeazZlGUh_tWM0xIXlkpOFp0m__Bi0mRqe_qetXssKahthg-dVi1o7lKQgQSpHQD9nhEkGoobVtDUhfTg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MTcxNTUwfQ.DVf19HHotT3h3LKYaQ9qz9DeRzbwl8YksfkAgg5z71sRUvsd89rWHnHr1x_64EjUlAqkzjMCUx-tCf4Nsrikfg
 Host: 54.180.88.182
 Content-Length: 131
 
@@ -684,8 +684,8 @@ Content-Length: 131
 <h4 id="_등록한_운동_상세_루틴_가져오기_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /mypage/exercise/1/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MDA3NjAxfQ.o9qSpkZR6EnplMsIS5Hu3Y87ePdi6be_8occyoFoutktg5SXWeAOI_lll7HI7tK4znWZUtDC4HyFOV9KmH3pMA
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /mypage/exercise/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MTcxNTQ5fQ.PaQrgcLEAOr7oZAkQ85xpdKNLy6zcenKBZDnvxiqzpG_0wFuidPJLWCs4KY5bxNrApMRjeJSxhLidwLk6ua8Lg
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -714,7 +714,7 @@ Host: 54.180.88.182</code></pre>
 <div class="sect3">
 <h4 id="_등록한_운동_상세_루틴_가져오기_path_parameters">Path parameters</h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /mypage/exercise/{routineId}/{week}</caption>
+<caption class="title">Table 1. /mypage/exercise/{routineId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -729,10 +729,6 @@ Host: 54.180.88.182</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>routineId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">루틴 번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>week</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 주차</p></td>
 </tr>
 </tbody>
 </table>
@@ -758,75 +754,75 @@ Host: 54.180.88.182</code></pre>
         "name" : "BenchPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         } ]
       }, {
         "name" : "InclineBenchPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         } ]
       }, {
         "name" : "CableCrossOver",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 0.3,
+          "weight" : 25.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 0.3,
+          "weight" : 25.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 0.3,
+          "weight" : 25.0,
           "reps" : 8
         } ]
       }, {
         "name" : "OverHeadPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 0.6,
+          "weight" : 60.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 0.6,
+          "weight" : 60.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 0.6,
+          "weight" : 60.0,
           "reps" : 8
         } ]
       }, {
         "name" : "DumbbellPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 0.3,
+          "weight" : 30.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 0.3,
+          "weight" : 30.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 0.3,
+          "weight" : 30.0,
           "reps" : 8
         } ]
       }, {
@@ -867,30 +863,30 @@ Host: 54.180.88.182</code></pre>
         "name" : "Squat",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         } ]
       }, {
         "name" : "LegPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 1.5,
+          "weight" : 150.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 1.5,
+          "weight" : 150.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 1.5,
+          "weight" : 150.0,
           "reps" : 8
         } ]
       }, {
@@ -991,45 +987,45 @@ Host: 54.180.88.182</code></pre>
         "name" : "BenchPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         } ]
       }, {
         "name" : "InclineBenchPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         } ]
       }, {
         "name" : "CableCrossOver",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 0.3,
+          "weight" : 25.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 0.3,
+          "weight" : 25.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 0.3,
+          "weight" : 25.0,
           "reps" : 8
         } ]
       }, {
@@ -1100,30 +1096,30 @@ Host: 54.180.88.182</code></pre>
         "name" : "Squat",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 0.7,
+          "weight" : 70.0,
           "reps" : 8
         } ]
       }, {
         "name" : "LegPress",
         "sets" : [ {
           "sequence" : 1,
-          "weight" : 1.5,
+          "weight" : 150.0,
           "reps" : 8
         }, {
           "sequence" : 2,
-          "weight" : 1.5,
+          "weight" : 150.0,
           "reps" : 8
         }, {
           "sequence" : 3,
-          "weight" : 1.5,
+          "weight" : 150.0,
           "reps" : 8
         } ]
       }, {
@@ -1330,7 +1326,7 @@ Host: 54.180.88.182</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /mypage/exercise/1/complete HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MDA3NjAxfQ.o9qSpkZR6EnplMsIS5Hu3Y87ePdi6be_8occyoFoutktg5SXWeAOI_lll7HI7tK4znWZUtDC4HyFOV9KmH3pMA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MTcxNTQ5fQ.PaQrgcLEAOr7oZAkQ85xpdKNLy6zcenKBZDnvxiqzpG_0wFuidPJLWCs4KY5bxNrApMRjeJSxhLidwLk6ua8Lg
 Host: 54.180.88.182
 Content-Length: 33
 
@@ -1350,7 +1346,7 @@ Content-Length: 33
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /mypage/exercise/1/complete HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MDA3NjAxfQ.o9qSpkZR6EnplMsIS5Hu3Y87ePdi6be_8occyoFoutktg5SXWeAOI_lll7HI7tK4znWZUtDC4HyFOV9KmH3pMA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MTcxNTQ5fQ.PaQrgcLEAOr7oZAkQ85xpdKNLy6zcenKBZDnvxiqzpG_0wFuidPJLWCs4KY5bxNrApMRjeJSxhLidwLk6ua8Lg
 Host: 54.180.88.182
 Content-Length: 33
 
@@ -1445,12 +1441,27 @@ Content-Length: 33
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>루틴 최종 성공</p>
+</div>
+<div class="sect3">
+<h4 id="_운동_루틴_성공취소_response_body">Response body</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-json" data-lang="json">{
+  "code" : "EX100",
+  "message" : "운동 완료 했습니다.",
+  "success" : true
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-10-09 18:17:03 +0900
+Last updated 2023-10-13 12:54:04 +0900
 </div>
 </div>
 </body>

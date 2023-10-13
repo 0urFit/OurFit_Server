@@ -2,6 +2,7 @@ package project1.OurFit.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,6 +109,7 @@ public class MemberService {
      * kakao login service
      */
 
+    @CacheEvict(value = "token", key = "#signUpDto.email") // 기존에 있던 캐시 삭제
     public Member findKakaoId(SignUpDto signUpDto) {
         return memberRepository.findByEmail(signUpDto.getEmail())
                 .orElseThrow(() -> new UnregisteredUserException(JsonResponseStatus.NOT_FOUND_MEMBER, signUpDto));

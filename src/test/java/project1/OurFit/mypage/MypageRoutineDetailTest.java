@@ -60,7 +60,7 @@ public class MypageRoutineDetailTest {
         String accessToken = jwtTokenProvider.createAccessToken("aossuper7@naver.com");
 
         //When & Then
-        mockMvc.perform(get("/mypage/exercise/{routineId}/{week}", "1", "1")
+        mockMvc.perform(get("/mypage/exercise/{routineId}", "1")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -69,8 +69,7 @@ public class MypageRoutineDetailTest {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer {AccessToken}")
                         ),
                         pathParameters(
-                                parameterWithName("routineId").description("루틴 번호"),
-                                parameterWithName("week").description("해당 주차")
+                                parameterWithName("routineId").description("루틴 번호")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("Http 상태코드"),

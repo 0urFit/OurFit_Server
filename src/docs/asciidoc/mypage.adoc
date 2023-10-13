@@ -15,3 +15,7 @@ operation::mypage-routine-complete-and-cancel-test/routine-complete[snippets='ht
 성공 취소 API
 
 operation::mypage-routine-complete-and-cancel-test/cancel-routine-complete[snippets='http-request,request-headers,path-parameters,request-fields,response-body']
+
+루틴 최종 성공
+
+operation::mypage-routine-complete-and-cancel-test/succeed-routine[snippets='response-body']

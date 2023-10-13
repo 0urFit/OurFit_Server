@@ -6,12 +6,14 @@ import org.springframework.web.bind.annotation.*;
 import project1.OurFit.request.ExerciseCompleteDto;
 import project1.OurFit.response.*;
 import project1.OurFit.service.MyPageService;
+import project1.constant.exception.ExerciseSuccessExecption;
 import project1.constant.response.JsonResponse;
 import project1.constant.response.JsonResponseStatus;
 
 import java.util.List;
 
 import static project1.constant.response.JsonResponseStatus.SUCCESS;
+import static project1.constant.response.JsonResponseStatus.SUCCESS_EXERCISE;
 
 @RequiredArgsConstructor
 @RestController
@@ -45,15 +47,13 @@ public class MyPageController {
     /**
      * 저장한 운동 상세 루틴 가져오기 API
      * @param routineId
-     * @param week
      * @return
      */
-    @GetMapping("/mypage/exercise/{routineId}/{week}")
+    @GetMapping("/mypage/exercise/{routineId}")
     @ResponseBody
-    public JsonResponse<ExerciseDetailDto> getMyRoutineDetail(
-            @PathVariable final Long routineId, @PathVariable final int week){
+    public JsonResponse<ExerciseDetailDto> getMyRoutineDetail(@PathVariable final Long routineId){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return new JsonResponse<>(myPageService.getEnrollDetails(email, routineId, week).get(0));
+        return new JsonResponse<>(myPageService.getEnrollDetails(email, routineId).get(0));
     }
 
 
@@ -76,8 +76,9 @@ public class MyPageController {
     public JsonResponse<JsonResponseStatus> completeRoutine(
             @RequestBody ExerciseCompleteDto completeDto, @PathVariable Long routineId){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        myPageService.completeRoutine(userEmail, completeDto, routineId);
-        return new JsonResponse<>(SUCCESS);
+        if(myPageService.completeRoutine(userEmail, completeDto, routineId))
+            return new JsonResponse<>(SUCCESS);
+        throw new ExerciseSuccessExecption(SUCCESS_EXERCISE);
     }
 
     /**

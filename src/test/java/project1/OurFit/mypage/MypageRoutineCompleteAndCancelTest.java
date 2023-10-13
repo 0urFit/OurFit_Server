@@ -115,4 +115,33 @@ public class MypageRoutineCompleteAndCancelTest {
                         )
                 ));
     }
+
+    @Test
+    void succeedRoutine() throws Exception {
+        //Given
+        String accessToken = jwtTokenProvider.createAccessToken("aossuper7@naver.com");
+        ExerciseCompleteDto dto = new ExerciseCompleteDto();
+        dto.setWeek(6);
+        dto.setDay("Fri");
+
+        //When & Then
+        mockMvc.perform(post("/mypage/exercise/{routineId}/complete", "6")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(restDocs.document(
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer {AccessToken}")
+                        ),
+                        pathParameters(
+                                parameterWithName("routineId").description("루틴 번호")
+                        ),
+                        requestFields(
+                                fieldWithPath("week").description("해당 주차"),
+                                fieldWithPath("day").description("요일")
+                        )
+                ));
+    }
 }

@@ -8,9 +8,11 @@ import project1.OurFit.repository.*;
 import project1.OurFit.request.ExerciseCompleteDto;
 import project1.OurFit.response.*;
 import project1.constant.exception.BaseException;
+import project1.constant.exception.ExerciseSuccessExecption;
 import project1.constant.exception.NotFoundException;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static project1.constant.response.JsonResponseStatus.*;
@@ -83,16 +85,29 @@ public class MyPageService {
      * @param completeDto
      * @param routineId
      */
-    public void completeRoutine(String email, ExerciseCompleteDto completeDto, Long routineId) {
+    public boolean completeRoutine(String email, ExerciseCompleteDto completeDto, Long routineId) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
         ExerciseRoutine exerciseRoutine = routineRepository
                 .findByExerciseRoutineWithEnrollByMemberIdAndRoutineId(member.getId(), routineId)
                         .orElseThrow(() -> new NotFoundException(NOT_FOUND_ROUTINE));
-
+        ExerciseEnroll enroll = exerciseRoutine.getExerciseEnrollList().get(0);
         saveExerciseLog(member, exerciseRoutine, completeDto);
-        if (isLastdayofRoutine(exerciseRoutine, completeDto))
-            adjustWeekProgress(exerciseRoutine, 1);
+
+        if (isLastdayofRoutine(exerciseRoutine, completeDto)) {
+            if (isExerciseWeekSame(exerciseRoutine, enroll)) {
+                deleteRoutineIdlog(member.getId(), routineId);
+                resetCurrentWeek(enroll);
+                return false;
+            }
+            adjustWeekProgress(enroll, 1);
+        }
+        return true;
+    }
+
+    private void resetCurrentWeek(ExerciseEnroll enroll) {
+        enroll.setWeekProgress(1);
+        exerciseEnrollRepository.save(enroll);
     }
 
     private void saveExerciseLog(Member member, ExerciseRoutine exerciseRoutine, ExerciseCompleteDto completeDto) {
@@ -104,8 +119,23 @@ public class MyPageService {
         exerciseLogsRepository.save(exerciseLogs);
     }
 
-    private void adjustWeekProgress(ExerciseRoutine routine, int adjustmentValue) {
-        ExerciseEnroll enroll = routine.getExerciseEnrollList().get(0);
+    private boolean isExerciseWeekSame(ExerciseRoutine exerciseRoutine, ExerciseEnroll enroll) {
+        int currentWeek = enroll.getWeekProgress();
+        int programLength = exerciseRoutine.getProgramLength();
+        return programLength == currentWeek;
+    }
+
+    private void deleteRoutineIdlog(Long id, Long routineId) {
+        List<ExerciseLogs> logs = exerciseLogsRepository.findByMemberIdAndExerciseRoutineId(id, routineId);
+        exerciseLogsRepository.deleteAllInBatch(logs);
+//        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+//
+//
+//        });
+
+    }
+
+    private void adjustWeekProgress(ExerciseEnroll enroll, int adjustmentValue) {
         enroll.setWeekProgress(enroll.getWeekProgress() + adjustmentValue);
         exerciseEnrollRepository.save(enroll);
     }
@@ -126,11 +156,12 @@ public class MyPageService {
         ExerciseRoutine exerciseRoutine = routineRepository
                 .findByExerciseRoutineWithEnrollByMemberIdAndRoutineId(member.getId(), routineId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ROUTINE));
+        ExerciseEnroll enroll = exerciseRoutine.getExerciseEnrollList().get(0);
 
         deletelog(exerciseRoutine, completeDto);
 
         if (isLastdayofRoutine(exerciseRoutine, completeDto)) {
-            adjustWeekProgress(exerciseRoutine, -1);
+            adjustWeekProgress(enroll, -1);
         }
     }
 
@@ -143,21 +174,22 @@ public class MyPageService {
      * 저장한 운동 상세 루틴 주차별로 가져오기 Service
      * @param email
      * @param routineId
-     * @param week
      * @return
      */
-    public List<ExerciseDetailDto> getEnrollDetails(final String email, final Long routineId, final int week) {
+    public List<ExerciseDetailDto> getEnrollDetails(final String email, final Long routineId) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 
-        if (!exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId))
-            throw new NotFoundException(NOT_FOUND_ENROLL);
+        ExerciseEnroll enroll = exerciseEnrollRepository.findByMemberIdAndExerciseRoutineId(member.getId(), routineId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ENROLL));
 
         ExerciseRoutine routine = routineRepository.findById(routineId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ROUTINE));
 
-        List<ExerciseDetail> exerciseDetails = exerciseDetailRepository.findByExerciseRoutineIdAndWeeks(routineId, week);
-        List<ExerciseLogs> logsForTheWeek = exerciseLogsRepository.findByExerciseRoutineAndWeek(routine, week);
+        List<ExerciseDetail> exerciseDetails = exerciseDetailRepository.findByExerciseRoutineIdAndWeeks(
+                routineId, enroll.getWeekProgress());
+        List<ExerciseLogs> logsForTheWeek = exerciseLogsRepository.findByExerciseRoutineAndWeek(
+                routine, enroll.getWeekProgress());
 
         List<ExerciseDetailDto> dto = new ArrayList<>();
         dto.add(buildExerciseDetailDto(member, routine, exerciseDetails, logsForTheWeek));

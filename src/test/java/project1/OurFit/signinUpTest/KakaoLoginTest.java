@@ -64,7 +64,7 @@ public class KakaoLoginTest {
     @Test
     void loginKakaoSuccessTest() throws Exception {
         //Given
-        String kakaoCode = "EdSngKE6VUVrYZkkzdHgu1BNXC7D5B_HzOa5TqD2aPG_qZ7PpGMvoYKIVmaH1NnLFr7tVgo9dZoAAAGK6rhCZA";
+        String kakaoCode = "UKsJ5zsSWTeta2GyEFXM9lloPgqYhLeL8toqmJ_xtzduX21--XMSGzDFH4ziIXdf03wYSAo9dNkAAAGLHatiSw";
         SignUpDto signUpDto = new SignUpDto();
         signUpDto.setEmail("aossuper7@naver.com");
         signUpDto.setGender("male");
