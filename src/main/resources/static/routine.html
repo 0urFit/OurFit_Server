@@ -451,7 +451,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/all HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MTcxNTQ4fQ.0mfV0KczjbElMueFnFU2rVyoV-pDDJDi4JjPhKFkH1fpHPx9ArzcEZkQHf87GV3Lx4gffHz-mnjHe7cuUCUBaA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk5MzMwNzA5fQ.Fcd0ywgYoWb7Guf6DeSe6uuTI-SqKQiZszFivNyrLDbgbgkosoTbS79o8iPD-YZTyIJioqjCMls37f8AnMmZ8w
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -495,8 +495,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 7,
     "period" : 8,
     "routineName" : "BodyBuilding 2분할",
-    "liked" : false,
-    "enrolled" : true
+    "enrolled" : true,
+    "liked" : false
   }, {
     "id" : 2,
     "category" : "bodybuilding",
@@ -505,8 +505,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 5,
     "period" : 8,
     "routineName" : "BodyBuilding 3분할",
-    "liked" : false,
-    "enrolled" : false
+    "enrolled" : false,
+    "liked" : false
   }, {
     "id" : 3,
     "category" : "bodybuilding",
@@ -515,8 +515,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 5,
     "period" : 8,
     "routineName" : "BodyBuilding 4분할",
-    "liked" : false,
-    "enrolled" : false
+    "enrolled" : false,
+    "liked" : false
   }, {
     "id" : 4,
     "category" : "bodybuilding",
@@ -525,8 +525,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 6,
     "period" : 8,
     "routineName" : "BodyBuilding 5분할",
-    "liked" : false,
-    "enrolled" : false
+    "enrolled" : false,
+    "liked" : false
   }, {
     "id" : 5,
     "category" : "Strength",
@@ -535,8 +535,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 10,
     "period" : 12,
     "routineName" : "메드게르만",
-    "liked" : false,
-    "enrolled" : false
+    "enrolled" : false,
+    "liked" : false
   }, {
     "id" : 6,
     "category" : "Strength",
@@ -545,8 +545,8 @@ Host: 54.180.88.182</code></pre>
     "level" : 4,
     "period" : 6,
     "routineName" : "웬들러 531",
-    "liked" : false,
-    "enrolled" : true
+    "enrolled" : true,
+    "liked" : false
   } ],
   "success" : true
 }</code></pre>
@@ -634,13 +634,103 @@ Host: 54.180.88.182</code></pre>
 </div>
 </div>
 <div class="sect2">
+<h3 id="_상세_루틴_view_가져오기">상세 루틴 view 가져오기</h3>
+<div class="sect3">
+<h4 id="_상세_루틴_view_가져오기_http_request">HTTP request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/1/view HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk5MzMwNzA5fQ.Fcd0ywgYoWb7Guf6DeSe6uuTI-SqKQiZszFivNyrLDbgbgkosoTbS79o8iPD-YZTyIJioqjCMls37f8AnMmZ8w
+Host: 54.180.88.182</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_상세_루틴_view_가져오기_request_headers">Request headers</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer {AccessToken}</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_상세_루틴_view_가져오기_path_parameters">Path parameters</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /exercise/{routineId}/view</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>routineId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">루틴 아이디</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_상세_루틴_view_가져오기_http_response">HTTP response</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+X-Frame-Options: SAMEORIGIN
+Content-Length: 253
+
+{
+  "code" : "200",
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "routineName" : "BodyBuilding 2분할",
+    "level" : 7,
+    "weeks" : 4,
+    "period" : 8,
+    "isenrolled" : true,
+    "isliked" : false
+  },
+  "success" : true
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_상세_루틴_목록_가져오기">상세 루틴 목록 가져오기</h3>
 <div class="sect3">
 <h4 id="_상세_루틴_목록_가져오기_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/1/week/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MTcxNTQ4fQ.0mfV0KczjbElMueFnFU2rVyoV-pDDJDi4JjPhKFkH1fpHPx9ArzcEZkQHf87GV3Lx4gffHz-mnjHe7cuUCUBaA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk5MzMwNzA5fQ.Fcd0ywgYoWb7Guf6DeSe6uuTI-SqKQiZszFivNyrLDbgbgkosoTbS79o8iPD-YZTyIJioqjCMls37f8AnMmZ8w
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -700,12 +790,6 @@ Host: 54.180.88.182</code></pre>
   "code" : "200",
   "message" : "요청에 성공하였습니다.",
   "result" : [ {
-    "routineName" : "BodyBuilding 2분할",
-    "level" : 7,
-    "weeks" : 4,
-    "period" : 8,
-    "isenrolled" : true,
-    "isliked" : false,
     "days" : [ {
       "day" : "Mon",
       "issuccess" : false,
@@ -1211,36 +1295,6 @@ Host: 54.180.88.182</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].routineName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">루틴 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].level</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">운동 레벨 (1~10)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].weeks</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">일주일에 몇번 운동 하는지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].period</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">운동 기간 (주 단위)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].isliked</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사용자가 좋아요 눌렀는지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].isenrolled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사용자가 등록 했는지 여부</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result[].days[].day</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">요일</p></td>
@@ -1281,7 +1335,7 @@ Host: 54.180.88.182</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /exercise/4 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MTcxNTQ5fQ.PaQrgcLEAOr7oZAkQ85xpdKNLy6zcenKBZDnvxiqzpG_0wFuidPJLWCs4KY5bxNrApMRjeJSxhLidwLk6ua8Lg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk5MzMwNzA5fQ.Fcd0ywgYoWb7Guf6DeSe6uuTI-SqKQiZszFivNyrLDbgbgkosoTbS79o8iPD-YZTyIJioqjCMls37f8AnMmZ8w
 Host: 54.180.88.182
 Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
@@ -1350,7 +1404,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /exercise/4 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MTcxNTQ5fQ.PaQrgcLEAOr7oZAkQ85xpdKNLy6zcenKBZDnvxiqzpG_0wFuidPJLWCs4KY5bxNrApMRjeJSxhLidwLk6ua8Lg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk5MzMwNzA5fQ.Fcd0ywgYoWb7Guf6DeSe6uuTI-SqKQiZszFivNyrLDbgbgkosoTbS79o8iPD-YZTyIJioqjCMls37f8AnMmZ8w
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -1418,7 +1472,7 @@ Host: 54.180.88.182</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /exercise/enrolled/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk3MTcxNTQ4fQ.0mfV0KczjbElMueFnFU2rVyoV-pDDJDi4JjPhKFkH1fpHPx9ArzcEZkQHf87GV3Lx4gffHz-mnjHe7cuUCUBaA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhb3NzdXBlcjdAbmF2ZXIuY29tIiwiZXhwIjoxNjk5MzMwNzA5fQ.Fcd0ywgYoWb7Guf6DeSe6uuTI-SqKQiZszFivNyrLDbgbgkosoTbS79o8iPD-YZTyIJioqjCMls37f8AnMmZ8w
 Host: 54.180.88.182</code></pre>
 </div>
 </div>
@@ -1518,7 +1572,7 @@ Host: 54.180.88.182</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-10-13 12:48:12 +0900
+Last updated 2023-11-07 12:46:03 +0900
 </div>
 </div>
 </body>

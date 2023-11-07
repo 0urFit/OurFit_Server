@@ -3,6 +3,9 @@
 === 카테고리별 루틴 목록 가져오기
 operation::routine-by-category-test/get-routine-by-category[snippets='http-request,path-parameters,response-body,response-fields']
 
+=== 상세 루틴 view 가져오기
+operation::routine-detail-test/get-view-test[snippets='http-request,request-headers,path-parameters,http-response']
+
 === 상세 루틴 목록 가져오기
 operation::routine-detail-test/get-routine-detail[snippets='http-request,request-headers,path-parameters,response-body,response-fields']
 
