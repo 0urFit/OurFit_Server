@@ -295,4 +295,34 @@ public class MyPageService {
         member.setOverheadpress(memberDto.getOverheadpress());
         memberRepository.save(member);
     }
+
+    /**
+     * 등록한 운동 상세 루틴 View 가져오기 service
+     * @param email
+     * @param routineId
+     * @return
+     */
+    public ExerciseViewDto getEnrollDetailView(String email, long routineId) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        ExerciseEnroll enroll = exerciseEnrollRepository.findByMemberIdAndExerciseRoutineId(member.getId(), routineId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ENROLL));
+        ExerciseRoutine routine = routineRepository.findById(routineId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ROUTINE));
+        boolean isLiked = exerciseLikeRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId);
+
+        return buildExerciseDetailViewDto(routine, enroll, isLiked);
+    }
+
+    private ExerciseViewDto buildExerciseDetailViewDto(ExerciseRoutine routine, ExerciseEnroll enroll, boolean isLiked) {
+        return ExerciseViewDto.builder()
+                .routineName(routine.getRoutineName())
+                .level(routine.getLevel())
+                .weeks(routine.getDaysPerWeek())
+                .period(routine.getProgramLength())
+                .currentWeek(enroll.getWeekProgress())
+                .isenrolled(true)
+                .isliked(isLiked)
+                .build();
+    }
 }
