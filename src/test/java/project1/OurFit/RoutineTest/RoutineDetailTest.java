@@ -75,13 +75,6 @@ public class RoutineDetailTest {
                                 fieldWithPath("code").description("Http 상태코드"),
                                 fieldWithPath("message").description("상태 메시지"),
                                 fieldWithPath("success").description("성공 여부")
-                        ).andWithPrefix("result[].",
-                                fieldWithPath("routineName").description("루틴 이름"),
-                                fieldWithPath("level").description("운동 레벨 (1~10)"),
-                                fieldWithPath("weeks").description("일주일에 몇번 운동 하는지"),
-                                fieldWithPath("period").description("운동 기간 (주 단위)"),
-                                fieldWithPath("isliked").description("사용자가 좋아요 눌렀는지 여부"),
-                                fieldWithPath("isenrolled").description("사용자가 등록 했는지 여부")
                         ).andWithPrefix("result[].days[].",
                                 fieldWithPath("day").description("요일"),
                                 fieldWithPath("issuccess").description("무시 문서작업용").optional()
@@ -119,6 +112,36 @@ public class RoutineDetailTest {
                                         등록 되어 있다면 true +
                                         등록 되어 있지 않다면 false""")
                         )
+                ));
+    }
+
+    @Test
+    void getViewTest() throws Exception {
+        // Given
+        String accessToken = jwtTokenProvider.createAccessToken("aossuper7@naver.com");
+
+        mockMvc.perform(get("/exercise/{routineId}/view", "1")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(restDocs.document(
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer {AccessToken}")
+                        ),
+                        pathParameters(
+                                parameterWithName("routineId").description("루틴 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("Http 상태코드"),
+                                fieldWithPath("message").description("상태 메시지"),
+                                fieldWithPath("success").description("성공 여부")
+                        ).andWithPrefix("result.",
+                                fieldWithPath("routineName").description("루틴 이름"),
+                                fieldWithPath("level").description("운동 난이도"),
+                                fieldWithPath("weeks").description("운동 기간(일 단위)"),
+                                fieldWithPath("period").description("운동 기간(주 단위)"),
+                                fieldWithPath("isenrolled").description("등록 여부"),
+                                fieldWithPath("isliked").description("좋아요 여부"))
                 ));
     }
 }

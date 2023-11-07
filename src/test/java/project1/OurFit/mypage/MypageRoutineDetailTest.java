@@ -79,6 +79,7 @@ public class MypageRoutineDetailTest {
                                 fieldWithPath("routineName").description("루틴 이름"),
                                 fieldWithPath("level").description("운동 난이도 (1~10)"),
                                 fieldWithPath("weeks").description("일주일에 몇번 운동 하는지"),
+                                fieldWithPath("currentWeek").description("현재 진행중인 주차"),
                                 fieldWithPath("period").description("운동 기간 (주 단위)"),
                                 fieldWithPath("isliked").description("사용자가 좋아요 눌렀는지 여부"),
                                 fieldWithPath("isenrolled").description("사용 XX").optional()
