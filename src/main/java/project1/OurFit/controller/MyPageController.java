@@ -56,6 +56,12 @@ public class MyPageController {
         return new JsonResponse<>(myPageService.getEnrollDetails(email, routineId).get(0));
     }
 
+    @GetMapping("/mypage/exercise/{routineId}/view")
+    @ResponseBody
+    public JsonResponse<ExerciseViewDto> getMyRoutineDetailView(@PathVariable final long routineId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return new JsonResponse<>(myPageService.getEnrollDetailView(email, routineId));
+    }
 
     @GetMapping("/mypage/like")
     @ResponseBody
