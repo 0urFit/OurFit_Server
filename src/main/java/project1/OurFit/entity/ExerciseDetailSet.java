@@ -13,10 +13,11 @@ public class ExerciseDetailSet {
     private Long id;
     private double weight;
     private int reps;
+    private Double increase;
     private int sequence;
+    private String exerciseType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exerciseDetailId")
     private ExerciseDetail exerciseDetail;
-
 }

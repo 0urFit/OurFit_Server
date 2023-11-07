@@ -11,7 +11,7 @@ public class PostKakaoProfile {
 
     @Getter @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public class KakaoAccount {
+    public static class KakaoAccount {
         public String email;
         public String gender;
     }

@@ -3,8 +3,10 @@ package project1.OurFit.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class EnrollDetailSet {
@@ -18,6 +20,4 @@ public class EnrollDetailSet {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enrollDetailId")
     private EnrollDetail enrollDetail;
-
-
 }

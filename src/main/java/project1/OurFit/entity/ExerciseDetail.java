@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -14,7 +15,7 @@ public class ExerciseDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private int fewWeek;
     private String name;
     private String day;
     private int sequence;
@@ -25,5 +26,4 @@ public class ExerciseDetail {
 
     @OneToMany(mappedBy = "exerciseDetail")
     List<ExerciseDetailSet> exerciseDetailSetList = new ArrayList<>();
-
 }

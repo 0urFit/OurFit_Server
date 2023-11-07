@@ -1,0 +1,19 @@
+= 루틴
+
+=== 카테고리별 루틴 목록 가져오기
+operation::routine-by-category-test/get-routine-by-category[snippets='http-request,path-parameters,response-body,response-fields']
+
+=== 상세 루틴 view 가져오기
+operation::routine-detail-test/get-view-test[snippets='http-request,request-headers,path-parameters,http-response']
+
+=== 상세 루틴 목록 가져오기
+operation::routine-detail-test/get-routine-detail[snippets='http-request,request-headers,path-parameters,response-body,response-fields']
+
+=== 운동 루틴 등록
+operation::routine-save-and-del-test/save-my-routine[snippets='http-request,request-headers,path-parameters,response-body']
+
+=== 운동 루틴 등록 삭제
+operation::routine-save-and-del-test/delete-my-routine[snippets='http-request,request-headers,path-parameters,response-body']
+
+=== 운동 루틴 등록 조회
+operation::routine-detail-test/exist-enrolled[snippets='http-request,request-headers,path-parameters,response-body,response-fields']

@@ -1,0 +1,13 @@
+= 0urFit API 명세서
+:doctype: book
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 1
+:sectlinks:
+
+include::signup.adoc[]
+include::login.adoc[]
+include::renewToken.adoc[]
+include::routine.adoc[]
+include::mypage.adoc[]
+include::error.adoc[]

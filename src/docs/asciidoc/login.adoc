@@ -1,0 +1,7 @@
+= 로그인
+
+=== 자체 로그인
+operation::login-test/login-success[snippets='http-request,request-fields,response-body']
+
+=== 카카오 로그인
+operation::kakao-login-test/login-kakao-success-test[snippets='http-request,query-parameters,response-body,response-fields']

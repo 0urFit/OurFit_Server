@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -23,7 +23,7 @@ public class Post {
 
     @CreationTimestamp
     @Column(name = "createdAt", nullable = false)
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     private String category;
 

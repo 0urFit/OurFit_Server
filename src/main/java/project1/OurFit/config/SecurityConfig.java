@@ -14,8 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
-import project1.OurFit.jwt.JwtAuthenticationEntryPoint;
-import project1.OurFit.jwt.JwtTokenProvider;
+import project1.OurFit.jwtTest.JwtAuthenticationEntryPoint;
+import project1.OurFit.jwtTest.JwtSecurityConfig;
+import project1.OurFit.jwtTest.JwtTokenProvider;
 
 @Configuration
 @EnableWebSecurity
@@ -43,8 +44,8 @@ public class SecurityConfig {
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-
                 .and()
+
                 .headers()
                 .frameOptions()
                 .sameOrigin()
@@ -55,7 +56,7 @@ public class SecurityConfig {
                 .and()
 
                 .authorizeHttpRequests()
-                .requestMatchers( "/exercise/{id}/**", "/post/**", "/mypage/**").authenticated()
+                .requestMatchers( "/exercise/**", "/post/**", "/mypage/**").authenticated()
                 .anyRequest().permitAll()
 
                 .and()

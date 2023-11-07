@@ -1,46 +1,52 @@
 package project1.OurFit.service;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import project1.OurFit.entity.Member;
-import project1.OurFit.jwt.JwtTokenProvider;
-import project1.OurFit.repository.MemberRepository;
-import project1.OurFit.response.PostLoginDto;
-import project1.constant.exception.BaseException;
-import project1.constant.response.JsonResponseStatus;
+import project1.OurFit.entity.RefreshToken;
+import project1.OurFit.jwtTest.JwtTokenProvider;
+import project1.OurFit.repository.RefreshTokenRedisRepository;
+import project1.OurFit.response.JwtTokenDto;
 
 @Service
 @RequiredArgsConstructor
 public class JwtService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final MemberRepository memberRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
-    public PostLoginDto authorize(String email, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(email, password);
-
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtTokenProvider.createToken(authentication.getName());
-        String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
-        saveRefreshToken(email, refreshToken);
-        return new PostLoginDto(token, refreshToken, null, null);
+    /**
+     * AccessToken, refreshToken 생성하고
+     * redis에 refreshToken 저장하는 service
+     * @param member
+     * @return
+     */
+    public JwtTokenDto createToken(Member member) {
+        String accessToken = generateAccessToken(member);
+        String refreshToken = generateRefreshToken(member);
+        saveRefreshToken(member, refreshToken);
+        return new JwtTokenDto(accessToken, refreshToken);
     }
 
-    public PostLoginDto authorize(String email) {
-        return authorize(email, "");
+    private String generateAccessToken(Member member) {
+        return jwtTokenProvider.createAccessToken(member.getEmail());
     }
 
-    private void saveRefreshToken(String email, String refreshToken) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(JsonResponseStatus.UNAUTHORIZED));
-        member.setRefreshToken(refreshToken);
-        memberRepository.save(member);
+    private String generateRefreshToken(Member member) {
+        return jwtTokenProvider.createRefreshToken(member.getEmail());
+    }
+
+    @CachePut(value = "token", key = "#member.email")
+    public void saveRefreshToken(Member member, String refreshToken) {
+        RefreshToken refreshToken1 = new RefreshToken(member.getEmail(), refreshToken);
+        refreshTokenRedisRepository.save(refreshToken1);
+    }
+
+
+    public String extractEmailFromRefreshToken(String refreshToken) {
+        Claims claims = jwtTokenProvider.parseToken(refreshToken);
+        return claims.getSubject();
     }
 }
