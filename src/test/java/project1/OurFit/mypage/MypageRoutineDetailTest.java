@@ -75,14 +75,6 @@ public class MypageRoutineDetailTest {
                                 fieldWithPath("code").description("Http 상태코드"),
                                 fieldWithPath("message").description("상태 메시지"),
                                 fieldWithPath("success").description("성공 여부")
-                        ).andWithPrefix("result.",
-                                fieldWithPath("routineName").description("루틴 이름"),
-                                fieldWithPath("level").description("운동 난이도 (1~10)"),
-                                fieldWithPath("weeks").description("일주일에 몇번 운동 하는지"),
-                                fieldWithPath("currentWeek").description("현재 진행중인 주차"),
-                                fieldWithPath("period").description("운동 기간 (주 단위)"),
-                                fieldWithPath("isliked").description("사용자가 좋아요 눌렀는지 여부"),
-                                fieldWithPath("isenrolled").description("사용 XX").optional()
                         ).andWithPrefix("result.days[].",
                                 fieldWithPath("day").description("요일"),
                                 fieldWithPath("issuccess").description("요일 성공 여부")
@@ -93,6 +85,38 @@ public class MypageRoutineDetailTest {
                                 fieldWithPath("weight").description("사용자 4대 운동요소에 맞춰진 무게"),
                                 fieldWithPath("reps").description("반복 횟수")
                         )
+                ));
+    }
+
+    @Test
+    void getMyRoutineDeatilView() throws Exception {
+        //Given
+        String accessToken = jwtTokenProvider.createAccessToken("aossuper7@naver.com");
+
+        //When & Then
+        mockMvc.perform(get("/mypage/exercise/{routineId}/view", "1")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(restDocs.document(
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer {AccessToken}")
+                        ),
+                        pathParameters(
+                                parameterWithName("routineId").description("루틴 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("Http 상태코드"),
+                                fieldWithPath("message").description("상태 메시지"),
+                                fieldWithPath("success").description("성공 여부")
+                        ).andWithPrefix("result.",
+                                fieldWithPath("routineName").description("루틴 이름"),
+                                fieldWithPath("level").description("운동 난이도"),
+                                fieldWithPath("weeks").description("운동 일주일에 몇번 하는지"),
+                                fieldWithPath("period").description("운동 기간 (주 단위)"),
+                                fieldWithPath("currentWeek").description("현재 진행중인 주차"),
+                                fieldWithPath("isenrolled").description("운동 등록 여부"),
+                                fieldWithPath("isliked").description("좋아요 등록 여부"))
                 ));
     }
 }
