@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import project1.OurFit.entity.*;
 import project1.OurFit.repository.*;
 import project1.OurFit.response.ExerciseDetailDto;
+import project1.OurFit.response.ExerciseViewDto;
 import project1.OurFit.response.ExerciseRoutineListDto;
 import project1.constant.exception.BaseException;
 import project1.constant.exception.NotFoundException;
@@ -126,24 +127,15 @@ public class RoutineService {
     public List<ExerciseDetailDto> getExerciseDetails(
             final String email, final Long routineId, final int week) {
         Member member = findByEmail(email);
-        ExerciseRoutine routine = findByExerciseRoutine(routineId);
-        boolean isLiked = exerciseLikeRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId);
-        boolean isEnrolled = exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId);
         List<ExerciseDetail> exerciseDetails = exerciseDetailRepository.findByExerciseRoutineIdAndWeeks(routineId, week);
         List<ExerciseDetailDto> dto = new ArrayList<>();
-        dto.add(buildExerciseDetailDto(member, routine, isLiked, isEnrolled, exerciseDetails));
+        dto.add(buildExerciseDetailDto(member, exerciseDetails));
         return dto;
     }
 
     private ExerciseDetailDto buildExerciseDetailDto(
-            Member member, ExerciseRoutine routine, boolean isLiked, boolean isEnrolled, List<ExerciseDetail> exerciseDetails) {
+            Member member, List<ExerciseDetail> exerciseDetails) {
         ExerciseDetailDto dto = new ExerciseDetailDto();
-        dto.setRoutineName(routine.getRoutineName());
-        dto.setLevel(routine.getLevel());
-        dto.setWeeks(routine.getDaysPerWeek());
-        dto.setPeriod(routine.getProgramLength());
-        dto.setIsliked(isLiked);
-        dto.setIsenrolled(isEnrolled);
         dto.setDays(constructDaysList(member, exerciseDetails));
         return dto;
     }
@@ -262,5 +254,31 @@ public class RoutineService {
         Member member = findByEmail(userEmail);
         if (!exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineID))
             throw new NotFoundException(NOT_FOUND_ENROLL);
+    }
+
+    /**
+     * 운동 상세 루틴 view Service
+     * @param email
+     * @param routineId
+     * @return
+     */
+    public ExerciseViewDto getExerciseRoutineView(String email, long routineId) {
+        Member member = findByEmail(email);
+        ExerciseRoutine routine = findByExerciseRoutine(routineId);
+        boolean isLiked = exerciseLikeRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId);
+        boolean isEnrolled = exerciseEnrollRepository.existsByMemberIdAndExerciseRoutineId(member.getId(), routineId);
+
+        return buildExerciseDetailViewDto(routine, isLiked, isEnrolled);
+    }
+
+    private ExerciseViewDto buildExerciseDetailViewDto(ExerciseRoutine routine, boolean isLiked, boolean isEnrolled) {
+        return ExerciseViewDto.builder()
+                .routineName(routine.getRoutineName())
+                .level(routine.getLevel())
+                .weeks(routine.getDaysPerWeek())
+                .period(routine.getProgramLength())
+                .isenrolled(isEnrolled)
+                .isliked(isLiked)
+                .build();
     }
 }

@@ -192,17 +192,13 @@ public class MyPageService {
                 routine, enroll.getWeekProgress());
 
         List<ExerciseDetailDto> dto = new ArrayList<>();
-        dto.add(buildExerciseDetailDto(member, routine, exerciseDetails, logsForTheWeek));
+        dto.add(buildExerciseDetailDto(member, exerciseDetails, logsForTheWeek));
         return dto;
     }
 
-    private ExerciseDetailDto buildExerciseDetailDto(Member member, ExerciseRoutine routine,
+    private ExerciseDetailDto buildExerciseDetailDto(Member member,
             List<ExerciseDetail> exerciseDetails, List<ExerciseLogs> logsForTheWeek) {
         ExerciseDetailDto dto = new ExerciseDetailDto();
-        dto.setRoutineName(routine.getRoutineName());
-        dto.setLevel(routine.getLevel());
-        dto.setWeeks(routine.getDaysPerWeek());
-        dto.setPeriod(routine.getProgramLength());
         dto.setDays(constructDaysList(member, exerciseDetails, logsForTheWeek));
         return dto;
     }

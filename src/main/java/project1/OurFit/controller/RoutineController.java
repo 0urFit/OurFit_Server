@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import project1.OurFit.response.ExerciseDetailDto;
+import project1.OurFit.response.ExerciseViewDto;
 import project1.OurFit.response.ExerciseRoutineListDto;
 import project1.OurFit.service.RoutineService;
 import project1.constant.response.JsonResponse;
@@ -64,6 +65,14 @@ public class RoutineController {
                 routineService.getExerciseRoutineByCategory(category,userEmail);
         return new JsonResponse<>(exerciseRoutineListDtoList);
     }
+
+    @GetMapping("/exercise/{routineId}/view")
+    @ResponseBody
+    public JsonResponse<ExerciseViewDto> getExerciseOverview(@PathVariable final long routineId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return new JsonResponse<>(routineService.getExerciseRoutineView(email, routineId));
+    }
+
 
     /**
      * 운동 상세 루틴 조회 API
